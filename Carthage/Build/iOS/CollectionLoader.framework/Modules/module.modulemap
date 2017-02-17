@@ -1,0 +1,10 @@
+framework module CollectionLoader {
+  umbrella header "CollectionLoader.h"
+
+  export *
+  module * { export * }
+}
+
+module CollectionLoader.Swift {
+    header "CollectionLoader-Swift.h"
+}
