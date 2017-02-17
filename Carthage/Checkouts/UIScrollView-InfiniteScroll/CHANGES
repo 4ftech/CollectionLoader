@@ -1,0 +1,55 @@
+= 1.0.0 (2016-12-20)
+
+* Added programmatic way of starting infinite scroll handler (@pronebird)
+
+= 0.9.1 (2016-07-03)
+
+* Fixed issue with activity indicator teleportation in table views
+* Fixed issue when bounce back animation wouldn't properly complete due to user interactions
+* Fixed nullability attribute for -setShouldShowInfiniteScrollHandler:
+* Added trigger offset, see -infiniteScrollTriggerOffset (@GorkaMM)
+
+= 0.9.0 (2016-06-27)
+
+* Solved longstanding issue with dynamic updates in table views (@intrepidmatt)
+
+= 0.8.0 (2016-06-19)
+
+* Added a handler to conditionally prevent the infinite scroll from showing (@RyanBertrand)
+
+= 0.7.4 (2016-03-09)
+
+* Add carthage support (@takeshig)
+* Minor refactoring and demo app improvements (@pronebird)
+
+= 0.7.3 (2015-08-18)
+
+* Add access to check loading status (Vlad @brightsider)
+
+= 0.7.2 (2015-05-04)
+
+* Optimize the use of dynamic properties by grouping them into single state object
+* Add Swift demo app
+* Refine Objective-C demo app
+
+= 0.7.1 (2015-04-04)
+
+* Fix indicator's position when contentSize < viewSize (@pronebird)
+
+= 0.7.0 (2015-02-28)
+
+* Accommodate bottom bar inset (@pronebird)
+* Add collection view demo (@pronebird)
+* Restart animations when custom indicator comes back from offscreen (@pronebird)
+* Drop previously deprecated infiniteIndicatorView (use infiniteScrollIndicatorView instead) (@pronebird)
+
+= 0.6.0 (2015-01-24)
+
+* Add option to setup indicator margin (@pronebird)
+* Convert certain methods to properties (@pronebird)
+* Change custom indicator implementation to pulse animation (@pronebird)
+* Deprecate infiniteIndicatorView in favor of newer infiniteScrollIndicatorView (@pronebird)
+
+= 0.5.2 (2015-01-17)
+
+* Don't change contentOffset on completion, if content is smaller than view bounds. Solves strange jumping bug. (Alex Shevchenko @skeeet)

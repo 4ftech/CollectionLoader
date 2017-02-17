@@ -1,0 +1,10 @@
+framework module Spring {
+  umbrella header "Spring.h"
+
+  export *
+  module * { export * }
+}
+
+module Spring.Swift {
+    header "Spring-Swift.h"
+}
