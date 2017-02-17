@@ -22,7 +22,7 @@ class LoaderView: SpringView {
   var buttonAction: (() -> Void)?
   
   class func newInstance(_ owner: AnyObject? = nil, content: EmptyViewContent? = nil) -> LoaderView {
-    let loaderView = Bundle.main.loadNibNamed("LoaderView", owner: owner, options: nil)!.first as! LoaderView
+    let loaderView = Bundle(for: self).loadNibNamed("LoaderView", owner: owner, options: nil)!.first as! LoaderView
     loaderView.loadContent(content)
     
     return loaderView
@@ -92,7 +92,7 @@ public class EmptyViewContent: NSObject {
   var buttonText: String?
   var buttonAction: (() -> Void)?
   
-  init(imageName: String? = nil, message: String? = nil, subtitle: String? = nil, buttonText: String? = nil, buttonAction: (() -> Void)? = nil) {
+  public init(imageName: String? = nil, message: String? = nil, subtitle: String? = nil, buttonText: String? = nil, buttonAction: (() -> Void)? = nil) {
     self.imageName = imageName
     self.message = message
     self.subtitle = subtitle?.uppercased()

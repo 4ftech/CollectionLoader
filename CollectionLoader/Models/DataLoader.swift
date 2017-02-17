@@ -12,7 +12,7 @@ import RxSwift
 import BoltsSwift
 import UIScrollView_InfiniteScroll
 
-enum DataLoadType: Int {
+public enum DataLoadType: Int {
   case initial, more, clearAndReplace, replace, newRows
 }
 
@@ -24,6 +24,10 @@ enum NewRowsPosition {
   case beginning, end
 }
 
+public protocol DataLoaderEngine {
+  func task(forLoadType loadType: DataLoadType, currentRowCount: Int) -> Task<NSArray>
+}
+
 class DataLoader<T: CollectionRow>: NSObject {
   deinit {
     NSLog("deinit: \(type(of: self))")
@@ -32,20 +36,21 @@ class DataLoader<T: CollectionRow>: NSObject {
 
   let disposeBag = DisposeBag()
   var disposable: Disposable? = nil
-  var loaderViews: WeakArray<LoaderView> = []
-  var scrollViews: WeakArray<UIScrollView> = []
   
   var error: Error? = nil
   
   var rowsLoading = false
   var rowsLoaded = false
   var mightHaveMore = true
-  var queryLimit: Int { return 20 }
-  var newRowsPosition: NewRowsPosition { return .end }
+  var queryLimit: Int = 20
+  var newRowsPosition: NewRowsPosition = .beginning
   
+  var rows: [T] = []
   var isEmpty: Bool { return rows.count == 0 }
-  fileprivate(set) var rows: [T] = []
-  
+  var rowsToDisplay: [T] {
+    return rows
+  }
+
   let notificationActionKey = "actionType"
   let notificationLoadTypeKey = "loadType"
   let notificationTotalKey = "total"
@@ -53,9 +58,8 @@ class DataLoader<T: CollectionRow>: NSObject {
   let notificationCRUDTypeKey = "crudType"
   let notificationObjectKey = "object"
   let notificationIndexKey = "index"
-  var notificationSenderObject: AnyObject? { return nil }
+  var notificationSenderObject: AnyObject? = nil
 
-  
   var notificationNamePrefix: String {
     return "com.oinkist.CollectionLoader.\(type(of: self))"
   }
@@ -65,7 +69,7 @@ class DataLoader<T: CollectionRow>: NSObject {
   }
   
   var cancellationToken: Operation?
-  
+  var dataLoaderEngine: DataLoaderEngine!
   
   var filterFunction: ((T) -> Bool)? = nil
   var sortFunction: ((T, T) -> Bool)? = nil
@@ -75,11 +79,8 @@ class DataLoader<T: CollectionRow>: NSObject {
     super.init()
   }
   
-  init(rows: [T]?) {
-    if let rows = rows {
-      self.rows = rows
-      rowsLoaded = true
-    }
+  init(dataLoaderEngine: DataLoaderEngine) {
+    self.dataLoaderEngine = dataLoaderEngine
   }
   
   // MARK: - CRUD
@@ -121,48 +122,27 @@ class DataLoader<T: CollectionRow>: NSObject {
     mightHaveMore = true
   }
   
-  func task(forLoadType loadType: DataLoadType) -> Task<NSArray> {
-    return Task<NSArray>([] as NSArray)
-  }
-  
   @discardableResult
   func loadRows(loadType: DataLoadType) -> Task<NSArray>? {
     if rowsLoading && loadType != .clearAndReplace {
       return nil
     }
     
-    error = nil
-    
     if loadType == .clearAndReplace {
       clear()
-      refreshScrollViews()
     }
-    
-    switch loadType {
-    case .more, .newRows:
-      // Don't show spinner if doing infinite scroll load
-      // or refreshing for new rows
-      break
-    default:
-      if loadType == .replace && rows.count > 0 {
-        // No spinner here either
-      } else {
-        for loaderView in loaderViews {
-          loaderView.showSpinner()
-        }
-      }
-    }
-    
+
+    error = nil
     rowsLoading = true
     
     return runTask(forLoadType: loadType)
   }
   
   func runTask(forLoadType loadType: DataLoadType) -> Task<NSArray> {
-    var updateTimes: [String:Date] = [:]
+    var updateTimes: [T:Date] = [:]
     for row in rows {
-      if let id = row.objectId, let updatedAt = row.updatedAt {
-        updateTimes[id] = updatedAt
+      if let updatedAt = row.updatedAt {
+        updateTimes[row] = updatedAt
       }
     }
     
@@ -170,15 +150,17 @@ class DataLoader<T: CollectionRow>: NSObject {
     let thisCancellationToken = Operation()
     cancellationToken = thisCancellationToken
     
-    return self.task(forLoadType: loadType).continueWithTask(Executor.mainThread, continuation: { task in
+    NSLog("Will execute: \(loadType)")
+    return dataLoaderEngine.task(forLoadType: loadType, currentRowCount: rows.count).continueWithTask(Executor.mainThread, continuation: { task in
+      self.rowsLoading = false
+      
       if thisCancellationToken.isCancelled {
         return task
       } else if let error = task.error as? NSError {
         NSLog("error: \(task.error)")
         
         self.error = error
-        self.rowsLoading = false
-        
+
         return task
       } else {
         var results: [T] = (task.result as? [T]) ?? []
@@ -203,9 +185,7 @@ class DataLoader<T: CollectionRow>: NSObject {
     // Process the results
     let totalResults = queryResults.count
     
-    var newRows: [T]? = nil
-  
-    var results = queryResults
+    var results: [T] = queryResults
     
     // Sort/filter as necessary
     if let fn = sortFunction {
@@ -213,115 +193,44 @@ class DataLoader<T: CollectionRow>: NSObject {
     }
 
     if !isEmpty && loadType == .newRows {
-      insertNewRows(results)
+      var updateTimes: [String:Date] = [:]
+      for row in rows {
+        if let id = row.objectId, let updatedAt = row.updatedAt {
+          updateTimes[id] = updatedAt
+        }
+      }
+      
+      // Adds/Updates
+      let resultsToAdd = newRowsPosition == .end ? results : results.reversed()
+      for result in resultsToAdd {
+        if !rows.contains(result) {
+          switch newRowsPosition {
+          case .beginning:
+            rows.insert(result, at: 0)
+          case .end:
+            rows.append(result)
+          }
+        } else if let id = result.objectId {
+          if updateTimes[id] != result.updatedAt {
+            updateRowForObject(result)
+          }
+        }
+      }
     } else {
       if loadType == .more {
-        let completion: (Bool) -> Void = { completed in
-          for scrollView in self.scrollViews {
-            scrollView.finishInfiniteScroll()
-          }
-        }
-        
-        let addRows = {
-          for result in results {
-            self.appendRow(result)
-          }
-        }
-        
-        for scrollView in self.scrollViews {
-          if let indicatorView = scrollView.infiniteScrollIndicatorView {
-            scrollView.sendSubview(toBack: indicatorView)
-          }
-          
-          if let collectionView = scrollView as? UICollectionView {
-            collectionView.performBatchUpdates({
-              addRows()
-            }, completion: completion)
-          } else if let tableView = scrollView as? UITableView {
-            tableView.performBatchUpdates({
-              addRows()
-            }, completion: completion)
-          }
-        }
-      } else if !isEmpty && loadType == .replace && scrollViews.filter({ $0 != nil }).count > 0 {
-        var updateTimes: [String:Date] = [:]
-        for row in rows {
-          if let id = row.objectId, let updatedAt = row.updatedAt {
-            updateTimes[id] = updatedAt
-          }
-        }
-        
-        let existingRows = rows
-        for existingRow in existingRows {
-          if !results.contains(existingRow) {
-            removeRowForObject(existingRow)
-          }
-        }
-        
-        for i in 0..<results.count {
-          let newRow = results[i]
-          if let existingIndex = rows.index(of: newRow) {
-            if existingIndex == i {
-              if let id = newRow.objectId {
-                if updateTimes[id] != newRow.updatedAt {
-                  updateRowForObject(newRow)
-                }
-              }
-              
-              // Already exists in the row and is in the same position
-              continue
-            } else {
-              removeRowAtIndex(existingIndex)
-            }
-          }
-            
-          insertRow(newRow, atIndex: i)
-        }
+        rows = rows + results
       } else {
         rows = results
-        newRows = results
       }
       
       mightHaveMore = totalResults == queryLimit
     }
 
     // Optional post-processing
-    processNewResults(newRows)
-
     rowsLoaded = true
-    updateUIForNewRows(newRows, loadType: loadType)
+    updateUIForNewRows(results, loadType: loadType)
   }
 
-  func insertNewRows(_ results: [T]) {
-    var updateTimes: [String:Date] = [:]
-    for row in rows {
-      if let id = row.objectId, let updatedAt = row.updatedAt {
-        updateTimes[id] = updatedAt
-      }
-    }
-    
-    // Adds/Updates
-    let resultsToAdd = newRowsPosition == .end ? results : results.reversed()
-    for result in resultsToAdd {
-      if !rows.contains(result) {
-        switch newRowsPosition {
-        case .beginning:
-          insertRow(result, atIndex: 0)
-        case .end:
-          appendRow(result)
-        }
-      } else if let id = result.objectId {
-        if updateTimes[id] != result.updatedAt {
-          updateRowForObject(result)
-        }
-      }
-    }
-  }
-  
-  func processNewResults(_ results: [T]?) {
-    
-  }
-  
   func sortRows(_ isOrderedBefore: (T, T) -> Bool) {
     rows = rows.sorted(by: isOrderedBefore)
   }
@@ -332,7 +241,6 @@ class DataLoader<T: CollectionRow>: NSObject {
     self.rows = rows
 
     rowsLoaded = true
-    
     updateUIForNewRows(rows, loadType: .replace)
   }
   
@@ -341,7 +249,6 @@ class DataLoader<T: CollectionRow>: NSObject {
       rows.insert(object, at: index)
       
       updateUIForCRUD(.Create, object: object, atIndex: index)
-      // NSLog("adding row at \(index): \(object)")
     }
   }
   
@@ -350,7 +257,7 @@ class DataLoader<T: CollectionRow>: NSObject {
   }
   
   @discardableResult
-  func removeRowAtIndex(_ index: Int, updateUI: Bool = true) -> T? {
+  func removeRowAtIndex(_ index: Int) -> T? {
     let object = rows.remove(at: index)
     
     updateUIForCRUD(.Delete, object: object, atIndex: index)
@@ -457,124 +364,11 @@ class DataLoader<T: CollectionRow>: NSObject {
 
   
   // MARK: - UI Stuff
-  func registerLoaderView(_ loaderView: LoaderView) {
-    loaderViews = loaderViews.filter { $0 != nil }
-    if !loaderViews.contains(loaderView) {
-      loaderViews.append(loaderView)
-    }
-
-    if rowsLoaded {
-      loaderView.hideSpinner()
-      checkEmpty()
-    } else if rowsLoading {
-      loaderView.showSpinner()
-    } else {
-      loaderView.isHidden = true
-    }
-  }
-  
-  func registerScrollView(_ scrollView: UIScrollView) {
-    scrollViews = scrollViews.filter { $0 != nil }
-    if !scrollViews.contains(scrollView) {
-      scrollViews.append(scrollView)
-    }
-    
-    scrollView.alwaysBounceVertical = true
-  }
-  
-  func updateUIForCRUDCompletion(forCrudType crudType: CRUDType, object: T, atIndex index: Int, inSection section: Int) -> ((Bool) -> Void) {
-    return { complete in
-      self.checkEmpty()
-      
-      if self.isEmpty {
-        self.refreshScrollViews()
-      }
-      
-      self.postCrudNotification(crudType, object: object, atIndex: index, inSection: section)
-    }
-    
-  }
-  
   func updateUIForCRUD(_ crudType: CRUDType, object: T, atIndex index: Int, inSection section: Int = 0) {
-    let completion: (Bool) -> Void = updateUIForCRUDCompletion(forCrudType: crudType, object: object, atIndex: index, inSection: section)
-
-    switch crudType {
-    case .Create:
-      for scrollView in scrollViews {
-        if let collectionView = scrollView as? UICollectionView {
-          collectionView.performBatchUpdates({
-            collectionView.insertItems(at: [IndexPath(item: index, section: section)])
-          }, completion: completion)
-        } else if let tableView = scrollView as? UITableView {
-          tableView.performBatchUpdates({
-            tableView.insertRows(at: [IndexPath(row: index, section: section)], with: .fade)
-          }, completion: completion)
-        }
-      }
-    case .Update:
-      for scrollView in scrollViews {
-        if let collectionView = scrollView as? UICollectionView {
-          collectionView.performBatchUpdates({
-            collectionView.reloadItems(at: [IndexPath(item: index, section: section)])
-          }, completion: completion)
-        } else if let tableView = scrollView as? UITableView {
-          tableView.performBatchUpdates({
-            tableView.reloadRows(at: [IndexPath(row: index, section: section)], with: .none)
-          }, completion: completion)
-        }
-      }
-    case .Delete:
-      for scrollView in scrollViews {
-        if let collectionView = scrollView as? UICollectionView {
-          collectionView.performBatchUpdates({
-            collectionView.deleteItems(at: [IndexPath(item: index, section: section)])
-          }, completion: completion)
-        } else if let tableView = scrollView as? UITableView {
-          tableView.performBatchUpdates({
-            tableView.deleteRows(at: [IndexPath(row: index, section: section)], with: .fade)
-          }, completion: completion)
-        }
-      }
-    }
+    postCrudNotification(crudType, object: object, atIndex: index, inSection: section)
   }
   
   func updateUIForNewRows(_ newRows: [T]?, loadType: DataLoadType) {
-    for loaderView in loaderViews {
-      loaderView.hideSpinner()
-    }
-
-    // If we didn't pass the new rows here, that means
-    // we incrementally updated the UI so no need to refresh
-    if newRows != nil {
-      refreshScrollViews()
-    }
-    
-    checkEmpty()
     postDidFinishLoadingNotificationForResults(newRows, loadType: loadType)
-  }
-
-  func checkEmpty() {
-    for loaderView in loaderViews {
-      if isEmpty {
-        loaderView.showEmptyView()
-      } else {
-        loaderView.isHidden = true
-      }
-    }
-  }
-  
-  func refreshScrollViews() {
-    for scrollView in scrollViews {
-      refreshScrollView(scrollView)
-    }
-  }
-  
-  func refreshScrollView(_ scrollView: UIScrollView) {
-    if let collectionView = scrollView as? UICollectionView {
-      // collectionView.reloadSections(IndexSet(integersIn: 0..<collectionView.numberOfSections))
-      collectionView.reloadData()
-    } else if let tableView = scrollView as? UITableView {
-      tableView.reloadData()
-    }
   }
 }

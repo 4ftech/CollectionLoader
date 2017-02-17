@@ -15,32 +15,28 @@ public enum CollectionViewType {
   case table, collection
 }
 
-public class CollectionLoaderController<T: CollectionRow>: UIViewController, CollectionSearchBarDelegate {
+public class CollectionLoaderController<T: CollectionRow>: UIViewController, CollectionSearchBarDelegate, UITableViewDelegate, UITableViewDataSource {
+  let singleLineTableCellIdentifier = "singleLineIconCell"
+  let twoLineTableCellIdentifier = "twoLineIconCell"
+  let threeLineTableCellIdentifier = "threeLineIconCell"
+
+  public var collectionViewType: CollectionViewType = .table
+  public var emptyViewContent: EmptyViewContent?
+  
   var container: SpringView!
   var scrollView: UIScrollView!
 
-  var collectionViewType: CollectionViewType = .table
-  
-  var emptyViewContent: EmptyViewContent?
   var loaderView: LoaderView!
-  var pullToRefresh: Bool = false
+  var pullToRefresh: Bool = true
   var refreshControl: UIRefreshControl?
   
   // Search
   var allowSearch: Bool = false
   var searchBar: CollectionSearchBar?
-  var showSearchResults: Bool {
-    if let text = searchBar?.text, !text.isEmpty {
-      return true
-    } else {
-      return false
-    }
-    
-  }
   
-  var searchFilter: ((T) -> Bool) {
+  var searchFilter: (String) -> ((T) -> Bool) = { queryString in
     return { object in
-      return false
+      return object.name?.contains(queryString) ?? false
     }
   }
   
@@ -55,96 +51,85 @@ public class CollectionLoaderController<T: CollectionRow>: UIViewController, Col
     return topInset
   }
   
-  var navBarTitle: String? = nil
-  
   // DATA
   var collectionInitialized = false
   var dataLoader: DataLoader<T>!
   var disposeBag: DisposeBag = DisposeBag()
-  var startWithRows: [T] = []
 
-  var rowsToExclude: [T] = []
-  var rows: [T] {
-    let rows = dataLoader.rows.filter { !rowsToExclude.contains($0) }
-    
-    if showSearchResults {
-      return rows.filter(searchFilter)
-    } else {
-      return rows
-    }
-  }
-  
   var refreshOnAppear: DataLoadType? = .newRows
-  var isEmpty: Bool { return rows.count == 0 }
   
   // MARK: - Initialize
-  required public init(collectionViewType: CollectionViewType? = nil, navBarTitle: String? = nil, emptyViewContent: EmptyViewContent? = nil) {
+  required public init(dataLoaderEngine: DataLoaderEngine) {
     super.init(nibName: nil, bundle: nil)
     
-    if let viewType = collectionViewType {
-      self.collectionViewType = viewType
-    }
-    
-    self.navBarTitle = navBarTitle
-    self.emptyViewContent = emptyViewContent
+    self.dataLoader = DataLoader<T>(dataLoaderEngine: dataLoaderEngine)
   }
   
   required public init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
   }
   
-  func initializeDataLoader() {
-    dataLoader = DataLoader<T>(rows: startWithRows)
-  }
-  
-  func initializeLoaderView() {
-    loaderView = LoaderView.newInstance(content: emptyViewContent)
-    
-    Utils.fillContainer(view, withView: loaderView)
-  }
-  
   // MARK: - Controller
   override public func viewDidLoad() {
     super.viewDidLoad()
 
+    edgesForExtendedLayout = []
+    extendedLayoutIncludesOpaqueBars = false
+    
+    // Add Container and ScrollView
     container = SpringView()
     Utils.fillContainer(view, withView: container)
     
     switch collectionViewType {
     case .collection:
-      scrollView = UICollectionView()
+      let collectionView = UICollectionView()
+      
+      scrollView = collectionView
+      break
     case .table:
-      scrollView = UITableView()
+      let tableView = UITableView()
+      tableView.tableFooterView = UIView(frame: CGRect.zero)
+      tableView.delegate = self
+      tableView.dataSource = self
+      
+      scrollView = tableView
+      break
     }
 
     Utils.fillContainer(container, withView: scrollView)
     
     // Loader
-    initializeDataLoader()
-    initializeLoaderView()
-    
-    // NavBar
-    navigationItem.title = navBarTitle
+    loaderView = LoaderView.newInstance(content: emptyViewContent)
+    Utils.fillContainer(view, withView: loaderView)
     
     // Table
     container.autohide = true
     container.autostart = false
 
     // ScrollView
-    setUpScrollView()
+    scrollView.alwaysBounceVertical = true
+    scrollView.showsVerticalScrollIndicator = false
+    scrollView.showsHorizontalScrollIndicator = false
+    
+    scrollView.contentInset = UIEdgeInsets(top: topInset, left: 0, bottom: 0, right: 0)
+    
+    if pullToRefresh {
+      refreshControl = UIRefreshControl()
+      refreshControl?.addTarget(self, action: #selector(didPullToRefresh(refreshControl:)), for: .valueChanged)
+      scrollView.refreshControl = refreshControl
+    }
     
     // Register cells
     registerCells()
     
     // Subscribe to data loader notifications
-    registerViewsWithDataLoader()
     subscribeToDataLoaderNotifications()
     
     // Search
     if allowSearch {
       searchBar = CollectionSearchBar.newInstance()
       searchBar?.delegate = self
-      searchBar?.isHidden = isEmpty
+      searchBar?.isHidden = dataLoader.isEmpty
       Utils.addView(searchBar!, toContainer: container, onEdge: .top)
       
       NotificationCenter.default.addObserver(self, selector: #selector(searchKeyboardDidShow(_:)), name: Notification.Name.UIKeyboardDidShow, object: nil)
@@ -155,7 +140,12 @@ public class CollectionLoaderController<T: CollectionRow>: UIViewController, Col
     if !dataLoader.rowsLoaded && !dataLoader.rowsLoading {
       loadRows(loadType: .initial)
     } else if dataLoader.rowsLoaded {
-      self.didUpdateRowDataUI()
+      loaderView.hideSpinner()
+      didUpdateRowDataUI()
+    } else if dataLoader.rowsLoading {
+      loaderView.showSpinner()
+    } else {
+      loaderView.isHidden = true
     }
   }
   
@@ -180,22 +170,6 @@ public class CollectionLoaderController<T: CollectionRow>: UIViewController, Col
     }
   }
   
-  func setUpScrollView() {
-    scrollView.showsVerticalScrollIndicator = false
-    scrollView.showsHorizontalScrollIndicator = false
-
-    scrollView.contentInset = UIEdgeInsets(top: topInset, left: 0, bottom: 0, right: 0)
-  }
-  
-  func initPullToRefresh() {
-    if refreshControl == nil {
-      refreshControl = UIRefreshControl()
-      refreshControl?.addTarget(self, action: #selector(didPullToRefresh(refreshControl:)), for: .valueChanged)
-    }
-    
-    scrollView.refreshControl = refreshControl
-  }
-  
   func didPullToRefresh(refreshControl: UIRefreshControl) {
     loadRows(loadType: .newRows)
   }
@@ -203,140 +177,203 @@ public class CollectionLoaderController<T: CollectionRow>: UIViewController, Col
   override public func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
     
-    if let loadType = refreshOnAppear, dataLoader.rowsLoaded && !dataLoader.rowsLoading {
+    if let loadType = refreshOnAppear, dataLoader.rowsLoaded && !dataLoader.rowsLoading && collectionInitialized {
       loadRows(loadType: loadType)
     }
   }
-    
-  override public func viewDidAppear(_ animated: Bool) {
-    super.viewDidAppear(animated)
-    
-    if pullToRefresh && dataLoader.rowsLoaded && !dataLoader.rowsLoading {
-      if !isEmpty {
-        initPullToRefresh()
-      } else {
-        scrollView.refreshControl = nil
-      }
-    }
-    
-  }
   
   func registerCells() {
-    
+    switch collectionViewType {
+    case .collection:
+      break
+    case .table:
+      let tableView = scrollView as! UITableView
+      
+      let bundle = Bundle(identifier: "com.oinkist.CollectionLoader")
+      tableView.register(UINib(nibName: "SingleLineIconCell", bundle: bundle), forCellReuseIdentifier: singleLineTableCellIdentifier)
+      tableView.register(UINib(nibName: "TwoLineIconCell", bundle: bundle), forCellReuseIdentifier: twoLineTableCellIdentifier)
+      tableView.register(UINib(nibName: "ThreeLineIconCell", bundle: bundle), forCellReuseIdentifier: threeLineTableCellIdentifier)
+    }
   }
-  
-  // MARK: - Data loader
-  //  deinit {
-  //    NSLog("deinit: \(self.dynamicType)")
-  //  }
-  
-  func registerViewsWithDataLoader() {
-    dataLoader.registerLoaderView(loaderView)
-    dataLoader.registerScrollView(scrollView)
+
+
+  // MARK: - Querying
+  func loadRows(loadType: DataLoadType) {
+    if dataLoader.rowsLoading && loadType != .clearAndReplace {
+      return
+    }
+    
+    dataLoader.loadRows(loadType: loadType)
+    
+    // If .clearAndReplace, dataLoader.loadRows already cleared all rows
+    if loadType == .clearAndReplace {
+      refreshScrollView()
+    }
+
+    switch loadType {
+    case .more, .newRows:
+      // Don't show spinner if doing infinite scroll load
+      // or refreshing for new rows
+      break
+    default:
+      if loadType == .replace && dataLoader.rowsToDisplay.count > 0 {
+        // No spinner here either
+      } else {
+        loaderView.showSpinner()
+      }
+    }
   }
   
   func subscribeToDataLoaderNotifications() {
     dataLoader.observerForAction(.ResultsReceived)
       .takeUntil(self.rx.deallocated)
       .subscribe(onNext: { [weak self] notification in
-        if let realSelf = self {
-          let loadType = realSelf.dataLoader.loadTypeFromNotification(notification)
-          let results = realSelf.dataLoader.resultsFromNotification(notification)
-          let resultCount = results?.count ?? 0
-          
-          if loadType != .more {
-            realSelf.refreshControl?.endRefreshing()
-            
-            if realSelf.pullToRefresh && realSelf.dataLoader.rowsLoaded {
-              if !realSelf.isEmpty || resultCount > 0 {
-                realSelf.initPullToRefresh()
-              } else {
-                realSelf.scrollView.refreshControl = nil
-              }
-            }
-          }
+        Utils.performOnMainThread() {
+          self?.handleResultsReceivedNotification(notification)
         }
       }).addDisposableTo(disposeBag)
-
+    
     dataLoader.observerForAction(.FinishedLoading)
       .takeUntil(self.rx.deallocated)
       .subscribe(onNext: { [weak self] notification in
-        self?.handleDidFinishLoadingRowsNotification(notification)
+        Utils.performOnMainThread() {
+          self?.handleDidFinishLoadingRowsNotification(notification)
+        }
       }).addDisposableTo(disposeBag)
     
     dataLoader.observerForAction(.CRUD)
       .takeUntil(self.rx.deallocated)
       .subscribe(onNext: { [weak self] notification in
-        if let (type, object, index) = self?.dataLoader.rowUpdateInfoFromNotification(notification) {
-          
-          // NSLog("base collection loader (\(self) -- \(self?.dataLoader.notificationNamePrefix)) received notification: \(type) \(object) \(index)")
-          
-          switch type {
-          case .Create:
-            self?.didInsertRow(object, atIndex: index)
-          case .Update:
-            self?.didUpdateRow(object, atIndex: index)
-          case .Delete:
-            self?.didRemoveRow(object, atIndex: index)
-          }
-          
-          self?.didUpdateRowDataUI()
+        Utils.performOnMainThread() {
+          self?.handleCrudNotification(notification)
         }
       }).addDisposableTo(disposeBag)
   }
   
-  func handleDidFinishLoadingRowsNotification(_ notification: Notification) {
-    let results = dataLoader.resultsFromNotification(notification)
+  func handleResultsReceivedNotification(_ notification: Notification) {
     let loadType = dataLoader.loadTypeFromNotification(notification)
-    dataLoaderDidFinishLoadingRows(results, loadType: loadType)
-  }
-  
+    //    let results = dataLoader.resultsFromNotification(notification)
 
-  // MARK: - Querying
-  func loadRows(loadType: DataLoadType) {
-    dataLoader.loadRows(loadType: loadType)
+    if loadType != .more {
+      refreshControl?.endRefreshing()
+    }
+    
   }
   
-  func dataLoaderDidFinishLoadingRows(_ newResults: [T]?, loadType: DataLoadType) {
+  func handleCrudNotification(_ notification: Notification) {
+    let (type, object, index) = dataLoader.rowUpdateInfoFromNotification(notification)
+    let completion: (Bool) -> Void = { complete in
+      if self.dataLoader.isEmpty {
+        self.refreshScrollView()
+      }
+      
+      switch type {
+      case .Create:
+        self.didInsertRow(object, atIndex: index)
+      case .Update:
+        self.didUpdateRow(object, atIndex: index)
+      case .Delete:
+        self.didRemoveRow(object, atIndex: index)
+      }
+      
+      self.didUpdateRowDataUI()
+    }
+    
+    switch type {
+    case .Create:
+      if let collectionView = scrollView as? UICollectionView {
+        collectionView.performBatchUpdates({
+          collectionView.insertItems(at: [IndexPath(item: index, section: 0)])
+        }, completion: completion)
+      } else if let tableView = scrollView as? UITableView {
+        tableView.performBatchUpdates({
+          tableView.insertRows(at: [IndexPath(row: index, section: 0)], with: .fade)
+        }, completion: completion)
+      }
+    case .Update:
+      if let collectionView = scrollView as? UICollectionView {
+        collectionView.performBatchUpdates({
+          collectionView.reloadItems(at: [IndexPath(item: index, section: 0)])
+        }, completion: completion)
+      } else if let tableView = scrollView as? UITableView {
+        tableView.performBatchUpdates({
+          tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .none)
+        }, completion: completion)
+      }
+    case .Delete:
+      if let collectionView = scrollView as? UICollectionView {
+        collectionView.performBatchUpdates({
+          collectionView.deleteItems(at: [IndexPath(item: index, section: 0)])
+        }, completion: completion)
+      } else if let tableView = scrollView as? UITableView {
+        tableView.performBatchUpdates({
+          tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .fade)
+        }, completion: completion)
+      }
+    }
+  }
+  
+  func handleDidFinishLoadingRowsNotification(_ notification: Notification) {
+    let loadType = dataLoader.loadTypeFromNotification(notification)
+    let results = dataLoader.resultsFromNotification(notification)
+
+    loaderView.hideSpinner()
+    
+    if loadType == .more || loadType == .newRows {
+      // Don't finish infinite scroll until insert animations are done
+      let completion: (Bool) -> Void = { completed in
+        if loadType == .more {
+          self.scrollView.finishInfiniteScroll()
+        }
+      }
+      
+      if let indicatorView = scrollView.infiniteScrollIndicatorView, loadType == .more {
+        // So that the new rows will fade in front of the indicator
+        scrollView.sendSubview(toBack: indicatorView)
+      }
+      
+      if let collectionView = scrollView as? UICollectionView {
+        collectionView.performBatchUpdates({
+          if let results = results {
+            for result in results {
+              if let index = self.dataLoader.rowsToDisplay.index(of: result) {
+                collectionView.insertItems(at: [IndexPath(item: index, section: 0)])
+              }
+            }
+          }
+        }, completion: completion)
+      } else if let tableView = scrollView as? UITableView {
+        tableView.performBatchUpdates({
+          if let results = results {
+            for result in results {
+              if let index = self.dataLoader.rowsToDisplay.index(of: result) {
+                tableView.insertRows(at: [IndexPath(row: index, section: 0)], with: .fade)
+              }
+            }
+          }
+        }, completion: completion)
+      }
+    } else if results != nil {
+      refreshScrollView()
+    }
+
     if !collectionInitialized {
       initialDisplay()
       collectionInitialized = true
     }
     
-    didUpdateRowDataUI()
-    
     if dataLoader.mightHaveMore {
       scrollView.addInfiniteScroll() { [weak self] scrollView in
         self?.loadRows(loadType: .more)
       }
-      scrollView.infiniteScrollIndicatorMargin = 24
     } else {
       scrollView.removeInfiniteScroll()
     }
-
+    
+    didUpdateRowDataUI()
   }
   
   // MARK: - Manipulating data
-  func containsRow(_ object: T) -> Bool {
-    return dataLoader.rows.contains(object)
-  }
-  
-  func removeRow(_ object: T) {
-    dataLoader.removeRowForObject(object)
-  }
-  
-  func removeRowAtIndex(_ index: Int) -> T? {
-    return dataLoader.removeRowAtIndex(index)
-  }
-  
-  func appendRow(_ object: T) {
-    dataLoader.appendRow(object)
-  }
-  
-  func insertRow(_ object: T, atIndex index: Int) {
-    dataLoader.insertRow(object, atIndex: index)
-  }
-  
   func didRemoveRow(_ object: T, atIndex index: Int) {
     
   }
@@ -350,7 +387,8 @@ public class CollectionLoaderController<T: CollectionRow>: UIViewController, Col
   }
 
   func didUpdateRowDataUI() {
-    searchBar?.isHidden = isEmpty
+    searchBar?.isHidden = dataLoader.isEmpty
+    checkEmpty()
   }
 
   // MARK: - Displaying results
@@ -360,33 +398,47 @@ public class CollectionLoaderController<T: CollectionRow>: UIViewController, Col
     container.animate()
   }
   
-  func refresh() {
-    checkEmpty()
-  }
-
-  func object(at indexPath: IndexPath) -> T {
-    return rows[indexPath.row]
-  }
-
-  // MARK: - Spinner and empty view
-  func showSpinner() {
-    loaderView.showSpinner()
-  }
-  
-  func hideSpinner() {
-    loaderView.hideSpinner()
-  }
-  
   func checkEmpty() {
-    if isEmpty {
+    if dataLoader.isEmpty {
       loaderView.showEmptyView()
     } else {
       loaderView.isHidden = true
     }
   }
-
+  
+  func refreshScrollView() {
+    switch collectionViewType {
+    case .collection:
+      let collectionView = scrollView as! UICollectionView
+      collectionView.reloadData()
+      break
+    case .table:
+      let tableView = scrollView as! UITableView
+      tableView.reloadData()
+      break
+    }
+  }
+  
   // MARK: - CollectionSearchBarDelegate
   func searchBarTextDidChange(_ searchBar: CollectionSearchBar) {
+    refreshScrollView()
+  }
+
+  // MARK: - UITableView
+  public func numberOfSections(in tableView: UITableView) -> Int {
+    return 1
+  }
+  
+  public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    return dataLoader.rowsToDisplay.count
+  }
+  
+  public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    let row = dataLoader.rowsToDisplay[indexPath.row]
+
+    let cell = tableView.dequeueReusableCell(withIdentifier: singleLineTableCellIdentifier, for: indexPath) as! SingleLineIconCell
+    cell.mainLabel.text = row.name
     
+    return cell
   }
 }

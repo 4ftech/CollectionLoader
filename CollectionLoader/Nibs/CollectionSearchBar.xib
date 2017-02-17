@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11762" systemVersion="16D32" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="gDr-mZ-scr" customClass="TableSearchBar" customModule="CollectionLoader" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="600" height="44"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iN0-l3-epB" userLabel="Container">
+                    <rect key="frame" x="0.0" y="0.0" width="600" height="44"/>
+                    <subviews>
+                        <imageView userInteractionEnabled="NO" alpha="0.54000000000000004" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ic_search" translatesAutoresizingMaskIntoConstraints="NO" id="lS5-cG-ftU">
+                            <rect key="frame" x="16" y="10" width="24" height="24"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="24" id="qr7-u2-3qh"/>
+                                <constraint firstAttribute="width" constant="24" id="vOZ-Vl-j1S"/>
+                            </constraints>
+                        </imageView>
+                        <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Search" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="zzE-dM-91H">
+                            <rect key="frame" x="56" y="0.0" width="488" height="44"/>
+                            <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="14"/>
+                            <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="done"/>
+                            <connections>
+                                <action selector="textFieldDidChange:" destination="gDr-mZ-scr" eventType="editingChanged" id="OwQ-c4-gWt"/>
+                                <outlet property="delegate" destination="gDr-mZ-scr" id="1Vm-f4-X4e"/>
+                            </connections>
+                        </textField>
+                        <button hidden="YES" opaque="NO" alpha="0.54000000000000004" contentMode="scaleToFill" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Kmi-m1-Roh">
+                            <rect key="frame" x="560" y="10" width="24" height="24"/>
+                            <fontDescription key="fontDescription" name="Avenir-Medium" family="Avenir" pointSize="16"/>
+                            <color key="tintColor" red="0.18318156898021698" green="0.45537653565406799" blue="0.55455857515335083" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <state key="normal" image="ic_clear">
+                                <color key="titleColor" red="0.18318156898021698" green="0.45537653565406799" blue="0.55455857515335083" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </state>
+                            <connections>
+                                <action selector="didTapClearButton:" destination="gDr-mZ-scr" eventType="touchUpInside" id="vEU-iL-KFK"/>
+                            </connections>
+                        </button>
+                    </subviews>
+                    <constraints>
+                        <constraint firstItem="Kmi-m1-Roh" firstAttribute="leading" secondItem="zzE-dM-91H" secondAttribute="trailing" constant="16" id="0YN-hY-BJ0"/>
+                        <constraint firstAttribute="height" constant="44" id="X0I-U9-k8U"/>
+                        <constraint firstItem="zzE-dM-91H" firstAttribute="leading" secondItem="lS5-cG-ftU" secondAttribute="trailing" constant="16" id="aTM-dX-qbA"/>
+                        <constraint firstItem="Kmi-m1-Roh" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="cz1-Dd-ROS"/>
+                        <constraint firstItem="zzE-dM-91H" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="jef-Kx-OZF"/>
+                        <constraint firstItem="lS5-cG-ftU" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="lFu-g5-rUY"/>
+                        <constraint firstItem="lS5-cG-ftU" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="16" id="tda-tX-uMe"/>
+                        <constraint firstAttribute="bottom" secondItem="zzE-dM-91H" secondAttribute="bottom" id="uma-e3-fd3"/>
+                        <constraint firstAttribute="trailing" secondItem="Kmi-m1-Roh" secondAttribute="trailing" constant="16" id="ydU-EG-uu7"/>
+                    </constraints>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="color" keyPath="borderColor">
+                            <color key="value" red="0.9166492223739624" green="0.91662174463272095" blue="0.91663730144500732" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="number" keyPath="bottomBorderWidth">
+                            <real key="value" value="1"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                </view>
+            </subviews>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstAttribute="bottom" secondItem="iN0-l3-epB" secondAttribute="bottom" id="I6j-NV-djj"/>
+                <constraint firstItem="iN0-l3-epB" firstAttribute="leading" secondItem="gDr-mZ-scr" secondAttribute="leading" id="Je9-lr-EYM"/>
+                <constraint firstAttribute="trailing" secondItem="iN0-l3-epB" secondAttribute="trailing" id="kFO-yw-hp8"/>
+                <constraint firstItem="iN0-l3-epB" firstAttribute="top" secondItem="gDr-mZ-scr" secondAttribute="top" id="zPr-PR-RPs"/>
+            </constraints>
+            <nil key="simulatedStatusBarMetrics"/>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <connections>
+                <outlet property="clearButton" destination="Kmi-m1-Roh" id="ohm-5j-OdU"/>
+                <outlet property="container" destination="iN0-l3-epB" id="6Xp-Ec-Ezy"/>
+                <outlet property="searchIcon" destination="lS5-cG-ftU" id="K6V-rb-xBt"/>
+                <outlet property="textField" destination="zzE-dM-91H" id="nUG-vL-ESw"/>
+            </connections>
+        </view>
+    </objects>
+    <resources>
+        <image name="ic_clear" width="24" height="24"/>
+        <image name="ic_search" width="24" height="24"/>
+    </resources>
+</document>

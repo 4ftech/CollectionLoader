@@ -52,7 +52,7 @@ class CollectionSearchBar: UIView {
   }
   
   static func newInstance() -> CollectionSearchBar {
-    return Bundle.main.loadNibNamed("CollectionSearchBar", owner: nil, options: nil)!.first as! CollectionSearchBar
+    return Bundle(for: self).loadNibNamed("CollectionSearchBar", owner: nil, options: nil)!.first as! CollectionSearchBar
   }
   
   @IBAction func didTapClearButton(_ sender: AnyObject) {
