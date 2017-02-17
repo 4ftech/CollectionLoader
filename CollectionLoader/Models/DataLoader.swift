@@ -25,7 +25,13 @@ enum NewRowsPosition {
 }
 
 public protocol DataLoaderEngine {
-  func task(forLoadType loadType: DataLoadType, currentRowCount: Int) -> Task<NSArray>
+  func task(forLoadType loadType: DataLoadType) -> Task<NSArray>
+}
+
+protocol DataLoaderDelegate: class {
+  func didInsertRowAtIndex(_ index: Int)
+  func didUpdateRowAtIndex(_ index: Int)
+  func didRemoveRowAtIndex(_ index: Int)
 }
 
 class DataLoader<T: CollectionRow>: NSObject {
@@ -33,6 +39,7 @@ class DataLoader<T: CollectionRow>: NSObject {
     NSLog("deinit: \(type(of: self))")
   }
   
+  weak var delegate: DataLoaderDelegate?
 
   let disposeBag = DisposeBag()
   var disposable: Disposable? = nil
@@ -45,7 +52,7 @@ class DataLoader<T: CollectionRow>: NSObject {
   var queryLimit: Int = 20
   var newRowsPosition: NewRowsPosition = .beginning
   
-  var rows: [T] = []
+  fileprivate var rows: [T] = []  
   var isEmpty: Bool { return rows.count == 0 }
   var rowsToDisplay: [T] {
     return rows
@@ -105,18 +112,26 @@ class DataLoader<T: CollectionRow>: NSObject {
       switch newRowsPosition {
       case .beginning:
         insertRow(object, atIndex: 0)
+        postCrudNotification(.Create, object: object, atIndex: 0)
       case .end:
         appendRow(object)
+        postCrudNotification(.Create, object: object, atIndex: rows.count - 1)
       }
     case .Update:
-      updateRowForObject(object)
+      if let index = rows.index(of: object) {
+        updateRowAtIndex(index, withObject: object)
+        postCrudNotification(.Update, object: object, atIndex: index)
+      }
     case .Delete:
-      removeRowForObject(object)
+      if let index = rows.index(of: object) {
+        removeRowAtIndex(index)
+        postCrudNotification(.Delete, object: object, atIndex: index)
+      }
     }
   }
 
   // MARK: - Data
-  func clear() {
+  fileprivate func clear() {
     rows = []
     rowsLoaded = false
     mightHaveMore = true
@@ -151,7 +166,7 @@ class DataLoader<T: CollectionRow>: NSObject {
     cancellationToken = thisCancellationToken
     
     NSLog("Will execute: \(loadType)")
-    return dataLoaderEngine.task(forLoadType: loadType, currentRowCount: rows.count).continueWithTask(Executor.mainThread, continuation: { task in
+    return dataLoaderEngine.task(forLoadType: loadType).continueWithTask(Executor.mainThread, continuation: { task in
       self.rowsLoading = false
       
       if thisCancellationToken.isCancelled {
@@ -185,7 +200,9 @@ class DataLoader<T: CollectionRow>: NSObject {
     // Process the results
     let totalResults = queryResults.count
     
-    var results: [T] = queryResults
+    var newRows: [T]? = nil
+  
+    var results = queryResults
     
     // Sort/filter as necessary
     if let fn = sortFunction {
@@ -216,11 +233,48 @@ class DataLoader<T: CollectionRow>: NSObject {
           }
         }
       }
+      
+      newRows = results
     } else {
       if loadType == .more {
         rows = rows + results
+        newRows = results
+      } else if !isEmpty && loadType == .replace {
+        // For this case, insert/remove/reorder one-by-one
+        var updateTimes: [T:Date] = [:]
+        for row in rows {
+          if let updatedAt = row.updatedAt {
+            updateTimes[row] = updatedAt
+          }
+        }
+        
+        let existingRows = rows
+        for existingRow in existingRows {
+          if !results.contains(existingRow) {
+            removeRowForObject(existingRow)
+          }
+        }
+        
+        for i in 0..<results.count {
+          let newRow = results[i]
+          if let existingIndex = rows.index(of: newRow) {
+            if existingIndex == i {
+              if updateTimes[newRow] != newRow.updatedAt {
+                updateRowForObject(newRow)
+              }
+              
+              // Already exists in the row and is in the same position
+              continue
+            } else {
+              removeRowAtIndex(existingIndex)
+            }
+          }
+            
+          insertRow(newRow, atIndex: i)
+        }
       } else {
         rows = results
+        newRows = results
       }
       
       mightHaveMore = totalResults == queryLimit
@@ -228,7 +282,7 @@ class DataLoader<T: CollectionRow>: NSObject {
 
     // Optional post-processing
     rowsLoaded = true
-    updateUIForNewRows(results, loadType: loadType)
+    updateUIForNewRows(newRows, loadType: loadType)
   }
 
   func sortRows(_ isOrderedBefore: (T, T) -> Bool) {
@@ -241,6 +295,7 @@ class DataLoader<T: CollectionRow>: NSObject {
     self.rows = rows
 
     rowsLoaded = true
+    
     updateUIForNewRows(rows, loadType: .replace)
   }
   
@@ -248,7 +303,7 @@ class DataLoader<T: CollectionRow>: NSObject {
     if !rows.contains(object) {
       rows.insert(object, at: index)
       
-      updateUIForCRUD(.Create, object: object, atIndex: index)
+      delegate?.didInsertRowAtIndex(index)
     }
   }
   
@@ -259,10 +314,7 @@ class DataLoader<T: CollectionRow>: NSObject {
   @discardableResult
   func removeRowAtIndex(_ index: Int) -> T? {
     let object = rows.remove(at: index)
-    
-    updateUIForCRUD(.Delete, object: object, atIndex: index)
-    
-    // NSLog("removing row at \(index): \(object)")
+    delegate?.didRemoveRowAtIndex(index)
     
     return object
   }
@@ -275,11 +327,16 @@ class DataLoader<T: CollectionRow>: NSObject {
   
   func updateRowForObject(_ object: T) {
     if let index = rows.index(of: object) {
-      rows[index] = object
-
-      updateUIForCRUD(.Update, object: object, atIndex: index)
+      updateRowAtIndex(index, withObject: object)
     }
   }
+    
+  func updateRowAtIndex(_ index: Int, withObject object: T) {
+    rows[index] = object
+    
+    delegate?.didUpdateRowAtIndex(index)
+  }
+  
   
   // MARK: - Notifications
   func userInfoForResults(_ results: [T]?, loadType: DataLoadType) -> [AnyHashable: Any] {

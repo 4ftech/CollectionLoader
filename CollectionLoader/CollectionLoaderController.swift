@@ -15,7 +15,7 @@ public enum CollectionViewType {
   case table, collection
 }
 
-public class CollectionLoaderController<T: CollectionRow>: UIViewController, CollectionSearchBarDelegate, UITableViewDelegate, UITableViewDataSource {
+public class CollectionLoaderController<T: CollectionRow>: UIViewController, CollectionSearchBarDelegate, UITableViewDelegate, UITableViewDataSource, DataLoaderDelegate {
   let singleLineTableCellIdentifier = "singleLineIconCell"
   let twoLineTableCellIdentifier = "twoLineIconCell"
   let threeLineTableCellIdentifier = "threeLineIconCell"
@@ -261,56 +261,7 @@ public class CollectionLoaderController<T: CollectionRow>: UIViewController, Col
   }
   
   func handleCrudNotification(_ notification: Notification) {
-    let (type, object, index) = dataLoader.rowUpdateInfoFromNotification(notification)
-    let completion: (Bool) -> Void = { complete in
-      if self.dataLoader.isEmpty {
-        self.refreshScrollView()
-      }
-      
-      switch type {
-      case .Create:
-        self.didInsertRow(object, atIndex: index)
-      case .Update:
-        self.didUpdateRow(object, atIndex: index)
-      case .Delete:
-        self.didRemoveRow(object, atIndex: index)
-      }
-      
-      self.didUpdateRowDataUI()
-    }
-    
-    switch type {
-    case .Create:
-      if let collectionView = scrollView as? UICollectionView {
-        collectionView.performBatchUpdates({
-          collectionView.insertItems(at: [IndexPath(item: index, section: 0)])
-        }, completion: completion)
-      } else if let tableView = scrollView as? UITableView {
-        tableView.performBatchUpdates({
-          tableView.insertRows(at: [IndexPath(row: index, section: 0)], with: .fade)
-        }, completion: completion)
-      }
-    case .Update:
-      if let collectionView = scrollView as? UICollectionView {
-        collectionView.performBatchUpdates({
-          collectionView.reloadItems(at: [IndexPath(item: index, section: 0)])
-        }, completion: completion)
-      } else if let tableView = scrollView as? UITableView {
-        tableView.performBatchUpdates({
-          tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .none)
-        }, completion: completion)
-      }
-    case .Delete:
-      if let collectionView = scrollView as? UICollectionView {
-        collectionView.performBatchUpdates({
-          collectionView.deleteItems(at: [IndexPath(item: index, section: 0)])
-        }, completion: completion)
-      } else if let tableView = scrollView as? UITableView {
-        tableView.performBatchUpdates({
-          tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .fade)
-        }, completion: completion)
-      }
-    }
+
   }
   
   func handleDidFinishLoadingRowsNotification(_ notification: Notification) {
@@ -374,21 +325,56 @@ public class CollectionLoaderController<T: CollectionRow>: UIViewController, Col
   }
   
   // MARK: - Manipulating data
-  func didRemoveRow(_ object: T, atIndex index: Int) {
-    
-  }
-
-  func didUpdateRow(_ object: T, atIndex index: Int) {
-    
-  }
-  
-  func didInsertRow(_ object: T, atIndex index: Int) {
-    
-  }
-
   func didUpdateRowDataUI() {
     searchBar?.isHidden = dataLoader.isEmpty
     checkEmpty()
+  }
+  
+  var rowCRUDCompletion: (Bool) -> Void {
+    return { complete in
+      if self.dataLoader.isEmpty {
+        self.refreshScrollView()
+      }
+      
+      self.didUpdateRowDataUI()
+    }
+  }
+  
+  // MARK: DataLoaderDelegate
+  func didInsertRowAtIndex(_ index: Int) {
+    if let collectionView = scrollView as? UICollectionView {
+      collectionView.performBatchUpdates({
+        collectionView.insertItems(at: [IndexPath(item: index, section: 0)])
+      }, completion: rowCRUDCompletion)
+    } else if let tableView = scrollView as? UITableView {
+      tableView.performBatchUpdates({
+        tableView.insertRows(at: [IndexPath(row: index, section: 0)], with: .fade)
+      }, completion: rowCRUDCompletion)
+    }
+  }
+  
+  func didUpdateRowAtIndex(_ index: Int) {
+    if let collectionView = scrollView as? UICollectionView {
+      collectionView.performBatchUpdates({
+        collectionView.reloadItems(at: [IndexPath(item: index, section: 0)])
+      }, completion: rowCRUDCompletion)
+    } else if let tableView = scrollView as? UITableView {
+      tableView.performBatchUpdates({
+        tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .none)
+      }, completion: rowCRUDCompletion)
+    }
+  }
+
+  func didRemoveRowAtIndex(_ index: Int) {
+    if let collectionView = scrollView as? UICollectionView {
+      collectionView.performBatchUpdates({
+        collectionView.deleteItems(at: [IndexPath(item: index, section: 0)])
+      }, completion: rowCRUDCompletion)
+    } else if let tableView = scrollView as? UITableView {
+      tableView.performBatchUpdates({
+        tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .fade)
+      }, completion: rowCRUDCompletion)
+    }    
   }
 
   // MARK: - Displaying results
