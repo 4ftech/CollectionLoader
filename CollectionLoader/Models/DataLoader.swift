@@ -26,7 +26,7 @@ protocol DataLoaderDelegate: class {
   func didRemoveRowAtIndex(_ index: Int)
 }
 
-public class DataLoader<T: CollectionRow>: NSObject {
+class DataLoader<T: CollectionRow>: NSObject {
   deinit {
     NSLog("deinit: \(type(of: self))")
   }

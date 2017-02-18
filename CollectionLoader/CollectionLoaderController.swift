@@ -15,6 +15,10 @@ public enum CollectionViewType {
   case table, collection
 }
 
+public class Foo {
+  
+}
+
 public class CollectionLoaderController<T: CollectionRow>: UIViewController, CollectionSearchBarDelegate, UITableViewDelegate, UITableViewDataSource, DataLoaderDelegate {
   let singleLineTableCellIdentifier = "singleLineIconCell"
   let twoLineTableCellIdentifier = "twoLineIconCell"
