@@ -35,6 +35,8 @@
 		70A885811E5796BD00823C0F /* SingleLineIconCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70A8857E1E5796BD00823C0F /* SingleLineIconCell.swift */; };
 		70A885821E5796BD00823C0F /* TwoLineIconCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70A8857F1E5796BD00823C0F /* TwoLineIconCell.swift */; };
 		70A885831E5796BD00823C0F /* ThreeLineIconCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70A885801E5796BD00823C0F /* ThreeLineIconCell.swift */; };
+		70A885CF1E57DEB500823C0F /* DataLoadType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70A885CE1E57DEB500823C0F /* DataLoadType.swift */; };
+		70A885D11E57DECE00823C0F /* DataLoaderEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70A885D01E57DECE00823C0F /* DataLoaderEngine.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -79,6 +81,8 @@
 		70A8857E1E5796BD00823C0F /* SingleLineIconCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleLineIconCell.swift; sourceTree = "<group>"; };
 		70A8857F1E5796BD00823C0F /* TwoLineIconCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TwoLineIconCell.swift; sourceTree = "<group>"; };
 		70A885801E5796BD00823C0F /* ThreeLineIconCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreeLineIconCell.swift; sourceTree = "<group>"; };
+		70A885CE1E57DEB500823C0F /* DataLoadType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataLoadType.swift; sourceTree = "<group>"; };
+		70A885D01E57DECE00823C0F /* DataLoaderEngine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataLoaderEngine.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -169,6 +173,8 @@
 			children = (
 				70A884CC1E573FF900823C0F /* DataLoader.swift */,
 				70A884C91E573E3B00823C0F /* CollectionRow.swift */,
+				70A885CE1E57DEB500823C0F /* DataLoadType.swift */,
+				70A885D01E57DECE00823C0F /* DataLoaderEngine.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -361,9 +367,11 @@
 			files = (
 				70A885811E5796BD00823C0F /* SingleLineIconCell.swift in Sources */,
 				70A884CA1E573E3B00823C0F /* CollectionRow.swift in Sources */,
+				70A885CF1E57DEB500823C0F /* DataLoadType.swift in Sources */,
 				70A884D61E574BAC00823C0F /* WeakArray.swift in Sources */,
 				70A885831E5796BD00823C0F /* ThreeLineIconCell.swift in Sources */,
 				70A884D91E575C2A00823C0F /* NotificationCenter.swift in Sources */,
+				70A885D11E57DECE00823C0F /* DataLoaderEngine.swift in Sources */,
 				70A885821E5796BD00823C0F /* TwoLineIconCell.swift in Sources */,
 				70A884311E57373800823C0F /* CollectionLoaderController.swift in Sources */,
 				70A884CF1E57403A00823C0F /* CollectionSearchBar.swift in Sources */,

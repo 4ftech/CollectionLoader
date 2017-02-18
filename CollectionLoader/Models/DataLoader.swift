@@ -12,20 +12,12 @@ import RxSwift
 import BoltsSwift
 import UIScrollView_InfiniteScroll
 
-public enum DataLoadType: Int {
-  case initial, more, clearAndReplace, replace, newRows
-}
-
 enum DataLoaderAction: String {
   case ResultsReceived = "ResultsReceived", FinishedLoading = "FinishedLoading", CRUD = "CRUD"
 }
 
 enum NewRowsPosition {
   case beginning, end
-}
-
-public protocol DataLoaderEngine {
-  func task(forLoadType loadType: DataLoadType) -> Task<NSArray>
 }
 
 protocol DataLoaderDelegate: class {
