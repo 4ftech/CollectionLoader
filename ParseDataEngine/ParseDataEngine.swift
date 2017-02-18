@@ -34,8 +34,21 @@ open class ParseCollectionObject: NSObject, CollectionRow {
 }
 
 public class ParseDataEngine: NSObject, DataLoaderEngine {
+  enum Order {
+    case ascending, descending
+  }
+  
+  var skip: Int = 0
+  
+  public var queryLimit: Int { return 20 }
+
+  var firstRow: PFObject?
+  
   var parseClassName: String?
   var subclassedType: PFObject.Type?
+  
+  var orderBy: String = "name"
+  var order: Order = .ascending
   
   public init(parseClassName: String? = nil, subclassedType: PFObject.Type? = nil) {
     super.init()
@@ -55,14 +68,51 @@ public class ParseDataEngine: NSObject, DataLoaderEngine {
   }
   
   public func task(forLoadType loadType: DataLoadType) -> Task<NSArray> {
+    if loadType == .clearAndReplace {
+      skip = 0
+    }
+    
     let task = TaskCompletionSource<NSArray>()
     
-    query(forLoadType: loadType).findObjectsInBackground().continue({ parseTask in
+    let query: PFQuery = self.query(forLoadType: loadType)
+    query.limit = queryLimit
+
+    switch loadType {
+    case .clearAndReplace,.replace,.initial:
+      skip = 0
+      query.skip = skip
+    case .more:
+      query.skip = skip
+    case .newRows:
+      if let firstOrder = firstRow?[orderBy] {
+        switch order {
+        case .ascending:
+          query.whereKey(orderBy, lessThan: firstOrder)
+        case .descending:
+          query.whereKey(orderBy, greaterThan: firstOrder)
+        }
+      }
+    }
+    
+    switch order {
+    case .ascending:
+      query.order(byAscending: orderBy)
+    case .descending:
+      query.order(byDescending: orderBy)
+    }
+    
+    query.findObjectsInBackground().continue({ parseTask in
       
       if let error = parseTask.error {
         NSLog("Error: \(error)")
         task.set(error: error)
-      } else if let results = parseTask.result as? [PFObject] {
+      } else if let results = parseTask.result as? [PFObject], results.count > 0 {
+        if loadType != .more {
+          self.firstRow = results.first
+        }
+        
+        self.skip += results.count
+        
         if let _ = self.subclassedType {
           // Assume the subclassedType also conforms to CollectionRow
           task.set(result: NSArray(array: results))

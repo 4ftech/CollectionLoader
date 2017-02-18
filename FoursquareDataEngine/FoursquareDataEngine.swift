@@ -25,6 +25,8 @@ public class FoursquareVenueObject: NSObject, CollectionRow {
 }
 
 public class FoursquareDataEngine: NSObject, DataLoaderEngine {
+  public var queryLimit: Int { return 20 }
+
   public func task(forLoadType loadType: DataLoadType) -> Task<NSArray> {
     return Task<NSArray>([FoursquareVenueObject()] as NSArray)
   }

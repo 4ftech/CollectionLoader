@@ -31,6 +31,8 @@ public enum DataLoadType: Int {
 }
 
 public protocol DataLoaderEngine {
+  var queryLimit: Int { get }
+  
   func task(forLoadType loadType: DataLoadType) -> Task<NSArray>
 }
 
@@ -49,7 +51,6 @@ class DataLoader<T: CollectionRow>: NSObject {
   var rowsLoading = false
   var rowsLoaded = false
   var mightHaveMore = true
-  var queryLimit: Int = 20
   var newRowsPosition: NewRowsPosition = .beginning
   
   fileprivate var rows: [T] = []  
@@ -281,7 +282,7 @@ class DataLoader<T: CollectionRow>: NSObject {
         newRows = results
       }
       
-      mightHaveMore = totalResults == queryLimit
+      mightHaveMore = totalResults == dataLoaderEngine.queryLimit
     }
 
     // Optional post-processing
