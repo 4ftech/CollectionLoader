@@ -23,6 +23,7 @@ public class CollectionLoaderController<T: CollectionRow>: UIViewController, Col
   public var collectionViewType: CollectionViewType = .table
   public var emptyViewContent: EmptyViewContent?
   
+  typealias m = LoaderView
   var container: SpringView!
   var scrollView: UIScrollView!
 
@@ -421,7 +422,7 @@ public class CollectionLoaderController<T: CollectionRow>: UIViewController, Col
   
   public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let row = dataLoader.rowsToDisplay[indexPath.row]
-
+    
     let cell = tableView.dequeueReusableCell(withIdentifier: singleLineTableCellIdentifier, for: indexPath) as! SingleLineIconCell
     cell.mainLabel.text = row.name
     

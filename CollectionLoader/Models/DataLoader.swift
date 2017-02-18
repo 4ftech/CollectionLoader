@@ -180,6 +180,10 @@ class DataLoader<T: CollectionRow>: NSObject {
       } else {
         var results: [T] = (task.result as? [T]) ?? []
         
+        for result in results {
+          NSLog("\(result.objectId)")
+        }
+        
         if let fn = self.filterFunction {
           results = results.filter(fn)
         }

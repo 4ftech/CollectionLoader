@@ -35,6 +35,13 @@
 		70A885811E5796BD00823C0F /* SingleLineIconCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70A8857E1E5796BD00823C0F /* SingleLineIconCell.swift */; };
 		70A885821E5796BD00823C0F /* TwoLineIconCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70A8857F1E5796BD00823C0F /* TwoLineIconCell.swift */; };
 		70A885831E5796BD00823C0F /* ThreeLineIconCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70A885801E5796BD00823C0F /* ThreeLineIconCell.swift */; };
+		70A885EF1E57E67200823C0F /* FoursquareDataEngine.h in Headers */ = {isa = PBXBuildFile; fileRef = 70A885ED1E57E67200823C0F /* FoursquareDataEngine.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		70A885F41E57E67E00823C0F /* FoursquareDataEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70A885F31E57E67E00823C0F /* FoursquareDataEngine.swift */; };
+		70A8860C1E57E92500823C0F /* ParseDataEngine.h in Headers */ = {isa = PBXBuildFile; fileRef = 70A8860A1E57E92500823C0F /* ParseDataEngine.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		70A886111E57E93000823C0F /* ParseDataEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70A886101E57E93000823C0F /* ParseDataEngine.swift */; };
+		70A8861E1E57EBFC00823C0F /* BoltsSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 70A884D21E57497000823C0F /* BoltsSwift.framework */; };
+		70A8861F1E57EC0300823C0F /* BoltsSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 70A884D21E57497000823C0F /* BoltsSwift.framework */; };
+		70A886231E57EE8D00823C0F /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 70A886221E57EE8D00823C0F /* Parse.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -79,6 +86,15 @@
 		70A8857E1E5796BD00823C0F /* SingleLineIconCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleLineIconCell.swift; sourceTree = "<group>"; };
 		70A8857F1E5796BD00823C0F /* TwoLineIconCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TwoLineIconCell.swift; sourceTree = "<group>"; };
 		70A885801E5796BD00823C0F /* ThreeLineIconCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreeLineIconCell.swift; sourceTree = "<group>"; };
+		70A885EB1E57E67200823C0F /* FoursquareDataEngine.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FoursquareDataEngine.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		70A885ED1E57E67200823C0F /* FoursquareDataEngine.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FoursquareDataEngine.h; sourceTree = "<group>"; };
+		70A885EE1E57E67200823C0F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		70A885F31E57E67E00823C0F /* FoursquareDataEngine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FoursquareDataEngine.swift; sourceTree = "<group>"; };
+		70A886081E57E92500823C0F /* ParseDataEngine.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ParseDataEngine.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		70A8860A1E57E92500823C0F /* ParseDataEngine.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ParseDataEngine.h; sourceTree = "<group>"; };
+		70A8860B1E57E92500823C0F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		70A886101E57E93000823C0F /* ParseDataEngine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParseDataEngine.swift; sourceTree = "<group>"; };
+		70A886221E57EE8D00823C0F /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Parse.framework; path = Carthage/Build/iOS/Parse.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -103,14 +119,33 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		70A885E71E57E67200823C0F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				70A8861E1E57EBFC00823C0F /* BoltsSwift.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		70A886041E57E92500823C0F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				70A8861F1E57EC0300823C0F /* BoltsSwift.framework in Frameworks */,
+				70A886231E57EE8D00823C0F /* Parse.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		70A8840C1E5736C400823C0F = {
 			isa = PBXGroup;
 			children = (
-				70A884181E5736C400823C0F /* CollectionLoader */,
 				70A884231E5736C400823C0F /* CollectionLoaderTests */,
+				70A884181E5736C400823C0F /* CollectionLoader */,
+				70A885EC1E57E67200823C0F /* FoursquareDataEngine */,
+				70A886091E57E92500823C0F /* ParseDataEngine */,
 				70A884171E5736C400823C0F /* Products */,
 				70A884BF1E573AC300823C0F /* Frameworks */,
 				70A884321E5738CA00823C0F /* Cartfile */,
@@ -122,6 +157,8 @@
 			children = (
 				70A884161E5736C400823C0F /* CollectionLoader.framework */,
 				70A8841F1E5736C400823C0F /* CollectionLoaderTests.xctest */,
+				70A885EB1E57E67200823C0F /* FoursquareDataEngine.framework */,
+				70A886081E57E92500823C0F /* ParseDataEngine.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -154,6 +191,7 @@
 		70A884BF1E573AC300823C0F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				70A886221E57EE8D00823C0F /* Parse.framework */,
 				70A884DE1E576D6700823C0F /* UIScrollView_InfiniteScroll.framework */,
 				70A884D21E57497000823C0F /* BoltsSwift.framework */,
 				70A884C21E573C6800823C0F /* RxBlocking.framework */,
@@ -215,6 +253,26 @@
 			path = Nibs;
 			sourceTree = "<group>";
 		};
+		70A885EC1E57E67200823C0F /* FoursquareDataEngine */ = {
+			isa = PBXGroup;
+			children = (
+				70A885ED1E57E67200823C0F /* FoursquareDataEngine.h */,
+				70A885EE1E57E67200823C0F /* Info.plist */,
+				70A885F31E57E67E00823C0F /* FoursquareDataEngine.swift */,
+			);
+			path = FoursquareDataEngine;
+			sourceTree = "<group>";
+		};
+		70A886091E57E92500823C0F /* ParseDataEngine */ = {
+			isa = PBXGroup;
+			children = (
+				70A8860A1E57E92500823C0F /* ParseDataEngine.h */,
+				70A8860B1E57E92500823C0F /* Info.plist */,
+				70A886101E57E93000823C0F /* ParseDataEngine.swift */,
+			);
+			path = ParseDataEngine;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -223,6 +281,22 @@
 			buildActionMask = 2147483647;
 			files = (
 				70A884271E5736C400823C0F /* CollectionLoader.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		70A885E81E57E67200823C0F /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				70A885EF1E57E67200823C0F /* FoursquareDataEngine.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		70A886051E57E92500823C0F /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				70A8860C1E57E92500823C0F /* ParseDataEngine.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -237,7 +311,6 @@
 				70A884121E5736C400823C0F /* Frameworks */,
 				70A884131E5736C400823C0F /* Headers */,
 				70A884141E5736C400823C0F /* Resources */,
-				70A884BE1E573A5300823C0F /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -266,6 +339,42 @@
 			productReference = 70A8841F1E5736C400823C0F /* CollectionLoaderTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		70A885EA1E57E67200823C0F /* FoursquareDataEngine */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 70A885F21E57E67200823C0F /* Build configuration list for PBXNativeTarget "FoursquareDataEngine" */;
+			buildPhases = (
+				70A885E61E57E67200823C0F /* Sources */,
+				70A885E71E57E67200823C0F /* Frameworks */,
+				70A885E81E57E67200823C0F /* Headers */,
+				70A885E91E57E67200823C0F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = FoursquareDataEngine;
+			productName = FoursquareDataEngine;
+			productReference = 70A885EB1E57E67200823C0F /* FoursquareDataEngine.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		70A886071E57E92500823C0F /* ParseDataEngine */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 70A8860F1E57E92500823C0F /* Build configuration list for PBXNativeTarget "ParseDataEngine" */;
+			buildPhases = (
+				70A886031E57E92500823C0F /* Sources */,
+				70A886041E57E92500823C0F /* Frameworks */,
+				70A886051E57E92500823C0F /* Headers */,
+				70A886061E57E92500823C0F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ParseDataEngine;
+			productName = ParseDataEngine;
+			productReference = 70A886081E57E92500823C0F /* ParseDataEngine.framework */;
+			productType = "com.apple.product-type.framework";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -287,6 +396,18 @@
 						DevelopmentTeam = M68244X38L;
 						ProvisioningStyle = Automatic;
 					};
+					70A885EA1E57E67200823C0F = {
+						CreatedOnToolsVersion = 8.2.1;
+						DevelopmentTeam = M68244X38L;
+						LastSwiftMigration = 0820;
+						ProvisioningStyle = Automatic;
+					};
+					70A886071E57E92500823C0F = {
+						CreatedOnToolsVersion = 8.2.1;
+						DevelopmentTeam = M68244X38L;
+						LastSwiftMigration = 0820;
+						ProvisioningStyle = Automatic;
+					};
 				};
 			};
 			buildConfigurationList = 70A884101E5736C400823C0F /* Build configuration list for PBXProject "CollectionLoader" */;
@@ -304,6 +425,8 @@
 			targets = (
 				70A884151E5736C400823C0F /* CollectionLoader */,
 				70A8841E1E5736C400823C0F /* CollectionLoaderTests */,
+				70A885EA1E57E67200823C0F /* FoursquareDataEngine */,
+				70A886071E57E92500823C0F /* ParseDataEngine */,
 			);
 		};
 /* End PBXProject section */
@@ -330,29 +453,21 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-/* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		70A884BE1E573A5300823C0F /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
+		70A885E91E57E67200823C0F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputPaths = (
-				"$(SRCROOT)/Carthage/Build/iOS/Spring.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/RxSwift.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/RxCocoa.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/RxBlocking.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/BoltsSwift.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/UIScrollView_InfiniteScroll.framework",
-			);
-			outputPaths = (
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		70A886061E57E92500823C0F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "/usr/local/bin/carthage copy-frameworks";
 		};
-/* End PBXShellScriptBuildPhase section */
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		70A884111E5736C400823C0F /* Sources */ = {
@@ -379,6 +494,22 @@
 			buildActionMask = 2147483647;
 			files = (
 				70A884251E5736C400823C0F /* CollectionLoaderTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		70A885E61E57E67200823C0F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				70A885F41E57E67E00823C0F /* FoursquareDataEngine.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		70A886031E57E92500823C0F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				70A886111E57E93000823C0F /* ParseDataEngine.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -569,6 +700,104 @@
 			};
 			name = Release;
 		};
+		70A885F01E57E67200823C0F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "";
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = M68244X38L;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
+				INFOPLIST_FILE = FoursquareDataEngine/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.oinkist.CollectionLoader.FoursquareDataEngine;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Debug;
+		};
+		70A885F11E57E67200823C0F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "";
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = M68244X38L;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
+				INFOPLIST_FILE = FoursquareDataEngine/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.oinkist.CollectionLoader.FoursquareDataEngine;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 3.0;
+			};
+			name = Release;
+		};
+		70A8860D1E57E92500823C0F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "";
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = M68244X38L;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
+				INFOPLIST_FILE = ParseDataEngine/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.oinkist.CollectionLoader.ParseDataEngine;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Debug;
+		};
+		70A8860E1E57E92500823C0F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "";
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = M68244X38L;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
+				INFOPLIST_FILE = ParseDataEngine/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.oinkist.CollectionLoader.ParseDataEngine;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 3.0;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -595,6 +824,24 @@
 			buildConfigurations = (
 				70A8842E1E5736C400823C0F /* Debug */,
 				70A8842F1E5736C400823C0F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		70A885F21E57E67200823C0F /* Build configuration list for PBXNativeTarget "FoursquareDataEngine" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				70A885F01E57E67200823C0F /* Debug */,
+				70A885F11E57E67200823C0F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		70A8860F1E57E92500823C0F /* Build configuration list for PBXNativeTarget "ParseDataEngine" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				70A8860D1E57E92500823C0F /* Debug */,
+				70A8860E1E57E92500823C0F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

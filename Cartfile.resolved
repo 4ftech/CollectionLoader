@@ -1,4 +1,6 @@
+github "BoltsFramework/Bolts-ObjC" "1.8.4"
 github "BoltsFramework/Bolts-Swift" "1.3.0"
 github "MengTo/Spring" "3a9227c6e9157e7b47f5ac1ee5abab2a56b50002"
+github "ParsePlatform/Parse-SDK-iOS-OSX" "1.14.2"
 github "ReactiveX/RxSwift" "3.2.0"
 github "pronebird/UIScrollView-InfiniteScroll" "1.0.0"

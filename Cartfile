@@ -4,3 +4,7 @@ github "ReactiveX/RxSwift" ~> 3.0
 
 github "MengTo/Spring" "swift3"
 github "pronebird/UIScrollView-InfiniteScroll"
+
+
+
+github "ParsePlatform/Parse-SDK-iOS-OSX"
