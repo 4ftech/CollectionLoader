@@ -26,6 +26,14 @@ protocol DataLoaderDelegate: class {
   func didRemoveRowAtIndex(_ index: Int)
 }
 
+public enum DataLoadType: Int {
+  case initial, more, clearAndReplace, replace, newRows
+}
+
+public protocol DataLoaderEngine {
+  func task(forLoadType loadType: DataLoadType) -> Task<NSArray>
+}
+
 class DataLoader<T: CollectionRow>: NSObject {
   deinit {
     NSLog("deinit: \(type(of: self))")
