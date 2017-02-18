@@ -36,7 +36,7 @@
 		70A885821E5796BD00823C0F /* TwoLineIconCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70A8857F1E5796BD00823C0F /* TwoLineIconCell.swift */; };
 		70A885831E5796BD00823C0F /* ThreeLineIconCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70A885801E5796BD00823C0F /* ThreeLineIconCell.swift */; };
 		70A885CF1E57DEB500823C0F /* DataLoadType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70A885CE1E57DEB500823C0F /* DataLoadType.swift */; };
-		70A885D11E57DECE00823C0F /* DataLoaderEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70A885D01E57DECE00823C0F /* DataLoaderEngine.swift */; };
+		70A885D71E57E0A700823C0F /* DataLoaderEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70A885D01E57DECE00823C0F /* DataLoaderEngine.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -371,7 +371,7 @@
 				70A884D61E574BAC00823C0F /* WeakArray.swift in Sources */,
 				70A885831E5796BD00823C0F /* ThreeLineIconCell.swift in Sources */,
 				70A884D91E575C2A00823C0F /* NotificationCenter.swift in Sources */,
-				70A885D11E57DECE00823C0F /* DataLoaderEngine.swift in Sources */,
+				70A885D71E57E0A700823C0F /* DataLoaderEngine.swift in Sources */,
 				70A885821E5796BD00823C0F /* TwoLineIconCell.swift in Sources */,
 				70A884311E57373800823C0F /* CollectionLoaderController.swift in Sources */,
 				70A884CF1E57403A00823C0F /* CollectionSearchBar.swift in Sources */,
