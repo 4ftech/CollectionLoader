@@ -42,6 +42,9 @@
 		70A8861E1E57EBFC00823C0F /* BoltsSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 70A884D21E57497000823C0F /* BoltsSwift.framework */; };
 		70A8861F1E57EC0300823C0F /* BoltsSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 70A884D21E57497000823C0F /* BoltsSwift.framework */; };
 		70A886231E57EE8D00823C0F /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 70A886221E57EE8D00823C0F /* Parse.framework */; };
+		70A886291E5822B700823C0F /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70A886281E5822B700823C0F /* UIView.swift */; };
+		70A8862B1E58A62D00823C0F /* CollectionLoader.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 70A884161E5736C400823C0F /* CollectionLoader.framework */; };
+		70A8862C1E58A63300823C0F /* CollectionLoader.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 70A884161E5736C400823C0F /* CollectionLoader.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -95,6 +98,7 @@
 		70A8860B1E57E92500823C0F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		70A886101E57E93000823C0F /* ParseDataEngine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParseDataEngine.swift; sourceTree = "<group>"; };
 		70A886221E57EE8D00823C0F /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Parse.framework; path = Carthage/Build/iOS/Parse.framework; sourceTree = "<group>"; };
+		70A886281E5822B700823C0F /* UIView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -123,6 +127,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				70A8862B1E58A62D00823C0F /* CollectionLoader.framework in Frameworks */,
 				70A8861E1E57EBFC00823C0F /* BoltsSwift.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -131,6 +136,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				70A8862C1E58A63300823C0F /* CollectionLoader.framework in Frameworks */,
 				70A8861F1E57EC0300823C0F /* BoltsSwift.framework in Frameworks */,
 				70A886231E57EE8D00823C0F /* Parse.framework in Frameworks */,
 			);
@@ -237,6 +243,7 @@
 			children = (
 				70A884D81E575C2A00823C0F /* NotificationCenter.swift */,
 				70A884DC1E5762F000823C0F /* UITableView.swift */,
+				70A886281E5822B700823C0F /* UIView.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -311,6 +318,7 @@
 				70A884121E5736C400823C0F /* Frameworks */,
 				70A884131E5736C400823C0F /* Headers */,
 				70A884141E5736C400823C0F /* Resources */,
+				70A8862A1E5829AE00823C0F /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -347,6 +355,7 @@
 				70A885E71E57E67200823C0F /* Frameworks */,
 				70A885E81E57E67200823C0F /* Headers */,
 				70A885E91E57E67200823C0F /* Resources */,
+				70A8862D1E58A6FC00823C0F /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -365,6 +374,7 @@
 				70A886041E57E92500823C0F /* Frameworks */,
 				70A886051E57E92500823C0F /* Headers */,
 				70A886061E57E92500823C0F /* Resources */,
+				70A8862E1E58A73500823C0F /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -469,11 +479,63 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		70A8862A1E5829AE00823C0F /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 12;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/Carthage/Build/iOS/UIScrollView_InfiniteScroll.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/Spring.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/BoltsSwift.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/RxCocoa.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/RxSwift.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/RxBlocking.framework",
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "carthage copy-frameworks";
+		};
+		70A8862D1E58A6FC00823C0F /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/Carthage/Build/iOS/BoltsSwift.framework",
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "carthage copy-frameworks";
+		};
+		70A8862E1E58A73500823C0F /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/Carthage/Build/iOS/Parse.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/BoltsSwift.framework",
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "carthage copy-frameworks";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		70A884111E5736C400823C0F /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				70A886291E5822B700823C0F /* UIView.swift in Sources */,
 				70A885811E5796BD00823C0F /* SingleLineIconCell.swift in Sources */,
 				70A884CA1E573E3B00823C0F /* CollectionRow.swift in Sources */,
 				70A884D61E574BAC00823C0F /* WeakArray.swift in Sources */,

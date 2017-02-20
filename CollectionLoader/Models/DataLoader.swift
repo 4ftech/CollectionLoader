@@ -24,6 +24,7 @@ protocol DataLoaderDelegate: class {
   func didInsertRowAtIndex(_ index: Int)
   func didUpdateRowAtIndex(_ index: Int)
   func didRemoveRowAtIndex(_ index: Int)
+  func didClearRows()
 }
 
 public enum DataLoadType: Int {
@@ -31,9 +32,10 @@ public enum DataLoadType: Int {
 }
 
 public protocol DataLoaderEngine {
+  
   var queryLimit: Int { get }
   
-  func task(forLoadType loadType: DataLoadType) -> Task<NSArray>
+  func task(forLoadType loadType: DataLoadType, queryString: String?) -> Task<NSArray>
 }
 
 class DataLoader<T: CollectionRow>: NSObject {
@@ -53,9 +55,26 @@ class DataLoader<T: CollectionRow>: NSObject {
   var mightHaveMore = true
   var newRowsPosition: NewRowsPosition = .beginning
   
-  fileprivate var rows: [T] = []  
+  //  var searchFilter: (String) -> ((T) -> Bool) = { queryString in
+  //    return { object in
+  //      if let name = object.name {
+  //        return name.lowercased().contains(queryString.lowercased())
+  //      } else {
+  //        return false
+  //      }
+  //    }
+  //  }
+  //  
+  fileprivate var rows: [T] = []
   var isEmpty: Bool { return rows.count == 0 }
+  
+  var searchQueryString: String? = nil
+
   var rowsToDisplay: [T] {
+    //    if let queryString = searchQueryString, !queryString.isEmpty {
+    //      return rows.filter(searchFilter(queryString))
+    //    }
+    //
     return rows
   }
 
@@ -131,11 +150,17 @@ class DataLoader<T: CollectionRow>: NSObject {
     }
   }
 
-  // MARK: - Data
+  // MARK: - Get Data
+  func searchByString(_ string: String?) {
+    searchQueryString = string
+    loadRows(loadType: .clearAndReplace)
+  }
+  
   fileprivate func clear() {
     rows = []
     rowsLoaded = false
     mightHaveMore = true
+    delegate?.didClearRows()
   }
   
   @discardableResult
@@ -167,7 +192,7 @@ class DataLoader<T: CollectionRow>: NSObject {
     cancellationToken = thisCancellationToken
     
     NSLog("Will execute: \(loadType)")
-    return dataLoaderEngine.task(forLoadType: loadType).continueWithTask(Executor.mainThread, continuation: { task in
+    return dataLoaderEngine.task(forLoadType: loadType, queryString: searchQueryString).continueWithTask(Executor.mainThread, continuation: { task in
       self.rowsLoading = false
       
       if thisCancellationToken.isCancelled {

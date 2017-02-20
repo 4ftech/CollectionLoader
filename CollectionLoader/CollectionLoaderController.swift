@@ -11,11 +11,56 @@ import Spring
 import RxSwift
 import UIScrollView_InfiniteScroll
 
+public class CellType: NSObject {
+  var identifier: String!
+  var nib: UINib!
+  
+  public required init(identifier: String, nib: UINib) {
+    super.init()
+    
+    self.identifier = identifier
+    self.nib = nib
+  }
+}
+
+public protocol CellAdapter {
+  associatedtype T: CollectionRow
+  
+  init()
+  var cellTypes: [CellType] { get }
+  func cellIdentifier(forRow row: T) -> String
+  func apply(row: T, toCell cell: UITableViewCell)
+  func didTapCell(forRow row: T)
+}
+
+open class SingleLineIconCellAdapter<T: CollectionRow>: CellAdapter {
+  required public init() {
+    
+  }
+  
+  open var cellTypes: [CellType] {
+    return [CellType(identifier: "singleLineIconCell", nib: UINib(nibName: "SingleLineIconCell", bundle: Bundle(identifier: "com.oinkist.CollectionLoader")))]
+  }
+  
+  open func cellIdentifier(forRow row: T) -> String {
+    return "singleLineIconCell"
+  }
+  
+  open func apply(row: T, toCell cell: UITableViewCell) {
+    let singleLineIconCell = cell as! SingleLineIconCell
+    singleLineIconCell.mainLabel.text = row.name
+  }
+  
+  open func didTapCell(forRow row: T) {
+
+  }
+}
+
 public enum CollectionViewType {
   case table, collection
 }
 
-public class CollectionLoaderController<T: CollectionRow>: UIViewController, CollectionSearchBarDelegate, UITableViewDelegate, UITableViewDataSource, DataLoaderDelegate {
+public class CollectionLoaderController<A: CellAdapter>: UIViewController, CollectionSearchBarDelegate, UITableViewDelegate, UITableViewDataSource, DataLoaderDelegate {
   let singleLineTableCellIdentifier = "singleLineIconCell"
   let twoLineTableCellIdentifier = "twoLineIconCell"
   let threeLineTableCellIdentifier = "threeLineIconCell"
@@ -31,15 +76,11 @@ public class CollectionLoaderController<T: CollectionRow>: UIViewController, Col
   var pullToRefresh: Bool = true
   var refreshControl: UIRefreshControl?
   
-  // Search
-  var allowSearch: Bool = false
-  var searchBar: CollectionSearchBar?
+  var cellAdapter: A!
   
-  var searchFilter: (String) -> ((T) -> Bool) = { queryString in
-    return { object in
-      return object.name?.contains(queryString) ?? false
-    }
-  }
+  // Search
+  public var allowSearch: Bool = false
+  var searchBar: CollectionSearchBar?
   
   // Insets
   var topInset: CGFloat {
@@ -54,7 +95,7 @@ public class CollectionLoaderController<T: CollectionRow>: UIViewController, Col
   
   // DATA
   var collectionInitialized = false
-  var dataLoader: DataLoader<T>!
+  var dataLoader: DataLoader<A.T>!
   var disposeBag: DisposeBag = DisposeBag()
 
   var refreshOnAppear: DataLoadType? = .newRows
@@ -63,7 +104,8 @@ public class CollectionLoaderController<T: CollectionRow>: UIViewController, Col
   required public init(dataLoaderEngine: DataLoaderEngine) {
     super.init(nibName: nil, bundle: nil)
     
-    self.dataLoader = DataLoader<T>(dataLoaderEngine: dataLoaderEngine)
+    self.dataLoader = DataLoader<A.T>(dataLoaderEngine: dataLoaderEngine)
+    self.dataLoader.delegate = self
   }
   
   required public init?(coder aDecoder: NSCoder) {
@@ -76,9 +118,13 @@ public class CollectionLoaderController<T: CollectionRow>: UIViewController, Col
 
     edgesForExtendedLayout = []
     extendedLayoutIncludesOpaqueBars = false
+
+    // Cell Adapter
+    cellAdapter = A()
     
     // Add Container and ScrollView
     container = SpringView()
+    container.alpha = 0
     Utils.fillContainer(view, withView: container)
     
     switch collectionViewType {
@@ -101,12 +147,8 @@ public class CollectionLoaderController<T: CollectionRow>: UIViewController, Col
     
     // Loader
     loaderView = LoaderView.newInstance(content: emptyViewContent)
-    Utils.fillContainer(view, withView: loaderView)
+    Utils.fillContainer(view, withView: loaderView, edgeInsets: UIEdgeInsets(top: topInset, left: 0, bottom: 0, right: 0))
     
-    // Table
-    container.autohide = true
-    container.autostart = false
-
     // ScrollView
     scrollView.alwaysBounceVertical = true
     scrollView.showsVerticalScrollIndicator = false
@@ -130,12 +172,16 @@ public class CollectionLoaderController<T: CollectionRow>: UIViewController, Col
     if allowSearch {
       searchBar = CollectionSearchBar.newInstance()
       searchBar?.delegate = self
-      searchBar?.isHidden = dataLoader.isEmpty
+      searchBar?.isHidden = false
       Utils.addView(searchBar!, toContainer: container, onEdge: .top)
       
       NotificationCenter.default.addObserver(self, selector: #selector(searchKeyboardDidShow(_:)), name: Notification.Name.UIKeyboardDidShow, object: nil)
       NotificationCenter.default.addObserver(self, selector: #selector(searchKeyboardWillHide(_:)), name: Notification.Name.UIKeyboardWillHide, object: nil)
     }
+    
+    // Table
+    //    container.autohide = true
+    //    container.autostart = false
     
     // OK GO
     if !dataLoader.rowsLoaded && !dataLoader.rowsLoading {
@@ -189,11 +235,10 @@ public class CollectionLoaderController<T: CollectionRow>: UIViewController, Col
       break
     case .table:
       let tableView = scrollView as! UITableView
-      
-      let bundle = Bundle(identifier: "com.oinkist.CollectionLoader")
-      tableView.register(UINib(nibName: "SingleLineIconCell", bundle: bundle), forCellReuseIdentifier: singleLineTableCellIdentifier)
-      tableView.register(UINib(nibName: "TwoLineIconCell", bundle: bundle), forCellReuseIdentifier: twoLineTableCellIdentifier)
-      tableView.register(UINib(nibName: "ThreeLineIconCell", bundle: bundle), forCellReuseIdentifier: threeLineTableCellIdentifier)
+
+      for cellType in cellAdapter.cellTypes {
+        tableView.register(cellType.nib, forCellReuseIdentifier: cellType.identifier)
+      }
     }
   }
 
@@ -205,11 +250,6 @@ public class CollectionLoaderController<T: CollectionRow>: UIViewController, Col
     }
     
     dataLoader.loadRows(loadType: loadType)
-    
-    // If .clearAndReplace, dataLoader.loadRows already cleared all rows
-    if loadType == .clearAndReplace {
-      refreshScrollView()
-    }
 
     switch loadType {
     case .more, .newRows:
@@ -327,7 +367,7 @@ public class CollectionLoaderController<T: CollectionRow>: UIViewController, Col
   
   // MARK: - Manipulating data
   func didUpdateRowDataUI() {
-    searchBar?.isHidden = dataLoader.isEmpty
+    // searchBar?.isHidden = dataLoader.isEmpty
     checkEmpty()
   }
   
@@ -377,7 +417,12 @@ public class CollectionLoaderController<T: CollectionRow>: UIViewController, Col
       }, completion: rowCRUDCompletion)
     }    
   }
-
+  
+  func didClearRows() {
+    refreshScrollView()
+    loaderView.showSpinner()
+  }
+  
   // MARK: - Displaying results
   func initialDisplay() {
     container.animation = "fadeIn"
@@ -408,7 +453,7 @@ public class CollectionLoaderController<T: CollectionRow>: UIViewController, Col
   
   // MARK: - CollectionSearchBarDelegate
   func searchBarTextDidChange(_ searchBar: CollectionSearchBar) {
-    refreshScrollView()
+    dataLoader.searchByString(searchBar.text)
   }
 
   // MARK: - UITableView
@@ -421,11 +466,18 @@ public class CollectionLoaderController<T: CollectionRow>: UIViewController, Col
   }
   
   public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    let row = dataLoader.rowsToDisplay[indexPath.row]
+    let row = dataLoader.rowsToDisplay[indexPath.row] 
     
-    let cell = tableView.dequeueReusableCell(withIdentifier: singleLineTableCellIdentifier, for: indexPath) as! SingleLineIconCell
-    cell.mainLabel.text = row.name
+    let identifier = cellAdapter.cellIdentifier(forRow: row)
+    
+    let cell = tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath)
+    cellAdapter.apply(row: row, toCell: cell)
     
     return cell
+  }
+  
+  public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    let row = dataLoader.rowsToDisplay[indexPath.row]
+    cellAdapter.didTapCell(forRow: row)
   }
 }

@@ -47,6 +47,7 @@ public class ParseDataEngine: NSObject, DataLoaderEngine {
   var parseClassName: String?
   var subclassedType: PFObject.Type?
   
+  var searchKey: String = "name"
   var orderBy: String = "name"
   var order: Order = .ascending
   
@@ -57,24 +58,31 @@ public class ParseDataEngine: NSObject, DataLoaderEngine {
     self.subclassedType = subclassedType
   }
   
-  func query(forLoadType loadType: DataLoadType) -> PFQuery<PFObject> {
+  func query(forLoadType loadType: DataLoadType, queryString: String?) -> PFQuery<PFObject> {
+    var query: PFQuery<PFObject>!
     if let parseClassName = parseClassName {
-      return PFQuery<PFObject>(className: parseClassName)
+      query = PFQuery<PFObject>(className: parseClassName)
     } else if let subclassedType = subclassedType {
-      return subclassedType.query()!
+      query = subclassedType.query()!
     } else {
-      return PFQuery()
+      query = PFQuery()
     }
+    
+    if let queryString = queryString, !queryString.isEmpty {
+      query.whereKey(searchKey, matchesRegex: queryString, modifiers: "i")
+    }
+    
+    return query
   }
   
-  public func task(forLoadType loadType: DataLoadType) -> Task<NSArray> {
+  public func task(forLoadType loadType: DataLoadType, queryString: String?) -> Task<NSArray> {
     if loadType == .clearAndReplace {
       skip = 0
     }
     
     let task = TaskCompletionSource<NSArray>()
     
-    let query: PFQuery = self.query(forLoadType: loadType)
+    let query: PFQuery = self.query(forLoadType: loadType, queryString: queryString)
     query.limit = queryLimit
 
     switch loadType {

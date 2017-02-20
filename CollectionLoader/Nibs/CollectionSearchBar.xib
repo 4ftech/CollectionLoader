@@ -11,7 +11,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <view contentMode="scaleToFill" id="gDr-mZ-scr" customClass="TableSearchBar" customModule="CollectionLoader" customModuleProvider="target">
+        <view contentMode="scaleToFill" id="gDr-mZ-scr" customClass="CollectionSearchBar" customModule="CollectionLoader" customModuleProvider="target">
             <rect key="frame" x="0.0" y="0.0" width="600" height="44"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
