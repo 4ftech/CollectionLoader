@@ -9,8 +9,8 @@
 
 import Foundation
 import RxSwift
-import BoltsSwift
 import UIScrollView_InfiniteScroll
+import PromiseKit
 
 enum DataLoaderAction: String {
   case ResultsReceived = "ResultsReceived", FinishedLoading = "FinishedLoading", CRUD = "CRUD"
@@ -32,13 +32,15 @@ public enum DataLoadType: Int {
 }
 
 public protocol DataLoaderEngine {
+  associatedtype T: CollectionRow
   
   var queryLimit: Int { get }
-  
-  func task(forLoadType loadType: DataLoadType, queryString: String?) -> Task<NSArray>
+  func promise(forLoadType loadType: DataLoadType, queryString: String?) -> Promise<[T]>
 }
 
-public class DataLoader<T: CollectionRow>: NSObject {
+public class DataLoader<EngineType: DataLoaderEngine>: NSObject {
+  typealias T = EngineType.T
+  
   deinit {
     NSLog("deinit: \(type(of: self))")
   }
@@ -96,7 +98,7 @@ public class DataLoader<T: CollectionRow>: NSObject {
   }
   
   var cancellationToken: Operation?
-  var dataLoaderEngine: DataLoaderEngine!
+  var dataLoaderEngine: EngineType!
   
   var filterFunction: ((T) -> Bool)? = nil
   var sortFunction: ((T, T) -> Bool)? = nil
@@ -104,9 +106,12 @@ public class DataLoader<T: CollectionRow>: NSObject {
   // MARK: - Initialize
   required override public init() {
     super.init()
+    
   }
   
-  init(dataLoaderEngine: DataLoaderEngine) {
+  convenience init(dataLoaderEngine: EngineType) {
+    self.init()
+    
     self.dataLoaderEngine = dataLoaderEngine
   }
   
@@ -164,7 +169,7 @@ public class DataLoader<T: CollectionRow>: NSObject {
   }
   
   @discardableResult
-  func loadRows(loadType: DataLoadType) -> Task<NSArray>? {
+  func loadRows(loadType: DataLoadType) -> Promise<[T]>? {
     if rowsLoading && loadType != .clearAndReplace {
       return nil
     }
@@ -176,10 +181,10 @@ public class DataLoader<T: CollectionRow>: NSObject {
     error = nil
     rowsLoading = true
     
-    return runTask(forLoadType: loadType)
+    return fetchData(forLoadType: loadType)
   }
   
-  func runTask(forLoadType loadType: DataLoadType) -> Task<NSArray> {
+  func fetchData(forLoadType loadType: DataLoadType) -> Promise<[T]> {
     var updateTimes: [T:Date] = [:]
     for row in rows {
       if let updatedAt = row.updatedAt {
@@ -192,38 +197,32 @@ public class DataLoader<T: CollectionRow>: NSObject {
     cancellationToken = thisCancellationToken
     
     NSLog("Will execute: \(loadType)")
-    return dataLoaderEngine.task(forLoadType: loadType, queryString: searchQueryString).continueWithTask(Executor.mainThread, continuation: { task in
+    return dataLoaderEngine.promise(forLoadType: loadType, queryString: searchQueryString).always {
       self.rowsLoading = false
-      
+    }.then { results in
       if thisCancellationToken.isCancelled {
-        return task
-      } else if let error = task.error as? NSError {
-        NSLog("error: \(task.error)")
-        
-        self.error = error
-
-        return task
-      } else {
-        var results: [T] = (task.result as? [T]) ?? []
-        
-        for result in results {
-          NSLog("\(result.objectId)")
-        }
-        
-        if let fn = self.filterFunction {
-          results = results.filter(fn)
-        }
-
-        NotificationCenter.default.post(
-          name: Notification.Name(rawValue: self.notificationNameForAction(.ResultsReceived)),
-          object: self.notificationSenderObject,
-          userInfo: self.userInfoForResults(results, loadType: loadType))
-        
-        self.handleResults(results, loadType: loadType)
-        
-        return Task<NSArray>(results as NSArray)
+        return Promise(error: NSError.cancelledError())
       }
-    })
+      
+      var results = results
+      for result in results {
+        NSLog("\(result.objectId)")
+      }
+      
+      if let fn = self.filterFunction {
+        results = results.filter(fn)
+      }
+      
+      NotificationCenter.default.post(
+        name: Notification.Name(rawValue: self.notificationNameForAction(.ResultsReceived)),
+        object: self.notificationSenderObject,
+        userInfo: self.userInfoForResults(results, loadType: loadType))
+      
+      self.handleResults(results, loadType: loadType)
+      
+      return Promise(value: results)
+    }
+  
   }
 
   fileprivate func handleResults(_ queryResults: [T], loadType: DataLoadType) {

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		705D2DBC1E5F3B37005D3A5F /* PromiseKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 705D2DBB1E5F3B37005D3A5F /* PromiseKit.framework */; };
 		70A884201E5736C400823C0F /* CollectionLoader.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 70A884161E5736C400823C0F /* CollectionLoader.framework */; };
 		70A884251E5736C400823C0F /* CollectionLoaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70A884241E5736C400823C0F /* CollectionLoaderTests.swift */; };
 		70A884271E5736C400823C0F /* CollectionLoader.h in Headers */ = {isa = PBXBuildFile; fileRef = 70A884191E5736C400823C0F /* CollectionLoader.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -20,7 +21,6 @@
 		70A884CD1E573FF900823C0F /* DataLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70A884CC1E573FF900823C0F /* DataLoader.swift */; };
 		70A884CF1E57403A00823C0F /* CollectionSearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70A884CE1E57403A00823C0F /* CollectionSearchBar.swift */; };
 		70A884D11E57404B00823C0F /* LoaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70A884D01E57404B00823C0F /* LoaderView.swift */; };
-		70A884D31E57497000823C0F /* BoltsSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 70A884D21E57497000823C0F /* BoltsSwift.framework */; };
 		70A884D61E574BAC00823C0F /* WeakArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70A884D51E574BAC00823C0F /* WeakArray.swift */; };
 		70A884D91E575C2A00823C0F /* NotificationCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70A884D81E575C2A00823C0F /* NotificationCenter.swift */; };
 		70A884DB1E575FED00823C0F /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70A884DA1E575FED00823C0F /* Utils.swift */; };
@@ -39,8 +39,6 @@
 		70A885F41E57E67E00823C0F /* FoursquareDataEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70A885F31E57E67E00823C0F /* FoursquareDataEngine.swift */; };
 		70A8860C1E57E92500823C0F /* ParseDataEngine.h in Headers */ = {isa = PBXBuildFile; fileRef = 70A8860A1E57E92500823C0F /* ParseDataEngine.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		70A886111E57E93000823C0F /* ParseDataEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70A886101E57E93000823C0F /* ParseDataEngine.swift */; };
-		70A8861E1E57EBFC00823C0F /* BoltsSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 70A884D21E57497000823C0F /* BoltsSwift.framework */; };
-		70A8861F1E57EC0300823C0F /* BoltsSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 70A884D21E57497000823C0F /* BoltsSwift.framework */; };
 		70A886231E57EE8D00823C0F /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 70A886221E57EE8D00823C0F /* Parse.framework */; };
 		70A886291E5822B700823C0F /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70A886281E5822B700823C0F /* UIView.swift */; };
 		70A8862B1E58A62D00823C0F /* CollectionLoader.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 70A884161E5736C400823C0F /* CollectionLoader.framework */; };
@@ -58,6 +56,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		705D2DBB1E5F3B37005D3A5F /* PromiseKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PromiseKit.framework; path = Carthage/Build/iOS/PromiseKit.framework; sourceTree = "<group>"; };
 		70A884161E5736C400823C0F /* CollectionLoader.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CollectionLoader.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		70A884191E5736C400823C0F /* CollectionLoader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CollectionLoader.h; sourceTree = "<group>"; };
 		70A8841A1E5736C400823C0F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -74,7 +73,6 @@
 		70A884CC1E573FF900823C0F /* DataLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataLoader.swift; sourceTree = "<group>"; };
 		70A884CE1E57403A00823C0F /* CollectionSearchBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionSearchBar.swift; sourceTree = "<group>"; };
 		70A884D01E57404B00823C0F /* LoaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoaderView.swift; sourceTree = "<group>"; };
-		70A884D21E57497000823C0F /* BoltsSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BoltsSwift.framework; path = Carthage/Build/iOS/BoltsSwift.framework; sourceTree = "<group>"; };
 		70A884D51E574BAC00823C0F /* WeakArray.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeakArray.swift; sourceTree = "<group>"; };
 		70A884D81E575C2A00823C0F /* NotificationCenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationCenter.swift; sourceTree = "<group>"; };
 		70A884DA1E575FED00823C0F /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
@@ -111,7 +109,7 @@
 				70A884C51E573C6800823C0F /* RxBlocking.framework in Frameworks */,
 				70A884C61E573C6800823C0F /* RxCocoa.framework in Frameworks */,
 				70A884C71E573C6800823C0F /* RxSwift.framework in Frameworks */,
-				70A884D31E57497000823C0F /* BoltsSwift.framework in Frameworks */,
+				705D2DBC1E5F3B37005D3A5F /* PromiseKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -128,7 +126,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				70A8862B1E58A62D00823C0F /* CollectionLoader.framework in Frameworks */,
-				70A8861E1E57EBFC00823C0F /* BoltsSwift.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -137,7 +134,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				70A8862C1E58A63300823C0F /* CollectionLoader.framework in Frameworks */,
-				70A8861F1E57EC0300823C0F /* BoltsSwift.framework in Frameworks */,
 				70A886231E57EE8D00823C0F /* Parse.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -197,9 +193,9 @@
 		70A884BF1E573AC300823C0F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				705D2DBB1E5F3B37005D3A5F /* PromiseKit.framework */,
 				70A886221E57EE8D00823C0F /* Parse.framework */,
 				70A884DE1E576D6700823C0F /* UIScrollView_InfiniteScroll.framework */,
-				70A884D21E57497000823C0F /* BoltsSwift.framework */,
 				70A884C21E573C6800823C0F /* RxBlocking.framework */,
 				70A884C31E573C6800823C0F /* RxCocoa.framework */,
 				70A884C41E573C6800823C0F /* RxSwift.framework */,
@@ -488,10 +484,10 @@
 			inputPaths = (
 				"$(SRCROOT)/Carthage/Build/iOS/UIScrollView_InfiniteScroll.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/Spring.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/BoltsSwift.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/RxCocoa.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/RxSwift.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/RxBlocking.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/PromiseKit.framework",
 			);
 			outputPaths = (
 			);
@@ -505,7 +501,6 @@
 			files = (
 			);
 			inputPaths = (
-				"$(SRCROOT)/Carthage/Build/iOS/BoltsSwift.framework",
 			);
 			outputPaths = (
 			);
@@ -520,7 +515,6 @@
 			);
 			inputPaths = (
 				"$(SRCROOT)/Carthage/Build/iOS/Parse.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/BoltsSwift.framework",
 			);
 			outputPaths = (
 			);

@@ -8,65 +8,27 @@
 
 import Foundation
 import CollectionLoader
-import BoltsSwift
+import PromiseKit
 import Parse
 
-open class ParseCollectionObject: NSObject, CollectionRow {
-  var parseObject: PFObject?
-  
-  public init(parseObject: PFObject) {
-    super.init()
-    
-    self.parseObject = parseObject
-  }
-  
-  open var objectId: String? {
-    return parseObject?.objectId
-  }
-  
-  public var updatedAt: Date? {
-    return parseObject?.updatedAt
-  }
-  
-  open var name: String? {
-    return parseObject?["name"] as? String
-  }
+enum ParseQueryOrder {
+  case ascending, descending
 }
 
-public class ParseDataEngine: NSObject, DataLoaderEngine {
-  enum Order {
-    case ascending, descending
-  }
-  
+public class ParseDataEngine<T>: NSObject, DataLoaderEngine where T: PFObject, T: CollectionRow {
+
   var skip: Int = 0
   
   public var queryLimit: Int { return 20 }
 
   var firstRow: PFObject?
   
-  var parseClassName: String?
-  var subclassedType: PFObject.Type?
-  
   var searchKey: String = "name"
   var orderBy: String = "name"
-  var order: Order = .ascending
-  
-  public init(parseClassName: String? = nil, subclassedType: PFObject.Type? = nil) {
-    super.init()
-    
-    self.parseClassName = parseClassName
-    self.subclassedType = subclassedType
-  }
+  var order: ParseQueryOrder = .ascending
   
   func query(forLoadType loadType: DataLoadType, queryString: String?) -> PFQuery<PFObject> {
-    var query: PFQuery<PFObject>!
-    if let parseClassName = parseClassName {
-      query = PFQuery<PFObject>(className: parseClassName)
-    } else if let subclassedType = subclassedType {
-      query = subclassedType.query()!
-    } else {
-      query = PFQuery()
-    }
+    let query: PFQuery<PFObject> = T.query()!
     
     if let queryString = queryString, !queryString.isEmpty {
       query.whereKey(searchKey, matchesRegex: queryString, modifiers: "i")
@@ -75,14 +37,12 @@ public class ParseDataEngine: NSObject, DataLoaderEngine {
     return query
   }
   
-  public func task(forLoadType loadType: DataLoadType, queryString: String?) -> Task<NSArray> {
+  public func promise(forLoadType loadType: DataLoadType, queryString: String?) -> Promise<[T]> {
     if loadType == .clearAndReplace {
       skip = 0
     }
     
-    let task = TaskCompletionSource<NSArray>()
-    
-    let query: PFQuery = self.query(forLoadType: loadType, queryString: queryString)
+    let query: PFQuery<PFObject> = self.query(forLoadType: loadType, queryString: queryString)
     query.limit = queryLimit
 
     switch loadType {
@@ -108,33 +68,25 @@ public class ParseDataEngine: NSObject, DataLoaderEngine {
     case .descending:
       query.order(byDescending: orderBy)
     }
-    
-    query.findObjectsInBackground().continue({ parseTask in
-      
-      if let error = parseTask.error {
-        NSLog("Error: \(error)")
-        task.set(error: error)
-      } else if let results = parseTask.result as? [PFObject], results.count > 0 {
-        if loadType != .more {
-          self.firstRow = results.first
-        }
-        
-        self.skip += results.count
-        
-        if let _ = self.subclassedType {
-          // Assume the subclassedType also conforms to CollectionRow
-          task.set(result: NSArray(array: results))
+
+    return Promise<[T]> { fulfill, reject in
+      query.findObjectsInBackground() { results, error in
+        if let error = error {
+          reject(error)
         } else {
-          task.set(result: NSArray(array: results.map { ParseCollectionObject(parseObject: $0) }))
+          if let results = results, results.count > 0 {
+            if loadType != .more {
+              self.firstRow = results.first
+            }
+            
+            self.skip += results.count
+          }
+          
+          fulfill(results as? [T] ?? [])
         }
-      } else {
-        task.set(result: [])
+        
       }
-      
-      return nil
-    })
-    
-    return task.task
+    }
   }
 }
 

@@ -65,20 +65,22 @@ public enum CollectionViewType {
 
 public protocol BaseCollectionAdapter {
   associatedtype CellAdapterType: CellAdapter
+  associatedtype EngineType: DataLoaderEngine
   
   init()
   var cellAdapter: CellAdapterType! { get set }
-  var dataLoader: DataLoader<CellAdapterType.T>! { get set }
+  var dataLoader: DataLoader<EngineType>! { get set }
   var collectionViewType: CollectionViewType { get }
 }
 
-public class TableViewAdapter<A: CellAdapter>: NSObject, BaseCollectionAdapter, UITableViewDelegate, UITableViewDataSource {
+public class TableViewAdapter<A: CellAdapter, E: DataLoaderEngine>: NSObject, BaseCollectionAdapter, UITableViewDelegate, UITableViewDataSource where A.T == E.T {
   public typealias CellAdapterType = A
+  public typealias EngineType = E
 
   public var collectionViewType: CollectionViewType = .table
   
   public var cellAdapter: A!
-  public weak var dataLoader: DataLoader<A.T>!
+  public weak var dataLoader: DataLoader<E>!
 
   public required override init() {
     super.init()
@@ -112,13 +114,14 @@ public class TableViewAdapter<A: CellAdapter>: NSObject, BaseCollectionAdapter, 
 }
 
 
-public class CollectionViewAdapter<A: CellAdapter>: NSObject, BaseCollectionAdapter, UICollectionViewDelegate, UICollectionViewDataSource {
+public class CollectionViewAdapter<A: CellAdapter, E: DataLoaderEngine>: NSObject, BaseCollectionAdapter, UICollectionViewDelegate, UICollectionViewDataSource where A.T == E.T {
   public typealias CellAdapterType = A
-  
+  public typealias EngineType = E
+
   public var collectionViewType: CollectionViewType = .collection
   
   public var cellAdapter: A!
-  public weak var dataLoader: DataLoader<A.T>!
+  public weak var dataLoader: DataLoader<E>!
   
   public required override init() {
     super.init()
@@ -186,16 +189,16 @@ public class CollectionLoaderController<AdapterType: BaseCollectionAdapter>: UIV
   
   // DATA
   var collectionInitialized = false
-  var dataLoader: DataLoader<AdapterType.CellAdapterType.T>!
+  var dataLoader: DataLoader<AdapterType.EngineType>!
   var disposeBag: DisposeBag = DisposeBag()
 
   var refreshOnAppear: DataLoadType? = .newRows
   
   // MARK: - Initialize
-  required public init(dataLoaderEngine: DataLoaderEngine) {
+  required public init(dataLoaderEngine: AdapterType.EngineType) {
     super.init(nibName: nil, bundle: nil)
     
-    self.dataLoader = DataLoader(dataLoaderEngine: dataLoaderEngine)
+    self.dataLoader = DataLoader<AdapterType.EngineType>(dataLoaderEngine: dataLoaderEngine)
     self.dataLoader.delegate = self
   }
   

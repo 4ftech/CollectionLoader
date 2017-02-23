@@ -1,4 +1,4 @@
-github "BoltsFramework/Bolts-Swift"
+github "mxcl/PromiseKit" ~> 4.0
 github "ReactiveX/RxSwift" ~> 3.0
 
 
