@@ -38,7 +38,7 @@ public protocol DataLoaderEngine {
   func task(forLoadType loadType: DataLoadType, queryString: String?) -> Task<NSArray>
 }
 
-class DataLoader<T: CollectionRow>: NSObject {
+public class DataLoader<T: CollectionRow>: NSObject {
   deinit {
     NSLog("deinit: \(type(of: self))")
   }
@@ -102,7 +102,7 @@ class DataLoader<T: CollectionRow>: NSObject {
   var sortFunction: ((T, T) -> Bool)? = nil
   
   // MARK: - Initialize
-  required override init() {
+  required override public init() {
     super.init()
   }
   

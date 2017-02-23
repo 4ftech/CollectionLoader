@@ -26,10 +26,13 @@ public class CellType: NSObject {
 public protocol CellAdapter {
   associatedtype T: CollectionRow
   
+  // C is either UITableViewCell or UICollectionViewCell
+  associatedtype C
+  
   init()
   var cellTypes: [CellType] { get }
   func cellIdentifier(forRow row: T) -> String
-  func apply(row: T, toCell cell: UITableViewCell)
+  func apply(row: T, toCell cell: C)
   func didTapCell(forRow row: T)
 }
 
@@ -60,12 +63,100 @@ public enum CollectionViewType {
   case table, collection
 }
 
-public class CollectionLoaderController<A: CellAdapter>: UIViewController, CollectionSearchBarDelegate, UITableViewDelegate, UITableViewDataSource, DataLoaderDelegate {
+public protocol BaseCollectionAdapter {
+  associatedtype CellAdapterType: CellAdapter
+  
+  init()
+  var cellAdapter: CellAdapterType! { get set }
+  var dataLoader: DataLoader<CellAdapterType.T>! { get set }
+  var collectionViewType: CollectionViewType { get }
+}
+
+public class TableViewAdapter<A: CellAdapter>: NSObject, BaseCollectionAdapter, UITableViewDelegate, UITableViewDataSource {
+  public typealias CellAdapterType = A
+
+  public var collectionViewType: CollectionViewType = .table
+  
+  public var cellAdapter: A!
+  public weak var dataLoader: DataLoader<A.T>!
+
+  public required override init() {
+    super.init()
+    
+    self.cellAdapter = A()
+  }
+  
+  public func numberOfSections(in tableView: UITableView) -> Int {
+    return 1
+  }
+  
+  public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    return dataLoader.rowsToDisplay.count
+  }
+  
+  public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    let row = dataLoader.rowsToDisplay[indexPath.row]
+    
+    let identifier = cellAdapter.cellIdentifier(forRow: row)
+    
+    let cell = tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath)
+    cellAdapter.apply(row: row, toCell: cell as! CellAdapterType.C)
+    
+    return cell
+  }
+  
+  public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    let row = dataLoader.rowsToDisplay[indexPath.row]
+    cellAdapter.didTapCell(forRow: row)
+  }
+}
+
+
+public class CollectionViewAdapter<A: CellAdapter>: NSObject, BaseCollectionAdapter, UICollectionViewDelegate, UICollectionViewDataSource {
+  public typealias CellAdapterType = A
+  
+  public var collectionViewType: CollectionViewType = .collection
+  
+  public var cellAdapter: A!
+  public weak var dataLoader: DataLoader<A.T>!
+  
+  public required override init() {
+    super.init()
+    
+    self.cellAdapter = A()
+  }
+  
+  public func numberOfSections(in collectionView: UICollectionView) -> Int {
+    return 1
+  }
+  
+  public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    return dataLoader.rowsToDisplay.count
+  }
+
+  public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    let row = dataLoader.rowsToDisplay[indexPath.row]
+    
+    let identifier = cellAdapter.cellIdentifier(forRow: row)
+    
+    let cell = collectionView.dequeueReusableCell(withReuseIdentifier: identifier, for: indexPath)
+    cellAdapter.apply(row: row, toCell: cell as! CellAdapterType.C)
+    
+    return cell
+  }
+
+  public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    let row = dataLoader.rowsToDisplay[indexPath.row]
+    cellAdapter.didTapCell(forRow: row)
+  }
+}
+
+
+public class CollectionLoaderController<AdapterType: BaseCollectionAdapter>: UIViewController, CollectionSearchBarDelegate, DataLoaderDelegate {
   let singleLineTableCellIdentifier = "singleLineIconCell"
   let twoLineTableCellIdentifier = "twoLineIconCell"
   let threeLineTableCellIdentifier = "threeLineIconCell"
 
-  public var collectionViewType: CollectionViewType = .table
   public var emptyViewContent: EmptyViewContent?
   
   typealias m = LoaderView
@@ -76,7 +167,7 @@ public class CollectionLoaderController<A: CellAdapter>: UIViewController, Colle
   var pullToRefresh: Bool = true
   var refreshControl: UIRefreshControl?
   
-  var cellAdapter: A!
+  var collectionAdapter: AdapterType!
   
   // Search
   public var allowSearch: Bool = false
@@ -95,7 +186,7 @@ public class CollectionLoaderController<A: CellAdapter>: UIViewController, Colle
   
   // DATA
   var collectionInitialized = false
-  var dataLoader: DataLoader<A.T>!
+  var dataLoader: DataLoader<AdapterType.CellAdapterType.T>!
   var disposeBag: DisposeBag = DisposeBag()
 
   var refreshOnAppear: DataLoadType? = .newRows
@@ -104,7 +195,7 @@ public class CollectionLoaderController<A: CellAdapter>: UIViewController, Colle
   required public init(dataLoaderEngine: DataLoaderEngine) {
     super.init(nibName: nil, bundle: nil)
     
-    self.dataLoader = DataLoader<A.T>(dataLoaderEngine: dataLoaderEngine)
+    self.dataLoader = DataLoader(dataLoaderEngine: dataLoaderEngine)
     self.dataLoader.delegate = self
   }
   
@@ -119,25 +210,42 @@ public class CollectionLoaderController<A: CellAdapter>: UIViewController, Colle
     edgesForExtendedLayout = []
     extendedLayoutIncludesOpaqueBars = false
 
-    // Cell Adapter
-    cellAdapter = A()
-    
     // Add Container and ScrollView
     container = SpringView()
     container.alpha = 0
     Utils.fillContainer(view, withView: container)
     
-    switch collectionViewType {
+    // Collection
+    collectionAdapter = AdapterType()
+    
+    switch collectionAdapter.collectionViewType {
     case .collection:
       let collectionView = UICollectionView()
+      
+      collectionAdapter.dataLoader = dataLoader
+
+      for cellType in collectionAdapter.cellAdapter.cellTypes {
+        collectionView.register(cellType.nib, forCellWithReuseIdentifier: cellType.identifier)
+      }
+      
+      collectionView.dataSource = collectionAdapter as? UICollectionViewDataSource
+      collectionView.delegate = collectionAdapter as? UICollectionViewDelegate
+
       
       scrollView = collectionView
       break
     case .table:
       let tableView = UITableView()
       tableView.tableFooterView = UIView(frame: CGRect.zero)
-      tableView.delegate = self
-      tableView.dataSource = self
+      
+      collectionAdapter.dataLoader = dataLoader
+      
+      for cellType in collectionAdapter.cellAdapter.cellTypes {
+        tableView.register(cellType.nib, forCellReuseIdentifier: cellType.identifier)
+      }
+      
+      tableView.dataSource = collectionAdapter as? UITableViewDataSource
+      tableView.delegate = collectionAdapter as? UITableViewDelegate
       
       scrollView = tableView
       break
@@ -161,9 +269,6 @@ public class CollectionLoaderController<A: CellAdapter>: UIViewController, Colle
       refreshControl?.addTarget(self, action: #selector(didPullToRefresh(refreshControl:)), for: .valueChanged)
       scrollView.refreshControl = refreshControl
     }
-    
-    // Register cells
-    registerCells()
     
     // Subscribe to data loader notifications
     subscribeToDataLoaderNotifications()
@@ -194,6 +299,10 @@ public class CollectionLoaderController<A: CellAdapter>: UIViewController, Colle
     } else {
       loaderView.isHidden = true
     }
+  }
+  
+  func setCollectionAdapter() {
+    
   }
   
   func searchKeyboardDidShow(_ notification: Notification) {
@@ -229,20 +338,6 @@ public class CollectionLoaderController<A: CellAdapter>: UIViewController, Colle
     }
   }
   
-  func registerCells() {
-    switch collectionViewType {
-    case .collection:
-      break
-    case .table:
-      let tableView = scrollView as! UITableView
-
-      for cellType in cellAdapter.cellTypes {
-        tableView.register(cellType.nib, forCellReuseIdentifier: cellType.identifier)
-      }
-    }
-  }
-
-
   // MARK: - Querying
   func loadRows(loadType: DataLoadType) {
     if dataLoader.rowsLoading && loadType != .clearAndReplace {
@@ -439,7 +534,7 @@ public class CollectionLoaderController<A: CellAdapter>: UIViewController, Colle
   }
   
   func refreshScrollView() {
-    switch collectionViewType {
+    switch collectionAdapter.collectionViewType {
     case .collection:
       let collectionView = scrollView as! UICollectionView
       collectionView.reloadData()
@@ -456,28 +551,4 @@ public class CollectionLoaderController<A: CellAdapter>: UIViewController, Colle
     dataLoader.searchByString(searchBar.text)
   }
 
-  // MARK: - UITableView
-  public func numberOfSections(in tableView: UITableView) -> Int {
-    return 1
-  }
-  
-  public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return dataLoader.rowsToDisplay.count
-  }
-  
-  public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    let row = dataLoader.rowsToDisplay[indexPath.row] 
-    
-    let identifier = cellAdapter.cellIdentifier(forRow: row)
-    
-    let cell = tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath)
-    cellAdapter.apply(row: row, toCell: cell)
-    
-    return cell
-  }
-  
-  public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-    let row = dataLoader.rowsToDisplay[indexPath.row]
-    cellAdapter.didTapCell(forRow: row)
-  }
 }
