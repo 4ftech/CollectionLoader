@@ -52,10 +52,11 @@ public class CollectionLoaderController<AdapterType: BaseCollectionAdapter>: UIV
   var refreshOnAppear: DataLoadType? = .newRows
   
   // MARK: - Initialize
-  required public init(dataLoaderEngine: AdapterType.EngineType) {
+  required public init(collectionAdapter: AdapterType) {
     super.init(nibName: nil, bundle: nil)
     
-    self.dataLoader = DataLoader<AdapterType.EngineType>(dataLoaderEngine: dataLoaderEngine)
+    self.collectionAdapter = collectionAdapter
+    self.dataLoader = collectionAdapter.dataLoader
     self.dataLoader.delegate = self
   }
   
@@ -75,18 +76,11 @@ public class CollectionLoaderController<AdapterType: BaseCollectionAdapter>: UIV
     container.alpha = 0
     Utils.fillContainer(view, withView: container)
     
-    // Collection
-    collectionAdapter = AdapterType()
-    
     switch collectionAdapter.collectionViewType {
     case .collection:
       let collectionView = UICollectionView()
       
-      collectionAdapter.dataLoader = dataLoader
-
-      for cellType in collectionAdapter.cellAdapter.cellTypes {
-        collectionView.register(cellType.nib, forCellWithReuseIdentifier: cellType.identifier)
-      }
+      collectionAdapter.registerCells(scrollView: collectionView)
       
       collectionView.dataSource = collectionAdapter as? UICollectionViewDataSource
       collectionView.delegate = collectionAdapter as? UICollectionViewDelegate
@@ -98,11 +92,7 @@ public class CollectionLoaderController<AdapterType: BaseCollectionAdapter>: UIV
       let tableView = UITableView()
       tableView.tableFooterView = UIView(frame: CGRect.zero)
       
-      collectionAdapter.dataLoader = dataLoader
-      
-      for cellType in collectionAdapter.cellAdapter.cellTypes {
-        tableView.register(cellType.nib, forCellReuseIdentifier: cellType.identifier)
-      }
+      collectionAdapter.registerCells(scrollView: tableView)
       
       tableView.dataSource = collectionAdapter as? UITableViewDataSource
       tableView.delegate = collectionAdapter as? UITableViewDelegate

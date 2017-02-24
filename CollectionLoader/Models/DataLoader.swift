@@ -95,7 +95,7 @@ public class DataLoader<EngineType: DataLoaderEngine>: NSObject {
     
   }
   
-  convenience init(dataLoaderEngine: EngineType) {
+  convenience public init(dataLoaderEngine: EngineType) {
     self.init()
     
     self.dataLoaderEngine = dataLoaderEngine

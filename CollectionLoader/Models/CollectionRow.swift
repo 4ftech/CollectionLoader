@@ -9,10 +9,10 @@
 import Foundation
 
 public protocol CollectionRow: class, Equatable, Hashable {
-  var objectId: String? { get }
+  var objectId: String? { get set }
   var updatedAt: Date? { get }
   
-  var name: String? { get }
+  var name: String? { get set }
 }
 
 public extension CollectionRow {

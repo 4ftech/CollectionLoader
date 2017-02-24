@@ -20,7 +20,12 @@ enum ParseQueryOrder {
 
 open class ParseCollectionRow: ParseDataModel, CollectionRow {
   open var name: String? {
-    return self["name"] as? String
+    get {
+      return self["name"] as? String
+    }
+    set {
+      self["name"] = newValue
+    }
   }
 }
 

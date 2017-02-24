@@ -9,10 +9,11 @@
 import Foundation
 
 public protocol BaseCollectionAdapter {
-  associatedtype CellAdapterType: CellAdapter
+  associatedtype CellAdapterType
   associatedtype EngineType: DataLoaderEngine
   
-  init()
+  init(cellAdapter: CellAdapterType, dataLoaderEngine: EngineType)
+  func registerCells<T: UIScrollView>(scrollView: T)
   var cellAdapter: CellAdapterType! { get set }
   var dataLoader: DataLoader<EngineType>! { get set }
   var collectionViewType: CollectionViewType { get }

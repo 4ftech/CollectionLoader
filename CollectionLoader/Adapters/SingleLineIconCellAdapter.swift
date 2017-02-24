@@ -8,7 +8,7 @@
 
 import Foundation
 
-open class SingleLineIconCellAdapter<T: CollectionRow>: CellAdapter {
+open class SingleLineIconCellAdapter<T: CollectionRow>: CollectionRowCellAdapter {
   required public init() {
     
   }

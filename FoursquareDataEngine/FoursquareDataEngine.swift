@@ -11,17 +11,9 @@ import CollectionLoader
 import PromiseKit
 
 public class FoursquareVenueObject: NSObject, CollectionRow {
-  public var objectId: String? {
-    return nil
-  }
-  
-  public var updatedAt: Date? {
-    return nil
-  }
-  
-  public var name: String? {
-    return "Venue"
-  }
+  public var objectId: String? = nil
+  public var updatedAt: Date? = nil
+  public var name: String? = "Venue"
 }
 
 public class FoursquareDataEngine: NSObject, DataLoaderEngine {

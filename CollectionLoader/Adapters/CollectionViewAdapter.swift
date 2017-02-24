@@ -8,25 +8,28 @@
 
 import Foundation
 
-public class CollectionViewAdapter<A: CellAdapter, E: DataLoaderEngine>: NSObject, BaseCollectionAdapter, UICollectionViewDelegate, UICollectionViewDataSource {
+public class CollectionViewAdapter<A: CollectionRowCellAdapter, E: DataLoaderEngine>: NSObject, BaseCollectionAdapter, UICollectionViewDelegate, UICollectionViewDataSource {
   public typealias CellAdapterType = A
   public typealias EngineType = E
   
   public var collectionViewType: CollectionViewType = .collection
   
   public var cellAdapter: A!
-  public weak var dataLoader: DataLoader<E>!
+  public var dataLoader: DataLoader<E>!
   
-  public required override init() {
-    super.init()
-    
-    self.cellAdapter = A()
-  }
-  
-  public init(cellAdapter: A) {
+  public required init(cellAdapter: A, dataLoaderEngine: E) {
     super.init()
     
     self.cellAdapter = cellAdapter
+    self.dataLoader = DataLoader<E>(dataLoaderEngine: dataLoaderEngine)
+  }
+  
+  public func registerCells<T: UIScrollView>(scrollView: T) {
+    if let collectionView = scrollView as? UICollectionView {
+      for cellType in cellAdapter.cellTypes {
+        collectionView.register(cellType.nib, forCellWithReuseIdentifier: cellType.identifier)
+      }
+    }    
   }
   
   public func numberOfSections(in collectionView: UICollectionView) -> Int {
