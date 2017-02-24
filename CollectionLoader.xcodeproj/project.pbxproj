@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		705D2DBC1E5F3B37005D3A5F /* PromiseKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 705D2DBB1E5F3B37005D3A5F /* PromiseKit.framework */; };
+		705D2E3A1E600613005D3A5F /* DataSource.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 705D2E341E6005E8005D3A5F /* DataSource.framework */; };
+		705D2E3B1E60061B005D3A5F /* ParseDataSource.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 705D2E361E6005E8005D3A5F /* ParseDataSource.framework */; };
+		705D2E3C1E6007C3005D3A5F /* PromiseKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 705D2DBB1E5F3B37005D3A5F /* PromiseKit.framework */; };
 		70A884201E5736C400823C0F /* CollectionLoader.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 70A884161E5736C400823C0F /* CollectionLoader.framework */; };
 		70A884251E5736C400823C0F /* CollectionLoaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70A884241E5736C400823C0F /* CollectionLoaderTests.swift */; };
 		70A884271E5736C400823C0F /* CollectionLoader.h in Headers */ = {isa = PBXBuildFile; fileRef = 70A884191E5736C400823C0F /* CollectionLoader.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -46,6 +49,27 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		705D2E331E6005E8005D3A5F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 705D2E2D1E6005E8005D3A5F /* DataSource.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 705D2DA31E5E4064005D3A5F;
+			remoteInfo = DataSource;
+		};
+		705D2E351E6005E8005D3A5F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 705D2E2D1E6005E8005D3A5F /* DataSource.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 705D2DD21E5F6CA6005D3A5F;
+			remoteInfo = ParseDataSource;
+		};
+		705D2E371E6005E8005D3A5F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 705D2E2D1E6005E8005D3A5F /* DataSource.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 705D2DF21E5F8FF1005D3A5F;
+			remoteInfo = ObjectMapperDataSource;
+		};
 		70A884211E5736C400823C0F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 70A8840D1E5736C400823C0F /* Project object */;
@@ -57,6 +81,7 @@
 
 /* Begin PBXFileReference section */
 		705D2DBB1E5F3B37005D3A5F /* PromiseKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PromiseKit.framework; path = Carthage/Build/iOS/PromiseKit.framework; sourceTree = "<group>"; };
+		705D2E2D1E6005E8005D3A5F /* DataSource.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = DataSource.xcodeproj; path = ../DataSource/DataSource.xcodeproj; sourceTree = "<group>"; };
 		70A884161E5736C400823C0F /* CollectionLoader.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CollectionLoader.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		70A884191E5736C400823C0F /* CollectionLoader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CollectionLoader.h; sourceTree = "<group>"; };
 		70A8841A1E5736C400823C0F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -135,15 +160,29 @@
 			files = (
 				70A8862C1E58A63300823C0F /* CollectionLoader.framework in Frameworks */,
 				70A886231E57EE8D00823C0F /* Parse.framework in Frameworks */,
+				705D2E3A1E600613005D3A5F /* DataSource.framework in Frameworks */,
+				705D2E3B1E60061B005D3A5F /* ParseDataSource.framework in Frameworks */,
+				705D2E3C1E6007C3005D3A5F /* PromiseKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		705D2E2E1E6005E8005D3A5F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				705D2E341E6005E8005D3A5F /* DataSource.framework */,
+				705D2E361E6005E8005D3A5F /* ParseDataSource.framework */,
+				705D2E381E6005E8005D3A5F /* ObjectMapperDataSource.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		70A8840C1E5736C400823C0F = {
 			isa = PBXGroup;
 			children = (
+				705D2E2D1E6005E8005D3A5F /* DataSource.xcodeproj */,
 				70A884231E5736C400823C0F /* CollectionLoaderTests */,
 				70A884181E5736C400823C0F /* CollectionLoader */,
 				70A885EC1E57E67200823C0F /* FoursquareDataEngine */,
@@ -351,7 +390,6 @@
 				70A885E71E57E67200823C0F /* Frameworks */,
 				70A885E81E57E67200823C0F /* Headers */,
 				70A885E91E57E67200823C0F /* Resources */,
-				70A8862D1E58A6FC00823C0F /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -427,6 +465,12 @@
 			mainGroup = 70A8840C1E5736C400823C0F;
 			productRefGroup = 70A884171E5736C400823C0F /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 705D2E2E1E6005E8005D3A5F /* Products */;
+					ProjectRef = 705D2E2D1E6005E8005D3A5F /* DataSource.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				70A884151E5736C400823C0F /* CollectionLoader */,
@@ -436,6 +480,30 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		705D2E341E6005E8005D3A5F /* DataSource.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = DataSource.framework;
+			remoteRef = 705D2E331E6005E8005D3A5F /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		705D2E361E6005E8005D3A5F /* ParseDataSource.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = ParseDataSource.framework;
+			remoteRef = 705D2E351E6005E8005D3A5F /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		705D2E381E6005E8005D3A5F /* ObjectMapperDataSource.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = ObjectMapperDataSource.framework;
+			remoteRef = 705D2E371E6005E8005D3A5F /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		70A884141E5736C400823C0F /* Resources */ = {
@@ -488,19 +556,6 @@
 				"$(SRCROOT)/Carthage/Build/iOS/RxSwift.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/RxBlocking.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/PromiseKit.framework",
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "carthage copy-frameworks";
-		};
-		70A8862D1E58A6FC00823C0F /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
 			);
 			outputPaths = (
 			);

@@ -11,12 +11,20 @@ import CollectionLoader
 import PromiseKit
 import Parse
 
+import DataSource
+import ParseDataSource
+
 enum ParseQueryOrder {
   case ascending, descending
 }
 
-public class ParseDataEngine<T>: NSObject, DataLoaderEngine where T: PFObject, T: CollectionRow {
+open class ParseCollectionRow: ParseDataModel, CollectionRow {
+  open var name: String? {
+    return self["name"] as? String
+  }
+}
 
+public class ParseDataEngine<T>: NSObject, DataLoaderEngine where T: CollectionRow, T: BaseDataModel {
   var skip: Int = 0
   
   public var queryLimit: Int { return 20 }
@@ -27,66 +35,54 @@ public class ParseDataEngine<T>: NSObject, DataLoaderEngine where T: PFObject, T
   var orderBy: String = "name"
   var order: ParseQueryOrder = .ascending
   
-  func query(forLoadType loadType: DataLoadType, queryString: String?) -> PFQuery<PFObject> {
-    let query: PFQuery<PFObject> = T.query()!
-    
-    if let queryString = queryString, !queryString.isEmpty {
-      query.whereKey(searchKey, matchesRegex: queryString, modifiers: "i")
-    }
-    
-    return query
-  }
-  
   public func promise(forLoadType loadType: DataLoadType, queryString: String?) -> Promise<[T]> {
     if loadType == .clearAndReplace {
       skip = 0
     }
-    
-    let query: PFQuery<PFObject> = self.query(forLoadType: loadType, queryString: queryString)
-    query.limit = queryLimit
 
+    let request: FetchRequest<T> = T.fetchRequest()
+    request.limit = queryLimit
+    
     switch loadType {
     case .clearAndReplace,.replace,.initial:
       skip = 0
-      query.skip = skip
+      request.offset = skip
     case .more:
-      query.skip = skip
+      request.offset = skip
     case .newRows:
       if let firstOrder = firstRow?[orderBy] {
         switch order {
         case .ascending:
-          query.whereKey(orderBy, lessThan: firstOrder)
+          request.whereKey(orderBy, lessThan: firstOrder)
         case .descending:
-          query.whereKey(orderBy, greaterThan: firstOrder)
+          request.whereKey(orderBy, greaterThan: firstOrder)
         }
       }
     }
     
     switch order {
     case .ascending:
-      query.order(byAscending: orderBy)
+      request.orderByAscending(orderBy)
     case .descending:
-      query.order(byDescending: orderBy)
+      request.orderByDescending(orderBy)
     }
 
-    return Promise<[T]> { fulfill, reject in
-      query.findObjectsInBackground() { results, error in
-        if let error = error {
-          reject(error)
-        } else {
-          if let results = results, results.count > 0 {
-            if loadType != .more {
-              self.firstRow = results.first
-            }
-            
-            self.skip += results.count
+    return Promise { fulfill, reject in
+      request.fetch().then { (results: [T]) -> Void in
+        if results.count > 0 {
+          if loadType != .more {
+            self.firstRow = results.first as? PFObject
           }
           
-          fulfill(results as? [T] ?? [])
+          self.skip += results.count
         }
         
+        fulfill(results)
+      }.catch { error in
+        reject(error)
       }
     }
+    
   }
 }
 
