@@ -57,26 +57,12 @@ public class DataLoader<EngineType: DataLoaderEngine>: NSObject {
   var mightHaveMore = true
   var newRowsPosition: NewRowsPosition = .beginning
   
-  //  var searchFilter: (String) -> ((T) -> Bool) = { queryString in
-  //    return { object in
-  //      if let name = object.name {
-  //        return name.lowercased().contains(queryString.lowercased())
-  //      } else {
-  //        return false
-  //      }
-  //    }
-  //  }
-  //  
   fileprivate var rows: [T] = []
   var isEmpty: Bool { return rows.count == 0 }
   
   var searchQueryString: String? = nil
 
-  var rowsToDisplay: [T] {
-    //    if let queryString = searchQueryString, !queryString.isEmpty {
-    //      return rows.filter(searchFilter(queryString))
-    //    }
-    //
+  public var rowsToDisplay: [T] {
     return rows
   }
 
