@@ -73,7 +73,7 @@ public protocol BaseCollectionAdapter {
   var collectionViewType: CollectionViewType { get }
 }
 
-public class TableViewAdapter<A: CellAdapter, E: DataLoaderEngine>: NSObject, BaseCollectionAdapter, UITableViewDelegate, UITableViewDataSource where A.T == E.T {
+public class TableViewAdapter<A: CellAdapter, E: DataLoaderEngine>: NSObject, BaseCollectionAdapter, UITableViewDelegate, UITableViewDataSource {
   public typealias CellAdapterType = A
   public typealias EngineType = E
 
@@ -99,22 +99,22 @@ public class TableViewAdapter<A: CellAdapter, E: DataLoaderEngine>: NSObject, Ba
   public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let row = dataLoader.rowsToDisplay[indexPath.row]
     
-    let identifier = cellAdapter.cellIdentifier(forRow: row)
+    let identifier = cellAdapter.cellIdentifier(forRow: row as! A.T)
     
     let cell = tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath)
-    cellAdapter.apply(row: row, toCell: cell as! CellAdapterType.C)
+    cellAdapter.apply(row: row as! A.T, toCell: cell as! CellAdapterType.C)
     
     return cell
   }
   
   public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     let row = dataLoader.rowsToDisplay[indexPath.row]
-    cellAdapter.didTapCell(forRow: row)
+    cellAdapter.didTapCell(forRow: row as! A.T)
   }
 }
 
 
-public class CollectionViewAdapter<A: CellAdapter, E: DataLoaderEngine>: NSObject, BaseCollectionAdapter, UICollectionViewDelegate, UICollectionViewDataSource where A.T == E.T {
+public class CollectionViewAdapter<A: CellAdapter, E: DataLoaderEngine>: NSObject, BaseCollectionAdapter, UICollectionViewDelegate, UICollectionViewDataSource {
   public typealias CellAdapterType = A
   public typealias EngineType = E
 
@@ -140,17 +140,17 @@ public class CollectionViewAdapter<A: CellAdapter, E: DataLoaderEngine>: NSObjec
   public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
     let row = dataLoader.rowsToDisplay[indexPath.row]
     
-    let identifier = cellAdapter.cellIdentifier(forRow: row)
+    let identifier = cellAdapter.cellIdentifier(forRow: row as! A.T)
     
     let cell = collectionView.dequeueReusableCell(withReuseIdentifier: identifier, for: indexPath)
-    cellAdapter.apply(row: row, toCell: cell as! CellAdapterType.C)
+    cellAdapter.apply(row: row as! A.T, toCell: cell as! CellAdapterType.C)
     
     return cell
   }
 
   public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
     let row = dataLoader.rowsToDisplay[indexPath.row]
-    cellAdapter.didTapCell(forRow: row)
+    cellAdapter.didTapCell(forRow: row as! A.T)
   }
 }
 
