@@ -45,7 +45,7 @@ public class ParseDataEngine<T>: NSObject, DataLoaderEngine where T: CollectionR
       skip = 0
     }
 
-    let request: FetchRequest<T> = T.fetchRequest()
+    let request: FetchRequest = T.fetchRequest()
     request.limit = queryLimit
     
     switch loadType {
