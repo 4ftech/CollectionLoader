@@ -9,12 +9,12 @@
 import Foundation
 
 public protocol CollectionRowCellAdapter {
-  // C is either UITableViewCell or UICollectionViewCell
-  associatedtype C
   associatedtype T: CollectionRow
+
+  // U is either UITableViewCell or UICollectionViewCell
+  associatedtype U
   
   var cellTypes: [CellType] { get }
   func cellIdentifier(forRow row: T) -> String
-  func apply(row: T, toCell cell: C)
-  func didTapCell(forRow row: T)
+  func apply(row: T, toCell cell: U)
 }

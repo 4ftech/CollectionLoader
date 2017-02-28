@@ -16,6 +16,7 @@ public class TableViewAdapter<A: CollectionRowCellAdapter, E: DataLoaderEngine>:
   
   public var cellAdapter: A!
   public var dataLoader: DataLoader<E>!
+  public weak var delegate: BaseCollectionDelegate?
   
   public required init(cellAdapter: A, dataLoaderEngine: E) {
     super.init()
@@ -46,14 +47,14 @@ public class TableViewAdapter<A: CollectionRowCellAdapter, E: DataLoaderEngine>:
     let identifier = cellAdapter.cellIdentifier(forRow: row as! A.T)
     
     let cell = tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath)
-    cellAdapter.apply(row: row as! A.T, toCell: cell as! CellAdapterType.C)
+    cellAdapter.apply(row: row as! A.T, toCell: cell as! CellAdapterType.U)
     
     return cell
   }
   
   public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     let row = dataLoader.rowsToDisplay[indexPath.row]
-    cellAdapter.didTapCell(forRow: row as! A.T)
+    delegate?.didTapCell(forRow: row)
   }
 }
 
