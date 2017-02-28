@@ -9,5 +9,5 @@
 import Foundation
 
 public protocol BaseCollectionDelegate: class {
-  func didTapCell<T>(forRow: T)
+  func didTapCell<T>(forRow row: T)
 }
