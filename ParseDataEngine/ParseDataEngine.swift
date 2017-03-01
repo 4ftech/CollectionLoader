@@ -24,6 +24,7 @@ open class ParseCollectionRow: ParseDataModel, CollectionRow {
       return self["name"] as? String
     }
     set {
+      NSLog("\(newValue)")
       self["name"] = newValue
     }
   }
