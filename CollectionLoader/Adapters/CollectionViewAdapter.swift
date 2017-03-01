@@ -54,7 +54,7 @@ public class CollectionViewAdapter<A: CollectionRowCellAdapter, E: DataLoaderEng
   
   public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
     let row = dataLoader.rowsToDisplay[indexPath.row]
-     cellAdapter.didTapCell(forRow: row as! A.T, inViewController: viewController)
+     cellAdapter.onTapCell?(row as! A.T, viewController)
   }
 }
 

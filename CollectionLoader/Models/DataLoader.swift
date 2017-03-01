@@ -11,6 +11,7 @@ import Foundation
 import RxSwift
 import UIScrollView_InfiniteScroll
 import PromiseKit
+import DataSource
 
 enum DataLoaderAction: String {
   case ResultsReceived = "ResultsReceived", FinishedLoading = "FinishedLoading", CRUD = "CRUD"
@@ -66,13 +67,8 @@ public class DataLoader<EngineType: DataLoaderEngine>: NSObject {
     return rows
   }
 
-  let notificationActionKey = "actionType"
   let notificationLoadTypeKey = "loadType"
-  let notificationTotalKey = "total"
   let notificationResultsKey = "results"
-  let notificationCRUDTypeKey = "crudType"
-  let notificationObjectKey = "object"
-  let notificationIndexKey = "index"
   var notificationSenderObject: AnyObject? = nil
 
   var notificationNamePrefix: String {
@@ -99,6 +95,7 @@ public class DataLoader<EngineType: DataLoaderEngine>: NSObject {
     self.init()
     
     self.dataLoaderEngine = dataLoaderEngine
+    self.registerForCRUDNotificationsWithClassName(String(describing: T.self))
   }
   
   // MARK: - CRUD
@@ -116,27 +113,23 @@ public class DataLoader<EngineType: DataLoaderEngine>: NSObject {
   func handleCRUDNotification(_ notification: Notification) {
     let object = notification.crudObject as! T
     
-    // NSLog("dataLoader (\(self?.notificationNamePrefix)) received notification: \(notification.crudNotificationType) \(object)")
+    NSLog("dataLoader received notification: \(notification.crudNotificationType) \(object)")
     
     switch notification.crudNotificationType {
     case .Create:
       switch newRowsPosition {
       case .beginning:
         insertRow(object, atIndex: 0)
-        postCrudNotification(.Create, object: object, atIndex: 0)
       case .end:
         appendRow(object)
-        postCrudNotification(.Create, object: object, atIndex: rows.count - 1)
       }
     case .Update:
       if let index = rows.index(of: object) {
         updateRowAtIndex(index, withObject: object)
-        postCrudNotification(.Update, object: object, atIndex: index)
       }
     case .Delete:
       if let index = rows.index(of: object) {
         removeRowAtIndex(index)
-        postCrudNotification(.Delete, object: object, atIndex: index)
       }
     }
   }
@@ -356,7 +349,6 @@ public class DataLoader<EngineType: DataLoaderEngine>: NSObject {
   // MARK: - Notifications
   func userInfoForResults(_ results: [T]?, loadType: DataLoadType) -> [AnyHashable: Any] {
     var userInfo: [AnyHashable: Any] = [
-      notificationActionKey: DataLoaderAction.FinishedLoading.rawValue,
       notificationLoadTypeKey: loadType.rawValue,
     ]
     
@@ -374,18 +366,6 @@ public class DataLoader<EngineType: DataLoaderEngine>: NSObject {
       userInfo: userInfoForResults(results, loadType: loadType))
   }
   
-  func postCrudNotification(_ crudType: CRUDType, object: T, atIndex index: Int, inSection section: Int = 0) {
-    NotificationCenter.default.post(
-      name: Notification.Name(rawValue: notificationNameForAction(.CRUD)),
-      object: notificationSenderObject,
-      userInfo: [
-        notificationActionKey: DataLoaderAction.CRUD.rawValue,
-        notificationCRUDTypeKey: crudType.rawValue,
-        notificationObjectKey: object,
-        notificationIndexKey: index
-      ])
-  }
-  
   func observerForAction(_ action: DataLoaderAction) -> Observable<Notification> {
     let observer = NotificationCenter.default.rx.notification(Notification.Name(rawValue: notificationNameForAction(action)), object: notificationSenderObject)
     
@@ -401,45 +381,16 @@ public class DataLoader<EngineType: DataLoaderEngine>: NSObject {
     }
   }
   
-  func subscribeToAllDataUpdates(_ disposeBag: DisposeBag, subscriber: @escaping (Notification) -> Void) {
-    let actionTypes: [DataLoaderAction] = [.FinishedLoading, .CRUD]
-    for actionType in actionTypes {
-      observerForAction(actionType).subscribe(onNext: subscriber).addDisposableTo(disposeBag)
-    }
-  }
-  
   func resultsFromNotification(_ notification: Notification) -> [T]? {
     return notification.userInfo?[notificationResultsKey] as? [T]
   }
   
-  func rowUpdateInfoFromNotification(_ notification: Notification) -> (CRUDType, T, Int) {
-    let userInfo = notification.userInfo!
-    let type = CRUDType(rawValue: userInfo[notificationCRUDTypeKey] as! String)!
-    let object = userInfo[notificationObjectKey] as! T
-    let index = userInfo[notificationIndexKey] as! Int
-    
-    return (type, object, index)
-  }
-  
-  func actionTypeFromNotification(_ notification: Notification) -> DataLoaderAction {
-    return DataLoaderAction(rawValue: notification.userInfo![notificationActionKey] as! String)!
-  }
-
   func loadTypeFromNotification(_ notification: Notification) -> DataLoadType {
     return DataLoadType(rawValue: notification.userInfo![notificationLoadTypeKey] as! Int)!
   }
 
   
-  func resultCountFromNotification(_ notification: Notification) -> Int {
-    return notification.userInfo![notificationTotalKey] as! Int
-  }
-
-  
   // MARK: - UI Stuff
-  func updateUIForCRUD(_ crudType: CRUDType, object: T, atIndex index: Int, inSection section: Int = 0) {
-    postCrudNotification(crudType, object: object, atIndex: index, inSection: section)
-  }
-  
   func updateUIForNewRows(_ newRows: [T]?, loadType: DataLoadType) {
     postDidFinishLoadingNotificationForResults(newRows, loadType: loadType)
   }

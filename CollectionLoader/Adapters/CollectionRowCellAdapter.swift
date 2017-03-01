@@ -14,8 +14,9 @@ public protocol CollectionRowCellAdapter {
   // U is either UITableViewCell or UICollectionViewCell
   associatedtype U
   
+  var onTapCell: ((T, UIViewController) -> Void)? { get }
+  
   var cellTypes: [CellType] { get }
   func cellIdentifier(forRow row: T) -> String
   func apply(row: T, toCell cell: U)
-  func didTapCell(forRow row: T, inViewController controller: UIViewController)
 }

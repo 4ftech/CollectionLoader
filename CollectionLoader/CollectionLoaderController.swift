@@ -52,7 +52,7 @@ open class CollectionLoaderController<AdapterType: BaseCollectionAdapter>: UIVie
   var refreshOnAppear: DataLoadType? = .newRows
   
   // MARK: - Initialize
-  required public init(collectionAdapter: AdapterType) {
+  public init(collectionAdapter: AdapterType) {
     super.init(nibName: nil, bundle: nil)
     
     self.collectionAdapter = collectionAdapter
@@ -228,14 +228,6 @@ open class CollectionLoaderController<AdapterType: BaseCollectionAdapter>: UIVie
           self?.handleDidFinishLoadingRowsNotification(notification)
         }
       }).addDisposableTo(disposeBag)
-    
-    dataLoader.observerForAction(.CRUD)
-      .takeUntil(self.rx.deallocated)
-      .subscribe(onNext: { [weak self] notification in
-        Utils.performOnMainThread() {
-          self?.handleCrudNotification(notification)
-        }
-      }).addDisposableTo(disposeBag)
   }
   
   func handleResultsReceivedNotification(_ notification: Notification) {
@@ -246,10 +238,6 @@ open class CollectionLoaderController<AdapterType: BaseCollectionAdapter>: UIVie
       refreshControl?.endRefreshing()
     }
     
-  }
-  
-  func handleCrudNotification(_ notification: Notification) {
-
   }
   
   func handleDidFinishLoadingRowsNotification(_ notification: Notification) {
@@ -401,10 +389,5 @@ open class CollectionLoaderController<AdapterType: BaseCollectionAdapter>: UIVie
   // MARK: - CollectionSearchBarDelegate
   func searchBarTextDidChange(_ searchBar: CollectionSearchBar) {
     dataLoader.searchByString(searchBar.text)
-  }
-
-  // MARK: - BaseCollectionDelegate
-  open func didTapCell<T>(forRow row: T) {
-    
   }
 }

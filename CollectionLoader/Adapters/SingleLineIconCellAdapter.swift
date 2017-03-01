@@ -9,6 +9,8 @@
 import Foundation
 
 open class SingleLineIconCellAdapter<T: CollectionRow>: CollectionRowCellAdapter {
+  open var onTapCell: ((T, UIViewController) -> Void)? = nil
+  
   required public init() {
     
   }
@@ -24,9 +26,5 @@ open class SingleLineIconCellAdapter<T: CollectionRow>: CollectionRowCellAdapter
   open func apply(row: T, toCell cell: UITableViewCell) {
     let singleLineIconCell = cell as! SingleLineIconCell
     singleLineIconCell.mainLabel.text = row.name
-  }
-  
-  open func didTapCell(forRow row: T, inViewController controller: UIViewController) {
-    
   }
 }

@@ -47,6 +47,12 @@ public class ParseDataEngine<T>: NSObject, DataLoaderEngine where T: CollectionR
     }
 
     let request: FetchRequest = T.fetchRequest()
+
+    if let queryString = queryString {
+      request.whereKey(searchKey, matchesRegex: queryString, modifiers: "i")
+    }
+    
+    
     request.limit = queryLimit
     
     switch loadType {

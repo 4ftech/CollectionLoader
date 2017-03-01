@@ -54,7 +54,7 @@ public class TableViewAdapter<A: CollectionRowCellAdapter, E: DataLoaderEngine>:
   
   public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     let row = dataLoader.rowsToDisplay[indexPath.row]
-    cellAdapter.didTapCell(forRow: row as! A.T, inViewController: viewController)
+    cellAdapter.onTapCell?(row as! A.T, viewController)
   }
 }
 
