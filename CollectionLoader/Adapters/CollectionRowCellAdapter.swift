@@ -17,4 +17,5 @@ public protocol CollectionRowCellAdapter {
   var cellTypes: [CellType] { get }
   func cellIdentifier(forRow row: T) -> String
   func apply(row: T, toCell cell: U)
+  func didTapCell(forRow row: T, inViewController controller: UIViewController)
 }

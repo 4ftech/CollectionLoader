@@ -1,0 +1,10 @@
+{
+  "xcodeVersion" : "Xcode 8.2.1\nBuild version 8C1002",
+  "commitish" : "1.8.4",
+  "iOS" : [
+    {
+      "name" : "Bolts",
+      "md5" : "0c1dbcd035ea371e510d8a170fcf29da"
+    }
+  ]
+}

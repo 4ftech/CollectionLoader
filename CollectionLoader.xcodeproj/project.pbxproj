@@ -18,7 +18,6 @@
 		705D2E5D1E609573005D3A5F /* CollectionViewAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705D2E5C1E609573005D3A5F /* CollectionViewAdapter.swift */; };
 		705D2E5F1E609584005D3A5F /* BaseCollectionAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705D2E5E1E609584005D3A5F /* BaseCollectionAdapter.swift */; };
 		705D2E611E609591005D3A5F /* CollectionViewType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705D2E601E609591005D3A5F /* CollectionViewType.swift */; };
-		705D2F4A1E66261A005D3A5F /* BaseCollectionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705D2F491E66261A005D3A5F /* BaseCollectionDelegate.swift */; };
 		70A884201E5736C400823C0F /* CollectionLoader.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 70A884161E5736C400823C0F /* CollectionLoader.framework */; };
 		70A884251E5736C400823C0F /* CollectionLoaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70A884241E5736C400823C0F /* CollectionLoaderTests.swift */; };
 		70A884271E5736C400823C0F /* CollectionLoader.h in Headers */ = {isa = PBXBuildFile; fileRef = 70A884191E5736C400823C0F /* CollectionLoader.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -97,7 +96,6 @@
 		705D2E5C1E609573005D3A5F /* CollectionViewAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionViewAdapter.swift; sourceTree = "<group>"; };
 		705D2E5E1E609584005D3A5F /* BaseCollectionAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseCollectionAdapter.swift; sourceTree = "<group>"; };
 		705D2E601E609591005D3A5F /* CollectionViewType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionViewType.swift; sourceTree = "<group>"; };
-		705D2F491E66261A005D3A5F /* BaseCollectionDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseCollectionDelegate.swift; sourceTree = "<group>"; };
 		70A884161E5736C400823C0F /* CollectionLoader.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CollectionLoader.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		70A884191E5736C400823C0F /* CollectionLoader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CollectionLoader.h; sourceTree = "<group>"; };
 		70A8841A1E5736C400823C0F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -198,7 +196,6 @@
 		705D2E501E6094DC005D3A5F /* Adapters */ = {
 			isa = PBXGroup;
 			children = (
-				705D2F491E66261A005D3A5F /* BaseCollectionDelegate.swift */,
 				705D2E5E1E609584005D3A5F /* BaseCollectionAdapter.swift */,
 				705D2E561E60952B005D3A5F /* CellType.swift */,
 				705D2E541E609512005D3A5F /* CollectionRowCellAdapter.swift */,
@@ -385,7 +382,7 @@
 				70A884121E5736C400823C0F /* Frameworks */,
 				70A884131E5736C400823C0F /* Headers */,
 				70A884141E5736C400823C0F /* Resources */,
-				70A8862A1E5829AE00823C0F /* ShellScript */,
+				705D2F6F1E66711E005D3A5F /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -440,7 +437,6 @@
 				70A886041E57E92500823C0F /* Frameworks */,
 				70A886051E57E92500823C0F /* Headers */,
 				70A886061E57E92500823C0F /* Resources */,
-				70A8862E1E58A73500823C0F /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -576,32 +572,18 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		70A8862A1E5829AE00823C0F /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 12;
-			files = (
-			);
-			inputPaths = (
-				"$(SRCROOT)/Carthage/Build/iOS/UIScrollView_InfiniteScroll.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/Spring.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/RxCocoa.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/RxSwift.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/RxBlocking.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/PromiseKit.framework",
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "carthage copy-frameworks";
-		};
-		70A8862E1E58A73500823C0F /* ShellScript */ = {
+		705D2F6F1E66711E005D3A5F /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
-				"$(SRCROOT)/Carthage/Build/iOS/Parse.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/UIScrollView_InfiniteScroll.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/Spring.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/RxBlocking.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/RxSwift.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/RxCocoa.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/PromiseKit.framework",
 			);
 			outputPaths = (
 			);
@@ -624,7 +606,6 @@
 				70A884D61E574BAC00823C0F /* WeakArray.swift in Sources */,
 				70A885831E5796BD00823C0F /* ThreeLineIconCell.swift in Sources */,
 				70A884D91E575C2A00823C0F /* NotificationCenter.swift in Sources */,
-				705D2F4A1E66261A005D3A5F /* BaseCollectionDelegate.swift in Sources */,
 				705D2E611E609591005D3A5F /* CollectionViewType.swift in Sources */,
 				70A885821E5796BD00823C0F /* TwoLineIconCell.swift in Sources */,
 				70A884311E57373800823C0F /* CollectionLoaderController.swift in Sources */,

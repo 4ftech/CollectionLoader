@@ -16,7 +16,7 @@ public class TableViewAdapter<A: CollectionRowCellAdapter, E: DataLoaderEngine>:
   
   public var cellAdapter: A!
   public var dataLoader: DataLoader<E>!
-  public weak var delegate: BaseCollectionDelegate?
+  public weak var viewController: UIViewController!
   
   public required init(cellAdapter: A, dataLoaderEngine: E) {
     super.init()
@@ -54,7 +54,7 @@ public class TableViewAdapter<A: CollectionRowCellAdapter, E: DataLoaderEngine>:
   
   public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     let row = dataLoader.rowsToDisplay[indexPath.row]
-    delegate?.didTapCell(forRow: row)
+    cellAdapter.didTapCell(forRow: row as! A.T, inViewController: viewController)
   }
 }
 

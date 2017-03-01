@@ -12,7 +12,7 @@ import RxSwift
 import UIScrollView_InfiniteScroll
 
 
-public class CollectionLoaderController<AdapterType: BaseCollectionAdapter>: UIViewController, CollectionSearchBarDelegate, DataLoaderDelegate {
+open class CollectionLoaderController<AdapterType: BaseCollectionAdapter>: UIViewController, CollectionSearchBarDelegate, DataLoaderDelegate {
   let singleLineTableCellIdentifier = "singleLineIconCell"
   let twoLineTableCellIdentifier = "twoLineIconCell"
   let threeLineTableCellIdentifier = "threeLineIconCell"
@@ -56,6 +56,8 @@ public class CollectionLoaderController<AdapterType: BaseCollectionAdapter>: UIV
     super.init(nibName: nil, bundle: nil)
     
     self.collectionAdapter = collectionAdapter
+    self.collectionAdapter.viewController = self
+    
     self.dataLoader = collectionAdapter.dataLoader
     self.dataLoader.delegate = self
   }
@@ -65,7 +67,7 @@ public class CollectionLoaderController<AdapterType: BaseCollectionAdapter>: UIV
   }
   
   // MARK: - Controller
-  override public func viewDidLoad() {
+  override open func viewDidLoad() {
     super.viewDidLoad()
 
     edgesForExtendedLayout = []
@@ -180,7 +182,7 @@ public class CollectionLoaderController<AdapterType: BaseCollectionAdapter>: UIV
     loadRows(loadType: .newRows)
   }
   
-  override public func viewWillAppear(_ animated: Bool) {
+  override open func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
     
     if let loadType = refreshOnAppear, dataLoader.rowsLoaded && !dataLoader.rowsLoading && collectionInitialized {
@@ -401,4 +403,8 @@ public class CollectionLoaderController<AdapterType: BaseCollectionAdapter>: UIV
     dataLoader.searchByString(searchBar.text)
   }
 
+  // MARK: - BaseCollectionDelegate
+  open func didTapCell<T>(forRow row: T) {
+    
+  }
 }

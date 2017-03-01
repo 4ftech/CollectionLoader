@@ -12,11 +12,12 @@ public protocol BaseCollectionAdapter {
   associatedtype CellAdapterType
   associatedtype EngineType: DataLoaderEngine
   
-  var delegate: BaseCollectionDelegate? { get set }
-  
   init(cellAdapter: CellAdapterType, dataLoaderEngine: EngineType)
-  func registerCells<T: UIScrollView>(scrollView: T)
+  
+  var viewController: UIViewController! { get set }
   var cellAdapter: CellAdapterType! { get set }
   var dataLoader: DataLoader<EngineType>! { get set }
   var collectionViewType: CollectionViewType { get }
+  
+  func registerCells<T: UIScrollView>(scrollView: T)
 }
