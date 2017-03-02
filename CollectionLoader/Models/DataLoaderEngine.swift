@@ -17,35 +17,126 @@ public enum QueryOrder {
 public protocol DataLoaderEngine {
   associatedtype T: BaseDataModel
   
+  var paginate: Bool { get }
+  
   var firstRow: T? { get set }
-  var skip: Int { get set }
   
-  var searchKey: String { get }
+  var searchKey: String? { get }
   
-  // Have Defaults Below
   var orderByKey: String? { get }
   var orderByLastValue: Any? { get }
-
-  var queryLimit: Int { get }
   var order: QueryOrder { get }
+
+  var queryLimit: Int? { get }
+  var skip: Int { get set }
+
   
   mutating func promise(forLoadType loadType: DataLoadType, queryString: String?) -> Promise<[T]>
 }
 
-public extension DataLoaderEngine {
-  public var queryLimit: Int { return 20 }
-  public var order: QueryOrder { return .ascending }
-  public var orderByKey: String? { return nil }
-  public var orderByLastValue: Any? { return nil }
-  
-  public mutating func promise(forLoadType loadType: DataLoadType, queryString: String?) -> Promise<[T]> {
-    if loadType == .clearAndReplace {
-      skip = 0
-    }
+//public extension DataLoaderEngine {
+//  public var paginate: Bool { return false }
+//  public var firstRow: T? {
+//    get { return nil }
+//    set { }
+//  }
+//
+//  public var searchKey: String? { return nil }
+//  
+//  public var orderByKey: String? { return nil }
+//  public var orderByLastValue: Any? { return nil }
+//  public var order: QueryOrder { return .ascending }
+//
+//  public var queryLimit: Int? { return nil }
+//  public var skip: Int? {
+//    get { return nil }
+//    set { }
+//  }
+//  
+//  public func request(forLoadType loadType: DataLoadType, queryString: String?) -> FetchRequest {
+//    let request: FetchRequest = T.fetchRequest()
+//    
+//    if let queryString = queryString, let searchKey = searchKey {
+//      request.whereKey(searchKey, matchesRegex: queryString, modifiers: "i")
+//    }
+//    
+//    request.limit = queryLimit
+//    
+//    switch loadType {
+//    case .clearAndReplace,.replace,.initial:
+//      skip = 0
+//      request.offset = skip
+//    case .more:
+//      request.offset = skip
+//    case .newRows:
+//      if let firstOrder = orderByLastValue, let orderByKey = orderByKey {
+//        switch order {
+//        case .ascending:
+//          request.whereKey(orderByKey, lessThan: firstOrder)
+//        case .descending:
+//          request.whereKey(orderByKey, greaterThan: firstOrder)
+//        }
+//      }
+//    }
+//    
+//    if let orderByKey = orderByKey {
+//      switch order {
+//      case .ascending:
+//        request.orderByAscending(orderByKey)
+//      case .descending:
+//        request.orderByDescending(orderByKey)
+//      }
+//    }
+//    
+//    return request
+//  }
+//  
+//  public mutating func promise(forLoadType loadType: DataLoadType, queryString: String?) -> Promise<[T]> {
+//    if loadType == .clearAndReplace {
+//      skip = 0
+//    }
+//
+//    let request: FetchRequest = request(forLoadType: loadType, queryString: queryString)
+//
+//    var realSelf = self
+//    return Promise<[T]> { fulfill, reject in
+//      request.fetch().then { (results: [T]) -> Void in
+//        if results.count > 0 {
+//          if loadType != .more {
+//            realSelf.firstRow = results.first
+//          }
+//          
+//          realSelf.skip = (realSelf.skip ?? 0) + results.count
+//        }
+//
+//        fulfill(results)
+//      }.catch { error in
+//        reject(error)
+//      }
+//    }
+//  }
+//}
 
+
+open class BaseDataLoaderEngine<U: BaseDataModel>: NSObject, DataLoaderEngine {
+  public typealias T = U
+
+  open var paginate: Bool { return false }
+  public var firstRow: U?
+  
+  open var searchKey: String? { return nil }
+  
+  open var orderByKey: String? { return nil }
+  open var orderByLastValue: Any? { return nil }
+  open var order: QueryOrder { return .ascending }
+  
+  open var queryLimit: Int? { return nil }
+  public var skip: Int = 0
+  
+  open func request(forLoadType loadType: DataLoadType, queryString: String?) -> FetchRequest {
     let request: FetchRequest = T.fetchRequest()
     
-    if let queryString = queryString {
+    if let queryString = queryString, let searchKey = searchKey {
       request.whereKey(searchKey, matchesRegex: queryString, modifiers: "i")
     }
     
@@ -53,10 +144,14 @@ public extension DataLoaderEngine {
     
     switch loadType {
     case .clearAndReplace,.replace,.initial:
-      skip = 0
-      request.offset = skip
+      if paginate {
+        skip = 0
+        request.offset = skip
+      }
     case .more:
-      request.offset = skip
+      if paginate {
+        request.offset = skip
+      }
     case .newRows:
       if let firstOrder = orderByLastValue, let orderByKey = orderByKey {
         switch order {
@@ -77,7 +172,17 @@ public extension DataLoaderEngine {
       }
     }
     
-    var realSelf = self    
+    return request
+  }
+  
+  open func promise(forLoadType loadType: DataLoadType, queryString: String?) -> Promise<[T]> {
+    if loadType == .clearAndReplace && paginate {
+      skip = 0
+    }
+    
+    let request: FetchRequest = self.request(forLoadType: loadType, queryString: queryString)
+    
+    var realSelf = self
     return Promise<[T]> { fulfill, reject in
       request.fetch().then { (results: [T]) -> Void in
         if results.count > 0 {
@@ -85,23 +190,15 @@ public extension DataLoaderEngine {
             realSelf.firstRow = results.first
           }
           
-          realSelf.skip += results.count
+          if realSelf.paginate {
+            realSelf.skip += results.count
+          }
         }
-
+        
         fulfill(results)
       }.catch { error in
         reject(error)
       }
-    }
-  }
-  
-  public mutating func handle(results: [T], forLoadType loadType: DataLoadType) {
-    if results.count > 0 {
-      if loadType != .more {
-        firstRow = results.first
-      }
-      
-      skip += results.count
     }
   }
 }

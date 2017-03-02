@@ -32,8 +32,8 @@ public final class CollectionLoaderSelectRow<U: DataLoaderEngine, V: ViewMappabl
     )
     
     displayValueFor = {
-      guard let object = $0 else { return "" }
-      return  object.objectId
+      guard let objectId = $0 else { return "" }
+      return  objectId.objectId
     }
     
     initializer?(self)
@@ -50,11 +50,6 @@ public class CollectionLoaderSelectController<U: DataLoaderEngine, V: ViewMappab
   
   required public init(dataLoaderEngine: U, cellAdapter: NibCellMapperAdapter<V>, callback: ((UIViewController) -> ())? = nil) {
     let collectionAdapter = TableViewMapperAdapter(cellAdapter: cellAdapter, dataLoaderEngine: dataLoaderEngine)
-    
-//    if let selectedId = row.value?.objectId {
-//      collectionAdapter.selectedIds = [selectedId]
-//    }
-    
     super.init(collectionAdapter: collectionAdapter)
     
     cellAdapter.onTapCell = { value, _ in
@@ -62,6 +57,14 @@ public class CollectionLoaderSelectController<U: DataLoaderEngine, V: ViewMappab
     }
     
     onDismissCallback = callback
+  }
+  
+  public override func viewDidLoad() {
+    super.viewDidLoad()
+    
+    if let selectedObject = row.value, let objectId = selectedObject.objectId {
+      collectionAdapter.selectedIds = [objectId]
+    }
   }
 }
 
@@ -84,7 +87,7 @@ public final class CollectionLoaderSelectMultipleRow<U: DataLoaderEngine, V: Vie
       },
       onDismiss: { vc in
         _ = vc.navigationController?.popViewController(animated: true)
-    }
+      }
     )
     
     displayValueFor = {
@@ -112,11 +115,6 @@ public class CollectionLoaderSelectMultipleController<U: DataLoaderEngine, V: Vi
   
   required public init(dataLoaderEngine: U, cellAdapter: NibCellMapperAdapter<V>, callback: ((UIViewController) -> ())? = nil) {
     let collectionAdapter = TableViewMapperAdapter(cellAdapter: cellAdapter, dataLoaderEngine: dataLoaderEngine)
-
-//    if let rows = row.value?.filter({ $0.objectId != nil }), rows.count > 0 {
-//      collectionAdapter.selectedIds = rows.map { $0.objectId! }
-//    }
-    
     super.init(collectionAdapter: collectionAdapter)
     
     cellAdapter.onTapCell = { value, _ in
@@ -131,5 +129,13 @@ public class CollectionLoaderSelectMultipleController<U: DataLoaderEngine, V: Vi
     }
     
     onDismissCallback = callback
+  }
+  
+  public override func viewDidLoad() {
+    super.viewDidLoad()
+    
+    if let rows = row.value?.filter({ $0.objectId != nil }), rows.count > 0 {
+      collectionAdapter.selectedIds = rows.map { $0.objectId! }
+    }
   }
 }

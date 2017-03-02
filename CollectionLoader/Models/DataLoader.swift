@@ -89,6 +89,8 @@ public class DataLoader<EngineType: DataLoaderEngine>: NSObject {
     
     self.dataLoaderEngine = dataLoaderEngine
     self.registerForCRUDNotificationsWithClassName(String(describing: T.self))
+    
+    self.mightHaveMore = dataLoaderEngine.paginate
   }
   
   // MARK: - CRUD
@@ -136,7 +138,7 @@ public class DataLoader<EngineType: DataLoaderEngine>: NSObject {
   fileprivate func clear() {
     rows = []
     rowsLoaded = false
-    mightHaveMore = true
+    mightHaveMore = dataLoaderEngine.paginate
     delegate?.didClearRows()
   }
   
@@ -177,9 +179,9 @@ public class DataLoader<EngineType: DataLoaderEngine>: NSObject {
       }
       
       var results = results
-      for result in results {
-        NSLog("\(result.objectId)")
-      }
+      //      for result in results {
+      //        NSLog("\(result.objectId)")
+      //      }
       
       if let fn = self.filterFunction {
         results = results.filter(fn)
@@ -278,7 +280,7 @@ public class DataLoader<EngineType: DataLoaderEngine>: NSObject {
         newRows = results
       }
       
-      mightHaveMore = totalResults == dataLoaderEngine.queryLimit
+      mightHaveMore = totalResults == dataLoaderEngine.queryLimit && dataLoaderEngine.paginate
     }
 
     // Optional post-processing

@@ -12,14 +12,13 @@ import CollectionLoader
 import DataSource
 import ParseDataSource
 
-public class ParseDataEngine<T>: NSObject, DataLoaderEngine where T:ParseDataModel {
-  public var skip: Int = 0
+public class ParseDataEngine<T>: BaseDataLoaderEngine<T> where T:ParseDataModel {
+  public override var paginate: Bool { return true }
+  public override var queryLimit: Int? { return 14 }
   
-  public var firstRow: T?
-  
-  public var searchKey: String = "name"
-  public var orderByKey: String? = "name"
-  public var orderByLastValue: Any? {
+  public override var searchKey: String { return "name" }
+  public override var orderByKey: String? { return "name" }
+  public override var orderByLastValue: Any? {
     if let key = orderByKey {
       return firstRow?[key]
     } else {

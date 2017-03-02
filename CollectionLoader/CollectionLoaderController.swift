@@ -70,6 +70,8 @@ open class CollectionLoaderController<AdapterType: BaseCollectionAdapter>: UIVie
   override open func viewDidLoad() {
     super.viewDidLoad()
 
+    NSLog("viewDidLoad for CollectionLoaderController")
+    
     edgesForExtendedLayout = []
     extendedLayoutIncludesOpaqueBars = false
 
