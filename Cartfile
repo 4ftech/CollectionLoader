@@ -8,3 +8,6 @@ github "pronebird/UIScrollView-InfiniteScroll"
 
 
 github "ParsePlatform/Parse-SDK-iOS-OSX"
+
+
+github "xmartlabs/Eureka"

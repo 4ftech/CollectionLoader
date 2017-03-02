@@ -30,7 +30,7 @@ open class CollectionLoaderController<AdapterType: BaseCollectionAdapter>: UIVie
   var collectionAdapter: AdapterType!
   
   // Search
-  public var allowSearch: Bool = false
+  public var allowSearch: Bool = true
   var searchBar: CollectionSearchBar?
   
   // Insets

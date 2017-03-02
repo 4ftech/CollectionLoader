@@ -8,93 +8,23 @@
 
 import Foundation
 import CollectionLoader
-import PromiseKit
-import Parse
 
 import DataSource
 import ParseDataSource
 
-enum ParseQueryOrder {
-  case ascending, descending
-}
-
-open class ParseCollectionRow: ParseDataModel, CollectionRow {
-  open var name: String? {
-    get {
-      return self["name"] as? String
-    }
-    set {
-      NSLog("\(newValue)")
-      self["name"] = newValue
-    }
-  }
-}
-
-public class ParseDataEngine<T>: NSObject, DataLoaderEngine where T: CollectionRow, T: BaseDataModel {
-  var skip: Int = 0
+public class ParseDataEngine<T>: NSObject, DataLoaderEngine where T:ParseDataModel {
+  public var skip: Int = 0
   
-  public var queryLimit: Int { return 20 }
-
-  var firstRow: PFObject?
+  public var firstRow: T?
   
-  var searchKey: String = "name"
-  var orderBy: String = "name"
-  var order: ParseQueryOrder = .ascending
-  
-  public func promise(forLoadType loadType: DataLoadType, queryString: String?) -> Promise<[T]> {
-    if loadType == .clearAndReplace {
-      skip = 0
+  public var searchKey: String = "name"
+  public var orderByKey: String? = "name"
+  public var orderByLastValue: Any? {
+    if let key = orderByKey {
+      return firstRow?[key]
+    } else {
+      return nil
     }
-
-    let request: FetchRequest = T.fetchRequest()
-
-    if let queryString = queryString {
-      request.whereKey(searchKey, matchesRegex: queryString, modifiers: "i")
-    }
-    
-    
-    request.limit = queryLimit
-    
-    switch loadType {
-    case .clearAndReplace,.replace,.initial:
-      skip = 0
-      request.offset = skip
-    case .more:
-      request.offset = skip
-    case .newRows:
-      if let firstOrder = firstRow?[orderBy] {
-        switch order {
-        case .ascending:
-          request.whereKey(orderBy, lessThan: firstOrder)
-        case .descending:
-          request.whereKey(orderBy, greaterThan: firstOrder)
-        }
-      }
-    }
-    
-    switch order {
-    case .ascending:
-      request.orderByAscending(orderBy)
-    case .descending:
-      request.orderByDescending(orderBy)
-    }
-
-    return Promise { fulfill, reject in
-      request.fetch().then { (results: [T]) -> Void in
-        if results.count > 0 {
-          if loadType != .more {
-            self.firstRow = results.first as? PFObject
-          }
-          
-          self.skip += results.count
-        }
-        
-        fulfill(results)
-      }.catch { error in
-        reject(error)
-      }
-    }
-    
   }
 }
 

@@ -32,13 +32,6 @@ public enum DataLoadType: Int {
   case initial, more, clearAndReplace, replace, newRows
 }
 
-public protocol DataLoaderEngine {
-  associatedtype T: CollectionRow
-  
-  var queryLimit: Int { get }
-  func promise(forLoadType loadType: DataLoadType, queryString: String?) -> Promise<[T]>
-}
-
 public class DataLoader<EngineType: DataLoaderEngine>: NSObject {
   typealias T = EngineType.T
   
