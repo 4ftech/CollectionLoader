@@ -9,15 +9,12 @@
 import Foundation
 
 public protocol BaseCollectionAdapter {
-  associatedtype CellAdapterType
   associatedtype EngineType: DataLoaderEngine
-  
-  init(cellAdapter: CellAdapterType, dataLoaderEngine: EngineType)
-  
+
   var viewController: UIViewController! { get set }
-  var cellAdapter: CellAdapterType! { get set }
   var dataLoader: DataLoader<EngineType>! { get set }
-  var collectionViewType: CollectionViewType { get }
+  var scrollView: UIScrollView { get }
   
-  func registerCells<T: UIScrollView>(scrollView: T)
+  func registerCells()
+  func reloadData()
 }

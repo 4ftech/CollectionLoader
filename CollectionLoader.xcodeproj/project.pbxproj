@@ -47,6 +47,7 @@
 		70A886291E5822B700823C0F /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70A886281E5822B700823C0F /* UIView.swift */; };
 		70A8862C1E58A63300823C0F /* CollectionLoader.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 70A884161E5736C400823C0F /* CollectionLoader.framework */; };
 		70C407BC1E68DDCD00A14EB7 /* ParseViewMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70C407BB1E68DDCD00A14EB7 /* ParseViewMapper.swift */; };
+		70C407CC1E69F37800A14EB7 /* DataLoadType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70C407CB1E69F37800A14EB7 /* DataLoadType.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -151,6 +152,7 @@
 		70A886221E57EE8D00823C0F /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Parse.framework; path = Carthage/Build/iOS/Parse.framework; sourceTree = "<group>"; };
 		70A886281E5822B700823C0F /* UIView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIView.swift; sourceTree = "<group>"; };
 		70C407BB1E68DDCD00A14EB7 /* ParseViewMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParseViewMapper.swift; sourceTree = "<group>"; };
+		70C407CB1E69F37800A14EB7 /* DataLoadType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataLoadType.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -294,6 +296,7 @@
 			children = (
 				70A884CC1E573FF900823C0F /* DataLoader.swift */,
 				705D307D1E678144005D3A5F /* DataLoaderEngine.swift */,
+				70C407CB1E69F37800A14EB7 /* DataLoadType.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -603,6 +606,7 @@
 				705D2E5B1E60955A005D3A5F /* TableViewMapperAdapter.swift in Sources */,
 				705D307E1E678144005D3A5F /* DataLoaderEngine.swift in Sources */,
 				70A884CF1E57403A00823C0F /* CollectionSearchBar.swift in Sources */,
+				70C407CC1E69F37800A14EB7 /* DataLoadType.swift in Sources */,
 				70A884DD1E5762F000823C0F /* UITableView.swift in Sources */,
 				705D2E5D1E609573005D3A5F /* CollectionViewMapperAdapter.swift in Sources */,
 				70A884CD1E573FF900823C0F /* DataLoader.swift in Sources */,

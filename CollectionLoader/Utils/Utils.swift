@@ -14,6 +14,7 @@ class Utils {
   }
 
   static let searchBarHeight: CGFloat = 44
+  static let topBarHeight: CGFloat = 64
   
   class func performOnMainThread(_ fn: @escaping () -> Void) {
     DispatchQueue.main.async(execute: {

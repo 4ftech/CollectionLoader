@@ -11,18 +11,18 @@ import DataSource
 import ViewMapper
 import Eureka
 
-public final class CollectionLoaderSelectRow<U: DataLoaderEngine, V: ViewMappable>: SelectorRow<PushSelectorCell<U.T>, CollectionLoaderSelectController<U, V>>, RowType where U.T == V.T {
+public final class CollectionLoaderSelectRow<T: CellMapperAdapter, U: DataLoaderEngine>: SelectorRow<PushSelectorCell<U.T>, CollectionLoaderSelectController<T, U>>, RowType where T.T.T == U.T {
   
   public required init(tag: String?) {
     super.init(tag: tag)
   }
   
-  public init(dataLoaderEngine: U, cellAdapter: NibCellMapperAdapter<V>, tag: String? = nil, initializer: ((CollectionLoaderSelectRow) -> Void)? = nil) {
+  public init(collectionAdapter: TableViewMapperAdapter<T, U>, tag: String? = nil, initializer: ((CollectionLoaderSelectRow) -> Void)? = nil) {
     super.init(tag: tag)
     
     presentationMode = .show(
       controllerProvider: ControllerProvider.callback {
-        return CollectionLoaderSelectController(dataLoaderEngine: dataLoaderEngine, cellAdapter: cellAdapter) { _ in
+        return CollectionLoaderSelectController(collectionAdapter: collectionAdapter) { _ in
           
         }
       },
@@ -40,7 +40,7 @@ public final class CollectionLoaderSelectRow<U: DataLoaderEngine, V: ViewMappabl
   }
 }
 
-public class CollectionLoaderSelectController<U: DataLoaderEngine, V: ViewMappable>: CollectionLoaderController<TableViewMapperAdapter<NibCellMapperAdapter<V>, U>>, TypedRowControllerType where U.T == V.T {
+public class CollectionLoaderSelectController<T: CellMapperAdapter, U: DataLoaderEngine>: CollectionLoaderController<TableViewMapperAdapter<T, U>>, TypedRowControllerType where T.T.T == U.T {
   public var row: RowOf<U.T>!
   public var onDismissCallback: ((UIViewController) -> ())?
   
@@ -48,11 +48,10 @@ public class CollectionLoaderSelectController<U: DataLoaderEngine, V: ViewMappab
     super.init(coder: aDecoder)
   }
   
-  required public init(dataLoaderEngine: U, cellAdapter: NibCellMapperAdapter<V>, callback: ((UIViewController) -> ())? = nil) {
-    let collectionAdapter = TableViewMapperAdapter(cellAdapter: cellAdapter, dataLoaderEngine: dataLoaderEngine)
+  required public init(collectionAdapter: TableViewMapperAdapter<T, U>, callback: ((UIViewController) -> ())? = nil) {
     super.init(collectionAdapter: collectionAdapter)
     
-    cellAdapter.onTapCell = { value, _ in
+    collectionAdapter.cellAdapter.onTapCell = { value, _ in
       self.row.value = value
     }
     
@@ -62,26 +61,31 @@ public class CollectionLoaderSelectController<U: DataLoaderEngine, V: ViewMappab
   public override func viewDidLoad() {
     super.viewDidLoad()
     
-    if let selectedObject = row.value, let objectId = selectedObject.objectId {
-      collectionAdapter.selectedIds = [objectId]
+  }
+  
+  override func refreshScrollView() {
+    super.refreshScrollView()
+
+    if let selectedObject = row.value, let index = dataLoader.rowsToDisplay.index(of: selectedObject), let tableView = scrollView as? UITableView {
+      tableView.selectRow(at: IndexPath(row: index, section: 0), animated: true, scrollPosition: .none)
     }
   }
 }
 
 
 
-public final class CollectionLoaderSelectMultipleRow<U: DataLoaderEngine, V: ViewMappable>: SelectorRow<PushSelectorCell<Set<U.T>>, CollectionLoaderSelectMultipleController<U, V>>, RowType where U.T == V.T {
+public final class CollectionLoaderSelectMultipleRow<T: CellMapperAdapter, U: DataLoaderEngine>: SelectorRow<PushSelectorCell<Set<U.T>>, CollectionLoaderSelectMultipleController<T, U>>, RowType where T.T.T == U.T {
   
   public required init(tag: String?) {
     super.init(tag: tag)
   }
   
-  public init(dataLoaderEngine: U, cellAdapter: NibCellMapperAdapter<V>, tag: String? = nil, initializer: ((CollectionLoaderSelectMultipleRow) -> Void)? = nil) {
+  public init(collectionAdapter: TableViewMapperAdapter<T, U>, tag: String? = nil, initializer: ((CollectionLoaderSelectMultipleRow) -> Void)? = nil) {
     super.init(tag: tag)
     
     presentationMode = .show(
       controllerProvider: ControllerProvider.callback {
-        return CollectionLoaderSelectMultipleController(dataLoaderEngine: dataLoaderEngine, cellAdapter: cellAdapter) { _ in
+        return CollectionLoaderSelectMultipleController(collectionAdapter: collectionAdapter) { _ in
           
         }
       },
@@ -105,7 +109,7 @@ public final class CollectionLoaderSelectMultipleRow<U: DataLoaderEngine, V: Vie
   }
 }
 
-public class CollectionLoaderSelectMultipleController<U: DataLoaderEngine, V: ViewMappable>: CollectionLoaderController<TableViewMapperAdapter<NibCellMapperAdapter<V>, U>>, TypedRowControllerType where U.T == V.T {
+public class CollectionLoaderSelectMultipleController<T: CellMapperAdapter, U: DataLoaderEngine>: CollectionLoaderController<TableViewMapperAdapter<T, U>>, TypedRowControllerType where T.T.T == U.T {
   public var row: RowOf<Set<U.T>>!
   public var onDismissCallback: ((UIViewController) -> ())?
   
@@ -113,11 +117,10 @@ public class CollectionLoaderSelectMultipleController<U: DataLoaderEngine, V: Vi
     super.init(coder: aDecoder)
   }
   
-  required public init(dataLoaderEngine: U, cellAdapter: NibCellMapperAdapter<V>, callback: ((UIViewController) -> ())? = nil) {
-    let collectionAdapter = TableViewMapperAdapter(cellAdapter: cellAdapter, dataLoaderEngine: dataLoaderEngine)
+  public init(collectionAdapter: TableViewMapperAdapter<T, U>, callback: ((UIViewController) -> ())? = nil) {
     super.init(collectionAdapter: collectionAdapter)
     
-    cellAdapter.onTapCell = { value, _ in
+    collectionAdapter.cellAdapter.onTapCell = { value, _ in
       var values = self.row.value ?? []
       if values.contains(value) {
         values.remove(value)
@@ -131,11 +134,15 @@ public class CollectionLoaderSelectMultipleController<U: DataLoaderEngine, V: Vi
     onDismissCallback = callback
   }
   
-  public override func viewDidLoad() {
-    super.viewDidLoad()
+  override func refreshScrollView() {
+    super.refreshScrollView()
     
-    if let rows = row.value?.filter({ $0.objectId != nil }), rows.count > 0 {
-      collectionAdapter.selectedIds = rows.map { $0.objectId! }
+    if let rows = row.value, let tableView = scrollView as? UITableView, rows.count > 0 {
+      for row in rows {
+        if let index = dataLoader.rowsToDisplay.index(of: row) {
+          tableView.selectRow(at: IndexPath(row: index, section: 0), animated: true, scrollPosition: .none)
+        }
+      }
     }
   }
 }

@@ -9,11 +9,13 @@
 import Foundation
 import ViewMapper
 
-public class CollectionViewMapperAdapter<A: CellMapperAdapter, E: DataLoaderEngine>: NSObject, BaseCollectionAdapter, UICollectionViewDelegate, UICollectionViewDataSource {
-  public typealias CellAdapterType = A
+public class CollectionViewMapperAdapter<A: CellMapperAdapter, E: DataLoaderEngine>: NSObject, BaseCollectionAdapter, UICollectionViewDelegate, UICollectionViewDataSource where A.T.T == E.T {
   public typealias EngineType = E
   
-  public var collectionViewType: CollectionViewType = .collection
+  public var collectionView = UICollectionView()
+  public var scrollView: UIScrollView {
+    return collectionView
+  }
   
   public var cellAdapter: A!
   public var dataLoader: DataLoader<E>!
@@ -24,13 +26,18 @@ public class CollectionViewMapperAdapter<A: CellMapperAdapter, E: DataLoaderEngi
     
     self.cellAdapter = cellAdapter
     self.dataLoader = DataLoader<E>(dataLoaderEngine: dataLoaderEngine)
+
+    self.collectionView.delegate = self
+    self.collectionView.dataSource = self
   }
   
-  public func registerCells<T: UIScrollView>(scrollView: T) {
-    if let collectionView = scrollView as? UICollectionView {
-      for cellType in cellAdapter.cellTypes {
-        collectionView.register(cellType.nib, forCellWithReuseIdentifier: cellType.identifier)
-      }
+  public func reloadData() {
+    collectionView.reloadData()
+  }
+  
+  public func registerCells() {
+    for cellType in cellAdapter.cellTypes {
+      collectionView.register(cellType.nib, forCellWithReuseIdentifier: cellType.identifier)
     }
   }
   
@@ -45,10 +52,11 @@ public class CollectionViewMapperAdapter<A: CellMapperAdapter, E: DataLoaderEngi
   public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
     let row = dataLoader.rowsToDisplay[indexPath.row]
     
-    let identifier = cellAdapter.cellIdentifier(forRow: row as! A.T.T)
+    let identifier = cellAdapter.cellIdentifier(forRow: row)
     
     let mappableCell = collectionView.dequeueReusableCell(withReuseIdentifier: identifier, for: indexPath) as! A.T
-    mappableCell.map(object: row as! A.T.T)
+    
+    mappableCell.map(object: row)
     
     let cell = mappableCell as! UICollectionViewCell
     return cell
@@ -56,7 +64,7 @@ public class CollectionViewMapperAdapter<A: CellMapperAdapter, E: DataLoaderEngi
   
   public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
     let row = dataLoader.rowsToDisplay[indexPath.row]
-    cellAdapter.onTapCell?(row as! A.T.T, viewController)
-  }
+    cellAdapter.onTapCell?(row, viewController)
+  }    
 }
 

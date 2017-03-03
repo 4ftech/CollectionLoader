@@ -24,7 +24,7 @@ open class CollectionLoaderController<AdapterType: BaseCollectionAdapter>: UIVie
   var scrollView: UIScrollView!
 
   var loaderView: LoaderView!
-  var pullToRefresh: Bool = true
+  var pullToRefresh: Bool = false
   var refreshControl: UIRefreshControl?
   
   var collectionAdapter: AdapterType!
@@ -34,11 +34,21 @@ open class CollectionLoaderController<AdapterType: BaseCollectionAdapter>: UIVie
   var searchBar: CollectionSearchBar?
   
   // Insets
-  var topInset: CGFloat {
+  var scrollTopInset: CGFloat {
     var topInset: CGFloat = 0
     
     if allowSearch {
       topInset = topInset + Utils.searchBarHeight
+    }
+    
+    return topInset
+  }
+  
+  var topBarInset: CGFloat {
+    var topInset: CGFloat = 0
+    
+    if let navController = navigationController, !navController.isNavigationBarHidden {
+      topInset = topInset + Utils.topBarHeight
     }
     
     return topInset
@@ -49,7 +59,7 @@ open class CollectionLoaderController<AdapterType: BaseCollectionAdapter>: UIVie
   var dataLoader: DataLoader<AdapterType.EngineType>!
   var disposeBag: DisposeBag = DisposeBag()
 
-  var refreshOnAppear: DataLoadType? = .newRows
+  var refreshOnAppear: DataLoadType? = nil
   
   // MARK: - Initialize
   public init(collectionAdapter: AdapterType) {
@@ -60,6 +70,8 @@ open class CollectionLoaderController<AdapterType: BaseCollectionAdapter>: UIVie
     
     self.dataLoader = collectionAdapter.dataLoader
     self.dataLoader.delegate = self
+    
+    self.emptyViewContent = EmptyViewContent(message: "No results")
   }
   
   required public init?(coder aDecoder: NSCoder) {
@@ -72,51 +84,32 @@ open class CollectionLoaderController<AdapterType: BaseCollectionAdapter>: UIVie
 
     NSLog("viewDidLoad for CollectionLoaderController")
     
-    edgesForExtendedLayout = []
-    extendedLayoutIncludesOpaqueBars = false
+    //    edgesForExtendedLayout = []
+    //    extendedLayoutIncludesOpaqueBars = false
+    automaticallyAdjustsScrollViewInsets = true
+    
+    view.backgroundColor = UIColor.white
 
     // Add Container and ScrollView
     container = SpringView()
     container.alpha = 0
     Utils.fillContainer(view, withView: container)
     
-    switch collectionAdapter.collectionViewType {
-    case .collection:
-      let collectionView = UICollectionView()
-      
-      collectionAdapter.registerCells(scrollView: collectionView)
-      
-      collectionView.dataSource = collectionAdapter as? UICollectionViewDataSource
-      collectionView.delegate = collectionAdapter as? UICollectionViewDelegate
-
-      
-      scrollView = collectionView
-      break
-    case .table:
-      let tableView = UITableView()
-      tableView.tableFooterView = UIView(frame: CGRect.zero)
-      
-      collectionAdapter.registerCells(scrollView: tableView)
-      
-      tableView.dataSource = collectionAdapter as? UITableViewDataSource
-      tableView.delegate = collectionAdapter as? UITableViewDelegate
-      
-      scrollView = tableView
-      break
-    }
+    scrollView = collectionAdapter.scrollView
+    collectionAdapter.registerCells()
 
     Utils.fillContainer(container, withView: scrollView)
     
     // Loader
     loaderView = LoaderView.newInstance(content: emptyViewContent)
-    Utils.fillContainer(view, withView: loaderView, edgeInsets: UIEdgeInsets(top: topInset, left: 0, bottom: 0, right: 0))
+    Utils.fillContainer(view, withView: loaderView, edgeInsets: UIEdgeInsets(top: topBarInset + scrollTopInset, left: 0, bottom: 0, right: 0))
     
     // ScrollView
     scrollView.alwaysBounceVertical = true
     scrollView.showsVerticalScrollIndicator = false
     scrollView.showsHorizontalScrollIndicator = false
     
-    scrollView.contentInset = UIEdgeInsets(top: topInset, left: 0, bottom: 0, right: 0)
+    scrollView.contentInset = UIEdgeInsets(top: scrollTopInset, left: 0, bottom: 0, right: 0)
     
     if pullToRefresh {
       refreshControl = UIRefreshControl()
@@ -132,7 +125,7 @@ open class CollectionLoaderController<AdapterType: BaseCollectionAdapter>: UIVie
       searchBar = CollectionSearchBar.newInstance()
       searchBar?.delegate = self
       searchBar?.isHidden = false
-      Utils.addView(searchBar!, toContainer: container, onEdge: .top)
+      Utils.addView(searchBar!, toContainer: container, onEdge: .top, edgeInsets: UIEdgeInsets(top: topBarInset, left: 0, bottom: 0, right: 0))
       
       NotificationCenter.default.addObserver(self, selector: #selector(searchKeyboardDidShow(_:)), name: Notification.Name.UIKeyboardDidShow, object: nil)
       NotificationCenter.default.addObserver(self, selector: #selector(searchKeyboardWillHide(_:)), name: Notification.Name.UIKeyboardWillHide, object: nil)
@@ -153,10 +146,6 @@ open class CollectionLoaderController<AdapterType: BaseCollectionAdapter>: UIVie
     } else {
       loaderView.isHidden = true
     }
-  }
-  
-  func setCollectionAdapter() {
-    
   }
   
   func searchKeyboardDidShow(_ notification: Notification) {
@@ -198,7 +187,9 @@ open class CollectionLoaderController<AdapterType: BaseCollectionAdapter>: UIVie
       return
     }
     
-    dataLoader.loadRows(loadType: loadType)
+    dataLoader.loadRows(loadType: loadType)?.catch { [weak self] error in
+      self?.loaderView.showEmptyView()
+    }
 
     switch loadType {
     case .more, .newRows:
@@ -234,7 +225,6 @@ open class CollectionLoaderController<AdapterType: BaseCollectionAdapter>: UIVie
   
   func handleResultsReceivedNotification(_ notification: Notification) {
     let loadType = dataLoader.loadTypeFromNotification(notification)
-    //    let results = dataLoader.resultsFromNotification(notification)
 
     if loadType != .more {
       refreshControl?.endRefreshing()
@@ -285,7 +275,7 @@ open class CollectionLoaderController<AdapterType: BaseCollectionAdapter>: UIVie
     } else if results != nil {
       refreshScrollView()
     }
-
+    
     if !collectionInitialized {
       initialDisplay()
       collectionInitialized = true
@@ -376,16 +366,7 @@ open class CollectionLoaderController<AdapterType: BaseCollectionAdapter>: UIVie
   }
   
   func refreshScrollView() {
-    switch collectionAdapter.collectionViewType {
-    case .collection:
-      let collectionView = scrollView as! UICollectionView
-      collectionView.reloadData()
-      break
-    case .table:
-      let tableView = scrollView as! UITableView
-      tableView.reloadData()
-      break
-    }
+    collectionAdapter.reloadData()
   }
   
   // MARK: - CollectionSearchBarDelegate

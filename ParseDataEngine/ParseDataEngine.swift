@@ -14,7 +14,6 @@ import ParseDataSource
 
 public class ParseDataEngine<T>: BaseDataLoaderEngine<T> where T:ParseDataModel {
   public override var paginate: Bool { return true }
-  public override var queryLimit: Int? { return 14 }
   
   public override var searchKey: String { return "name" }
   public override var orderByKey: String? { return "name" }

@@ -85,7 +85,7 @@
                     </constraints>
                 </view>
             </subviews>
-            <color key="backgroundColor" red="0.95075207948684692" green="0.95072358846664429" blue="0.95073968172073364" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
             <constraints>
                 <constraint firstItem="pf2-vt-2mL" firstAttribute="top" secondItem="h3L-eg-VkY" secondAttribute="top" id="4VJ-SX-ZYq"/>
                 <constraint firstItem="uPd-Zf-OYG" firstAttribute="centerY" secondItem="6c9-84-ffU" secondAttribute="centerY" id="5LM-0f-zPz"/>

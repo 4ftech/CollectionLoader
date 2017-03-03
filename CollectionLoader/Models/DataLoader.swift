@@ -28,10 +28,6 @@ protocol DataLoaderDelegate: class {
   func didClearRows()
 }
 
-public enum DataLoadType: Int {
-  case initial, more, clearAndReplace, replace, newRows
-}
-
 public class DataLoader<EngineType: DataLoaderEngine>: NSObject {
   typealias T = EngineType.T
   
@@ -172,7 +168,14 @@ public class DataLoader<EngineType: DataLoaderEngine>: NSObject {
     
     NSLog("Will execute: \(loadType)")
     return dataLoaderEngine.promise(forLoadType: loadType, queryString: searchQueryString).always {
-      self.rowsLoading = false
+      if !thisCancellationToken.isCancelled {
+        self.rowsLoading = false
+        
+        NotificationCenter.default.post(
+          name: Notification.Name(rawValue: self.notificationNameForAction(.ResultsReceived)),
+          object: self.notificationSenderObject,
+          userInfo: self.userInfo(loadType: loadType))
+      }
     }.then { results in
       if thisCancellationToken.isCancelled {
         return Promise(error: NSError.cancelledError())
@@ -187,16 +190,10 @@ public class DataLoader<EngineType: DataLoaderEngine>: NSObject {
         results = results.filter(fn)
       }
       
-      NotificationCenter.default.post(
-        name: Notification.Name(rawValue: self.notificationNameForAction(.ResultsReceived)),
-        object: self.notificationSenderObject,
-        userInfo: self.userInfoForResults(results, loadType: loadType))
-      
       self.handleResults(results, loadType: loadType)
       
       return Promise(value: results)
     }
-  
   }
 
   fileprivate func handleResults(_ queryResults: [T], loadType: DataLoadType) {
@@ -342,7 +339,7 @@ public class DataLoader<EngineType: DataLoaderEngine>: NSObject {
   
   
   // MARK: - Notifications
-  func userInfoForResults(_ results: [T]?, loadType: DataLoadType) -> [AnyHashable: Any] {
+  func userInfo(results: [T]? = nil, loadType: DataLoadType) -> [AnyHashable: Any] {
     var userInfo: [AnyHashable: Any] = [
       notificationLoadTypeKey: loadType.rawValue,
     ]
@@ -358,7 +355,7 @@ public class DataLoader<EngineType: DataLoaderEngine>: NSObject {
     NotificationCenter.default.post(
       name: Notification.Name(rawValue: notificationNameForAction(.FinishedLoading)),
       object: notificationSenderObject,
-      userInfo: userInfoForResults(results, loadType: loadType))
+      userInfo: userInfo(results: results, loadType: loadType))
   }
   
   func observerForAction(_ action: DataLoaderAction) -> Observable<Notification> {
@@ -368,7 +365,7 @@ public class DataLoader<EngineType: DataLoaderEngine>: NSObject {
       let notification = Notification(
         name: Notification.Name(rawValue: notificationNameForAction(.FinishedLoading)),
         object: notificationSenderObject,
-        userInfo: userInfoForResults(rows, loadType: .initial))
+        userInfo: userInfo(results: rows, loadType: .initial))
 
       return observer.startWith(notification)
     } else {

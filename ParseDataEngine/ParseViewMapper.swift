@@ -16,7 +16,7 @@ import ParseEurekaViewMapper
 
 infix operator <~
 
-public func <~ <U: DataLoaderEngine, V: ViewMappable> (left: CollectionLoaderSelectRow<U, V>, right: (PFObject, String)) -> CollectionLoaderSelectRow<U, V> {
+public func <~ <T: CellMapperAdapter, U: DataLoaderEngine> (left: CollectionLoaderSelectRow<T, U>, right: (PFObject, String)) -> CollectionLoaderSelectRow<T, U> {
   let (object, key) = right
   
   left.onChange { row in
