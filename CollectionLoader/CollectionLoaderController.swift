@@ -54,6 +54,8 @@ open class CollectionLoaderController<AdapterType: BaseCollectionAdapter>: UIVie
     return topInset
   }
   
+  var scrollBottomInset: CGFloat?
+  
   // DATA
   var collectionInitialized = false
   var dataLoader: DataLoader<AdapterType.EngineType>!
@@ -109,7 +111,7 @@ open class CollectionLoaderController<AdapterType: BaseCollectionAdapter>: UIVie
     scrollView.showsVerticalScrollIndicator = false
     scrollView.showsHorizontalScrollIndicator = false
     
-    scrollView.contentInset = UIEdgeInsets(top: scrollTopInset, left: 0, bottom: 0, right: 0)
+    scrollView.contentInset.top += scrollTopInset
     
     if pullToRefresh {
       refreshControl = UIRefreshControl()
@@ -127,7 +129,7 @@ open class CollectionLoaderController<AdapterType: BaseCollectionAdapter>: UIVie
       searchBar?.isHidden = false
       Utils.addView(searchBar!, toContainer: container, onEdge: .top, edgeInsets: UIEdgeInsets(top: topBarInset, left: 0, bottom: 0, right: 0))
       
-      NotificationCenter.default.addObserver(self, selector: #selector(searchKeyboardDidShow(_:)), name: Notification.Name.UIKeyboardDidShow, object: nil)
+      NotificationCenter.default.addObserver(self, selector: #selector(searchKeyboardWillShow(_:)), name: Notification.Name.UIKeyboardWillShow, object: nil)
       NotificationCenter.default.addObserver(self, selector: #selector(searchKeyboardWillHide(_:)), name: Notification.Name.UIKeyboardWillHide, object: nil)
     }
     
@@ -148,10 +150,12 @@ open class CollectionLoaderController<AdapterType: BaseCollectionAdapter>: UIVie
     }
   }
   
-  func searchKeyboardDidShow(_ notification: Notification) {
+  func searchKeyboardWillShow(_ notification: Notification) {
     if let userInfo = notification.userInfo {
       let animationDuration: TimeInterval = (userInfo[UIKeyboardAnimationDurationUserInfoKey] as! NSNumber).doubleValue
       if let keyboardSize = (userInfo[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
+        scrollBottomInset = scrollView.contentInset.bottom
+        
         UIView.animate(withDuration: animationDuration, delay: 0, options: .beginFromCurrentState, animations: {
           self.scrollView.contentInset.bottom = keyboardSize.height
         }, completion: nil)
@@ -162,15 +166,15 @@ open class CollectionLoaderController<AdapterType: BaseCollectionAdapter>: UIVie
   func searchKeyboardWillHide(_ notification: Notification) {
     if let userInfo = notification.userInfo {
       let animationDuration: TimeInterval = (userInfo[UIKeyboardAnimationDurationUserInfoKey] as! NSNumber).doubleValue
-      
       UIView.animate(withDuration: animationDuration, delay: 0, options: .beginFromCurrentState, animations: {
-        self.scrollView.contentInset.bottom = 0
+        let bottomInset = self.scrollBottomInset ?? 0
+        self.scrollView.contentInset.bottom = bottomInset
       }, completion: nil)
     }
   }
   
   func didPullToRefresh(refreshControl: UIRefreshControl) {
-    loadRows(loadType: .newRows)
+    loadRows(loadType: .replace)
   }
   
   override open func viewWillAppear(_ animated: Bool) {

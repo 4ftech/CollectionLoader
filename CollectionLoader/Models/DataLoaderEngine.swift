@@ -97,22 +97,20 @@ open class BaseDataLoaderEngine<U: BaseDataModel>: NSObject, DataLoaderEngine {
       return Promise(value: [])
     }
     
-    if loadType == .clearAndReplace && paginate {
-      skip = 0
-    }
-    
     let request: FetchRequest = self.request(forLoadType: loadType, queryString: queryString)
     
     let realSelf = self
     return Promise<[T]> { fulfill, reject in
       request.fetch().then { (results: [T]) -> Void in
-        if results.count > 0 {
-          if loadType != .more {
-            realSelf.firstRow = results.first
-          }
-          
-          if realSelf.paginate {
+        if loadType != .more {
+          realSelf.firstRow = results.first
+        }
+        
+        if realSelf.paginate {
+          if loadType == .more || loadType == .newRows {
             realSelf.skip += results.count
+          } else {
+            realSelf.skip = results.count
           }
         }
         

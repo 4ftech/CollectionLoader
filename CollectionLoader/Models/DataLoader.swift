@@ -190,13 +190,13 @@ public class DataLoader<EngineType: DataLoaderEngine>: NSObject {
         results = results.filter(fn)
       }
       
-      self.handleResults(results, loadType: loadType)
+      self.handleResults(results, loadType: loadType, updateTimes: updateTimes)
       
       return Promise(value: results)
     }
   }
 
-  fileprivate func handleResults(_ queryResults: [T], loadType: DataLoadType) {
+  fileprivate func handleResults(_ queryResults: [T], loadType: DataLoadType, updateTimes: [T:Date]) {
     // Process the results
     let totalResults = queryResults.count
     
@@ -210,25 +210,19 @@ public class DataLoader<EngineType: DataLoaderEngine>: NSObject {
     }
 
     if !isEmpty && loadType == .newRows {
-      var updateTimes: [String:Date] = [:]
-      for row in rows {
-        if let id = row.objectId, let updatedAt = row.updatedAt {
-          updateTimes[id] = updatedAt
-        }
-      }
-      
       // Adds/Updates
       let resultsToAdd = newRowsPosition == .end ? results : results.reversed()
       for result in resultsToAdd {
         if !rows.contains(result) {
+          // Inserts the row, but won't update the UI
           switch newRowsPosition {
           case .beginning:
             rows.insert(result, at: 0)
           case .end:
             rows.append(result)
           }
-        } else if let id = result.objectId {
-          if updateTimes[id] != result.updatedAt {
+        } else {
+          if updateTimes[result] != result.updatedAt {
             updateRowForObject(result)
           }
         }
@@ -240,14 +234,6 @@ public class DataLoader<EngineType: DataLoaderEngine>: NSObject {
         rows = rows + results
         newRows = results
       } else if !isEmpty && loadType == .replace {
-        // For this case, insert/remove/reorder one-by-one
-        var updateTimes: [T:Date] = [:]
-        for row in rows {
-          if let updatedAt = row.updatedAt {
-            updateTimes[row] = updatedAt
-          }
-        }
-        
         let existingRows = rows
         for existingRow in existingRows {
           if !results.contains(existingRow) {
