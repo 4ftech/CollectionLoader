@@ -16,7 +16,8 @@ public class ParseDataEngine<T>: BaseDataLoaderEngine<T> where T:ParseDataModel 
   public override var paginate: Bool { return true }
   
   public override var searchKey: String { return "name" }
-  public override var orderByKey: String? { return "name" }
+  public override var orderByKey: String? { return "createdAt" }
+  public override var order: QueryOrder { return .descending }
   public override var orderByLastValue: Any? {
     if let key = orderByKey {
       return firstRow?[key]
@@ -24,5 +25,6 @@ public class ParseDataEngine<T>: BaseDataLoaderEngine<T> where T:ParseDataModel 
       return nil
     }
   }
+  
 }
 

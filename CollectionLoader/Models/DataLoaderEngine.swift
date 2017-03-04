@@ -182,7 +182,7 @@ open class BaseDataLoaderEngine<U: BaseDataModel>: NSObject, DataLoaderEngine {
     
     let request: FetchRequest = self.request(forLoadType: loadType, queryString: queryString)
     
-    var realSelf = self
+    let realSelf = self
     return Promise<[T]> { fulfill, reject in
       request.fetch().then { (results: [T]) -> Void in
         if results.count > 0 {
