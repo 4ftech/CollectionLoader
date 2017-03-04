@@ -11,7 +11,7 @@ import DataSource
 import ViewMapper
 import Eureka
 
-public final class CollectionLoaderSelectRow<T: CellMapperAdapter, U: DataLoaderEngine>: SelectorRow<PushSelectorCell<U.T>, CollectionLoaderSelectController<T, U>>, RowType where T.T.T == U.T {
+public final class CollectionLoaderSelectRow<T: CellMapperAdapter, U: DataLoaderEngine>: SelectorRow<PushSelectorCell<U.T>, CollectionLoaderSelectController<T, U>>, RowType {
   
   public required init(tag: String?) {
     super.init(tag: tag)
@@ -40,7 +40,7 @@ public final class CollectionLoaderSelectRow<T: CellMapperAdapter, U: DataLoader
   }
 }
 
-public class CollectionLoaderSelectController<T: CellMapperAdapter, U: DataLoaderEngine>: CollectionLoaderController<TableViewMapperAdapter<T, U>>, TypedRowControllerType where T.T.T == U.T {
+public class CollectionLoaderSelectController<T: CellMapperAdapter, U: DataLoaderEngine>: CollectionLoaderController<TableViewMapperAdapter<T, U>>, TypedRowControllerType {
   public var row: RowOf<U.T>!
   public var onDismissCallback: ((UIViewController) -> ())?
   
@@ -52,7 +52,17 @@ public class CollectionLoaderSelectController<T: CellMapperAdapter, U: DataLoade
     super.init(collectionAdapter: collectionAdapter)
     
     collectionAdapter.cellAdapter.onTapCell = { value, _ in
-      self.row.value = value
+      if let value = value as? U.T {
+        if self.row.value == value {
+          self.row.value = nil
+          
+          if let index = self.dataLoader.rowsToDisplay.index(of: value) {
+            self.collectionAdapter.tableView.deselectRow(at: IndexPath(row: index, section: 0), animated: true)
+          }
+        } else {
+          self.row.value = value
+        }
+      }
     }
     
     onDismissCallback = callback
@@ -74,7 +84,7 @@ public class CollectionLoaderSelectController<T: CellMapperAdapter, U: DataLoade
 
 
 
-public final class CollectionLoaderSelectMultipleRow<T: CellMapperAdapter, U: DataLoaderEngine>: SelectorRow<PushSelectorCell<Set<U.T>>, CollectionLoaderSelectMultipleController<T, U>>, RowType where T.T.T == U.T {
+public final class CollectionLoaderSelectMultipleRow<T: CellMapperAdapter, U: DataLoaderEngine>: SelectorRow<PushSelectorCell<Set<U.T>>, CollectionLoaderSelectMultipleController<T, U>>, RowType {
   
   public required init(tag: String?) {
     super.init(tag: tag)
@@ -109,7 +119,7 @@ public final class CollectionLoaderSelectMultipleRow<T: CellMapperAdapter, U: Da
   }
 }
 
-public class CollectionLoaderSelectMultipleController<T: CellMapperAdapter, U: DataLoaderEngine>: CollectionLoaderController<TableViewMapperAdapter<T, U>>, TypedRowControllerType where T.T.T == U.T {
+public class CollectionLoaderSelectMultipleController<T: CellMapperAdapter, U: DataLoaderEngine>: CollectionLoaderController<TableViewMapperAdapter<T, U>>, TypedRowControllerType {
   public var row: RowOf<Set<U.T>>!
   public var onDismissCallback: ((UIViewController) -> ())?
   
@@ -122,10 +132,12 @@ public class CollectionLoaderSelectMultipleController<T: CellMapperAdapter, U: D
     
     collectionAdapter.cellAdapter.onTapCell = { value, _ in
       var values = self.row.value ?? []
-      if values.contains(value) {
-        values.remove(value)
-      } else {
-        values.insert(value)
+      if let value = value as? U.T {
+        if values.contains(value) {
+          values.remove(value)
+        } else {
+          values.insert(value)
+        }
       }
       
       self.row.value = values

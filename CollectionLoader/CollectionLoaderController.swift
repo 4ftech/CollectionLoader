@@ -24,8 +24,8 @@ open class CollectionLoaderController<AdapterType: BaseCollectionAdapter>: UIVie
   var scrollView: UIScrollView!
 
   var loaderView: LoaderView!
-  var pullToRefresh: Bool = false
   var refreshControl: UIRefreshControl?
+  public var pullToRefresh: Bool = false
   
   var collectionAdapter: AdapterType!
   
@@ -59,7 +59,7 @@ open class CollectionLoaderController<AdapterType: BaseCollectionAdapter>: UIVie
   var dataLoader: DataLoader<AdapterType.EngineType>!
   var disposeBag: DisposeBag = DisposeBag()
 
-  var refreshOnAppear: DataLoadType? = nil
+  public var refreshOnAppear: DataLoadType? = nil
   
   // MARK: - Initialize
   public init(collectionAdapter: AdapterType) {

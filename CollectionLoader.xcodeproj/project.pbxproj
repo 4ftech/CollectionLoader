@@ -48,6 +48,7 @@
 		70A8862C1E58A63300823C0F /* CollectionLoader.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 70A884161E5736C400823C0F /* CollectionLoader.framework */; };
 		70C407BC1E68DDCD00A14EB7 /* ParseViewMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70C407BB1E68DDCD00A14EB7 /* ParseViewMapper.swift */; };
 		70C407CC1E69F37800A14EB7 /* DataLoadType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70C407CB1E69F37800A14EB7 /* DataLoadType.swift */; };
+		70C408C01E6AFF1F00A14EB7 /* ParseEurekaViewMapper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 705D301A1E676E96005D3A5F /* ParseEurekaViewMapper.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -188,6 +189,7 @@
 				70A886231E57EE8D00823C0F /* Parse.framework in Frameworks */,
 				705D2E3A1E600613005D3A5F /* DataSource.framework in Frameworks */,
 				705D2E3B1E60061B005D3A5F /* ParseDataSource.framework in Frameworks */,
+				70C408C01E6AFF1F00A14EB7 /* ParseEurekaViewMapper.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -252,11 +254,11 @@
 		70A884181E5736C400823C0F /* CollectionLoader */ = {
 			isa = PBXGroup;
 			children = (
-				705D2E501E6094DC005D3A5F /* Adapters */,
 				70A885651E5786AC00823C0F /* Nibs */,
 				70A884D71E575C2100823C0F /* Extensions */,
 				70A884D41E574B9F00823C0F /* Utils */,
 				70A884CB1E573FA200823C0F /* Views */,
+				705D2E501E6094DC005D3A5F /* Adapters */,
 				70A884C81E573E1D00823C0F /* Models */,
 				70A884301E57373800823C0F /* CollectionLoaderController.swift */,
 				705D30251E67720F005D3A5F /* DataSourceFormController.swift */,

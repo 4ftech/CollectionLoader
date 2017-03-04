@@ -20,8 +20,9 @@ public func <~ <T: CellMapperAdapter, U: DataLoaderEngine> (left: CollectionLoad
   let (object, key) = right
   
   left.onChange { row in
-    object[key] = row.value?.objectId
+    object[key] = row.value?.objectId ?? NSNull()
   }
+  
   if let id = object[key] as? String {
     let dataRow = U.T()
     dataRow.objectId = id

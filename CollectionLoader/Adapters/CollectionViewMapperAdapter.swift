@@ -9,7 +9,7 @@
 import Foundation
 import ViewMapper
 
-public class CollectionViewMapperAdapter<A: CellMapperAdapter, E: DataLoaderEngine>: NSObject, BaseCollectionAdapter, UICollectionViewDelegate, UICollectionViewDataSource where A.T.T == E.T {
+public class CollectionViewMapperAdapter<A: CellMapperAdapter, E: DataLoaderEngine>: NSObject, BaseCollectionAdapter, UICollectionViewDelegate, UICollectionViewDataSource {
   public typealias EngineType = E
   
   public var collectionView = UICollectionView()
@@ -52,11 +52,11 @@ public class CollectionViewMapperAdapter<A: CellMapperAdapter, E: DataLoaderEngi
   public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
     let row = dataLoader.rowsToDisplay[indexPath.row]
     
-    let identifier = cellAdapter.cellIdentifier(forRow: row)
+    let identifier = cellAdapter.cellIdentifier(forRow: row as! A.T.T)
     
     let mappableCell = collectionView.dequeueReusableCell(withReuseIdentifier: identifier, for: indexPath) as! A.T
     
-    mappableCell.map(object: row)
+    mappableCell.map(object: row as! A.T.T)
     
     let cell = mappableCell as! UICollectionViewCell
     return cell
@@ -64,7 +64,7 @@ public class CollectionViewMapperAdapter<A: CellMapperAdapter, E: DataLoaderEngi
   
   public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
     let row = dataLoader.rowsToDisplay[indexPath.row]
-    cellAdapter.onTapCell?(row, viewController)
+    cellAdapter.onTapCell?(row as! A.T.T, viewController)
   }    
 }
 
