@@ -17,8 +17,7 @@ public enum QueryOrder {
 public protocol DataLoaderEngine {
   associatedtype T: BaseDataModel
   
-  var paginate: Bool { get }
-  
+  var paginate: Bool { get }  
   var firstRow: T? { get set }
   
   var searchKey: String? { get }

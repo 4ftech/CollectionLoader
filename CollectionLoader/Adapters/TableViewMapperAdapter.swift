@@ -65,7 +65,12 @@ open class TableViewMapperAdapter<A: CellMapperAdapter, E: DataLoaderEngine>: NS
   
   open func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     let row = dataLoader.rowsToDisplay[indexPath.row]
-    cellAdapter.onTapCell?(row as! A.T.T, viewController)
+    cellAdapter.onSelectCell?(row as! A.T.T, viewController)
+  }
+  
+  open func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+    let row = dataLoader.rowsToDisplay[indexPath.row]
+    cellAdapter.onDeselectCell?(row as! A.T.T, viewController)
   }
   
   open func tableView(_ tableView: UITableView, accessoryButtonTappedForRowWith indexPath: IndexPath) {

@@ -64,7 +64,12 @@ public class CollectionViewMapperAdapter<A: CellMapperAdapter, E: DataLoaderEngi
   
   public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
     let row = dataLoader.rowsToDisplay[indexPath.row]
-    cellAdapter.onTapCell?(row as! A.T.T, viewController)
-  }    
+    cellAdapter.onSelectCell?(row as! A.T.T, viewController)
+  }
+  
+  public func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+    let row = dataLoader.rowsToDisplay[indexPath.row]
+    cellAdapter.onDeselectCell?(row as! A.T.T, viewController)
+  }
 }
 

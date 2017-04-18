@@ -51,7 +51,7 @@ public class CollectionLoaderSelectController<T: CellMapperAdapter, U: DataLoade
   required public init(collectionAdapter: TableViewMapperAdapter<T, U>, callback: ((UIViewController) -> ())? = nil) {
     super.init(collectionAdapter: collectionAdapter)
     
-    collectionAdapter.cellAdapter.onTapCell = { value, _ in
+    collectionAdapter.cellAdapter.onSelectCell = { value, _ in
       if let value = value as? U.T {
         if self.row.value == value {
           self.row.value = nil
@@ -130,14 +130,21 @@ public class CollectionLoaderSelectMultipleController<T: CellMapperAdapter, U: D
   public init(collectionAdapter: TableViewMapperAdapter<T, U>, callback: ((UIViewController) -> ())? = nil) {
     super.init(collectionAdapter: collectionAdapter)
     
-    collectionAdapter.cellAdapter.onTapCell = { value, _ in
-      var values = self.row.value ?? []
-      if let value = value as? U.T {
-        if values.contains(value) {
-          values.remove(value)
-        } else {
-          values.insert(value)
-        }
+    collectionAdapter.tableView.allowsMultipleSelection = true
+    
+    collectionAdapter.cellAdapter.onSelectCell = { value, _ in
+      var values: Set<U.T> = self.row.value ?? Set<U.T>()
+      if let value = value as? U.T, !values.contains(value) {
+        values.insert(value)
+      }
+      
+      self.row.value = values
+    }
+    
+    collectionAdapter.cellAdapter.onDeselectCell = { value, _ in
+      var values: Set<U.T> = self.row.value ?? Set<U.T>()
+      if let value = value as? U.T, values.contains(value) {
+        values.remove(value)
       }
       
       self.row.value = values

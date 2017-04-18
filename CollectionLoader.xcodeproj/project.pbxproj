@@ -119,7 +119,7 @@
 		705D2E601E609591005D3A5F /* CollectionViewType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionViewType.swift; sourceTree = "<group>"; };
 		705D300C1E676E96005D3A5F /* ViewMapper.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ViewMapper.xcodeproj; path = ../ViewMapper/ViewMapper.xcodeproj; sourceTree = "<group>"; };
 		705D301F1E676FBA005D3A5F /* NotifiableViewMappable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotifiableViewMappable.swift; sourceTree = "<group>"; };
-		705D30211E676FEC005D3A5F /* CollectionLoaderSelectRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionLoaderSelectRow.swift; sourceTree = "<group>"; };
+		705D30211E676FEC005D3A5F /* CollectionLoaderSelectRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CollectionLoaderSelectRow.swift; path = Views/CollectionLoaderSelectRow.swift; sourceTree = "<group>"; };
 		705D30251E67720F005D3A5F /* DataSourceFormController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataSourceFormController.swift; sourceTree = "<group>"; };
 		705D30271E67725C005D3A5F /* Eureka.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Eureka.framework; path = Carthage/Build/iOS/Eureka.framework; sourceTree = "<group>"; };
 		705D30651E6776D5005D3A5F /* ParseTableLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParseTableLoader.swift; sourceTree = "<group>"; };
@@ -196,6 +196,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		705902251E7AE0F400E5B7EE /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				70A884301E57373800823C0F /* CollectionLoaderController.swift */,
+				705D30251E67720F005D3A5F /* DataSourceFormController.swift */,
+			);
+			name = Controllers;
+			sourceTree = "<group>";
+		};
+		7059022D1E7AE77A00E5B7EE /* Eureka */ = {
+			isa = PBXGroup;
+			children = (
+				705D30211E676FEC005D3A5F /* CollectionLoaderSelectRow.swift */,
+			);
+			name = Eureka;
+			sourceTree = "<group>";
+		};
 		705D2E2E1E6005E8005D3A5F /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -259,9 +276,9 @@
 				70A884D41E574B9F00823C0F /* Utils */,
 				70A884CB1E573FA200823C0F /* Views */,
 				705D2E501E6094DC005D3A5F /* Adapters */,
+				7059022D1E7AE77A00E5B7EE /* Eureka */,
 				70A884C81E573E1D00823C0F /* Models */,
-				70A884301E57373800823C0F /* CollectionLoaderController.swift */,
-				705D30251E67720F005D3A5F /* DataSourceFormController.swift */,
+				705902251E7AE0F400E5B7EE /* Controllers */,
 				70A884191E5736C400823C0F /* CollectionLoader.h */,
 				70A8841A1E5736C400823C0F /* Info.plist */,
 				70A8856A1E57876300823C0F /* Images.xcassets */,
@@ -310,7 +327,6 @@
 				70A884D01E57404B00823C0F /* LoaderView.swift */,
 				705D2E601E609591005D3A5F /* CollectionViewType.swift */,
 				705D301F1E676FBA005D3A5F /* NotifiableViewMappable.swift */,
-				705D30211E676FEC005D3A5F /* CollectionLoaderSelectRow.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";

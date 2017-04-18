@@ -29,7 +29,7 @@ protocol DataLoaderDelegate: class {
 }
 
 public class DataLoader<EngineType: DataLoaderEngine>: NSObject {
-  typealias T = EngineType.T
+  public typealias T = EngineType.T
   
   deinit {
     NSLog("deinit: \(type(of: self))")

@@ -111,7 +111,7 @@ open class CollectionLoaderController<AdapterType: BaseCollectionAdapter>: UIVie
     scrollView.showsVerticalScrollIndicator = false
     scrollView.showsHorizontalScrollIndicator = false
     
-    scrollView.contentInset.top += scrollTopInset
+    scrollView.contentInset = UIEdgeInsets(top: scrollTopInset, left: 0, bottom: 0, right: 0)
     
     if pullToRefresh {
       refreshControl = UIRefreshControl()
@@ -127,10 +127,7 @@ open class CollectionLoaderController<AdapterType: BaseCollectionAdapter>: UIVie
       searchBar = CollectionSearchBar.newInstance()
       searchBar?.delegate = self
       searchBar?.isHidden = false
-      Utils.addView(searchBar!, toContainer: container, onEdge: .top, edgeInsets: UIEdgeInsets(top: topBarInset, left: 0, bottom: 0, right: 0))
-      
-      NotificationCenter.default.addObserver(self, selector: #selector(searchKeyboardWillShow(_:)), name: Notification.Name.UIKeyboardWillShow, object: nil)
-      NotificationCenter.default.addObserver(self, selector: #selector(searchKeyboardWillHide(_:)), name: Notification.Name.UIKeyboardWillHide, object: nil)
+      Utils.addView(searchBar!, toContainer: view, onEdge: .top, edgeInsets: UIEdgeInsets(top: topBarInset, left: 0, bottom: 0, right: 0))
     }
     
     // Table
@@ -147,6 +144,30 @@ open class CollectionLoaderController<AdapterType: BaseCollectionAdapter>: UIVie
       loaderView.showSpinner()
     } else {
       loaderView.isHidden = true
+    }
+  }
+  
+  override open func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    
+    if let loadType = refreshOnAppear, dataLoader.rowsLoaded && !dataLoader.rowsLoading && collectionInitialized {
+      loadRows(loadType: loadType)
+    } else if dataLoader.rowsLoaded && !dataLoader.rowsLoading && collectionInitialized && dataLoader.isEmpty {
+      loadRows(loadType: .replace)
+    }
+    
+    if allowSearch {
+      NotificationCenter.default.addObserver(self, selector: #selector(searchKeyboardWillShow(_:)), name: Notification.Name.UIKeyboardWillShow, object: nil)
+      NotificationCenter.default.addObserver(self, selector: #selector(searchKeyboardWillHide(_:)), name: Notification.Name.UIKeyboardWillHide, object: nil)
+    }
+  }
+  
+  open override func viewWillDisappear(_ animated: Bool) {
+    super.viewWillDisappear(animated)
+    
+    if allowSearch {
+      NotificationCenter.default.removeObserver(self, name: Notification.Name.UIKeyboardWillShow, object: nil)
+      NotificationCenter.default.removeObserver(self, name: Notification.Name.UIKeyboardWillHide, object: nil)
     }
   }
   
@@ -175,14 +196,6 @@ open class CollectionLoaderController<AdapterType: BaseCollectionAdapter>: UIVie
   
   func didPullToRefresh(refreshControl: UIRefreshControl) {
     loadRows(loadType: .replace)
-  }
-  
-  override open func viewWillAppear(_ animated: Bool) {
-    super.viewWillAppear(animated)
-    
-    if let loadType = refreshOnAppear, dataLoader.rowsLoaded && !dataLoader.rowsLoading && collectionInitialized {
-      loadRows(loadType: loadType)
-    }
   }
   
   // MARK: - Querying

@@ -11,7 +11,7 @@ import CollectionLoader
 import ParseDataSource
 import ViewMapper
 
-open class ParseTableLoader<T: ParseDataModel, U: ViewMappable>: CollectionLoaderController<TableViewMapperAdapter<NibCellMapperAdapter<U>, ParseDataEngine<T>>> where U.T == T {
+open class ParseTableLoader<T: ParseDataModel, U: ViewMappable>: CollectionLoaderController<TableViewMapperAdapter<NibCellMapperAdapter<U>, ParseDataEngine<T>>> {
   required public init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
   }

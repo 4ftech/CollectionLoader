@@ -12,13 +12,13 @@ import CollectionLoader
 import DataSource
 import ParseDataSource
 
-public class ParseDataEngine<T>: BaseDataLoaderEngine<T> where T:ParseDataModel {
-  public override var paginate: Bool { return true }
+open class ParseDataEngine<T>: BaseDataLoaderEngine<T> where T:ParseDataModel {
+  open override var paginate: Bool { return true }
   
-  public override var searchKey: String { return "name" }
-  public override var orderByKey: String? { return "createdAt" }
-  public override var order: QueryOrder { return .descending }
-  public override var orderByLastValue: Any? {
+  open override var searchKey: String { return "name" }
+  open override var orderByKey: String? { return "createdAt" }
+  open override var order: QueryOrder { return .descending }
+  open override var orderByLastValue: Any? {
     return firstRow?.createdAt
   }
   
