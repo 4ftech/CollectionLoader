@@ -3,7 +3,7 @@
 //  CollectionLoader
 //
 //  Created by Nick Kuyakanon on 2/17/17.
-//  Copyright © 2017 Oinkist. All rights reserved.
+//  Copyright © 2017 4f Tech. All rights reserved.
 //
 
 
@@ -61,7 +61,7 @@ public class DataLoader<EngineType: DataLoaderEngine>: NSObject {
   var notificationSenderObject: AnyObject? = nil
 
   var notificationNamePrefix: String {
-    return "com.oinkist.CollectionLoader.\(type(of: self))"
+    return "co.bukapp.CollectionLoader.\(type(of: self))"
   }
   
   func notificationNameForAction(_ action: DataLoaderAction) -> String {

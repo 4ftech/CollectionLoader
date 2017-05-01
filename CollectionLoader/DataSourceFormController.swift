@@ -3,7 +3,7 @@
 //  CollectionLoader
 //
 //  Created by Nick Kuyakanon on 3/1/17.
-//  Copyright © 2017 Oinkist. All rights reserved.
+//  Copyright © 2017 4f Tech. All rights reserved.
 //
 
 import Foundation
@@ -13,7 +13,7 @@ import Foundation
 //  DataSourceFormController
 //
 //  Created by Nick Kuyakanon on 2/28/17.
-//  Copyright © 2017 Oinkist. All rights reserved.
+//  Copyright © 2017 4f Tech. All rights reserved.
 //
 
 import Foundation

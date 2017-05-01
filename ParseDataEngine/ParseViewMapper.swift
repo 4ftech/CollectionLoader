@@ -3,7 +3,7 @@
 //  CollectionLoader
 //
 //  Created by Nick Kuyakanon on 3/2/17.
-//  Copyright © 2017 Oinkist. All rights reserved.
+//  Copyright © 2017 4f Tech. All rights reserved.
 //
 
 import Foundation

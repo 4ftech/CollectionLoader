@@ -2,18 +2,8 @@
   "commitish" : "8201b5c93bd7ebdf4cd18160bcde1e6e88c2be64",
   "iOS" : [
     {
-      "hash" : "e3a4b08a957f5faab69dfe20a1e934a4cc959716c6661056b17450e4351b6bd0",
+      "hash" : "18de0e6814a33673d2e6eff2a13ce968810fd1be8c8a79db6a184585742fe860",
       "name" : "Spring"
     }
-  ],
-  "xcodeVersion" : "Xcode 8.3.1\nBuild version 8E1000a",
-  "watchOS" : [
-
-  ],
-  "tvOS" : [
-
-  ],
-  "Mac" : [
-
   ]
 }

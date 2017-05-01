@@ -3,7 +3,7 @@
 //  CollectionLoader
 //
 //  Created by Nick Kuyakanon on 3/1/17.
-//  Copyright © 2017 Oinkist. All rights reserved.
+//  Copyright © 2017 4f Tech. All rights reserved.
 //
 
 import Foundation
@@ -32,8 +32,8 @@ public final class CollectionLoaderSelectRow<T: CellMapperAdapter, U: DataLoader
     )
     
     displayValueFor = {
-      guard let objectId = $0 else { return "" }
-      return  objectId.objectId
+      guard let value = $0 else { return "" }
+      return  value.objectId
     }
     
     initializer?(self)

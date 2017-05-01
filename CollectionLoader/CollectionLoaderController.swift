@@ -3,7 +3,7 @@
 //  CollectionLoader
 //
 //  Created by Nick Kuyakanon on 2/17/17.
-//  Copyright © 2017 Oinkist. All rights reserved.
+//  Copyright © 2017 4f Tech. All rights reserved.
 //
 
 import Foundation
@@ -129,6 +129,8 @@ open class CollectionLoaderController<AdapterType: BaseCollectionAdapter>: UIVie
       searchBar?.isHidden = false
       Utils.addView(searchBar!, toContainer: view, onEdge: .top, edgeInsets: UIEdgeInsets(top: topBarInset, left: 0, bottom: 0, right: 0))
     }
+    
+    // Filters
     
     // Table
     //    container.autohide = true

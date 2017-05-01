@@ -2,18 +2,8 @@
   "commitish" : "1.0.1",
   "iOS" : [
     {
-      "hash" : "8fe0a7208ecd022a39956e506199ac62d26d989a37a7470eb228bde95ea80040",
+      "hash" : "de6df807814bd1cf16bb927ae53f5d348ea8766cbdee8b4c5cca955391d13830",
       "name" : "UIScrollView_InfiniteScroll"
     }
-  ],
-  "xcodeVersion" : "Xcode 8.3.1\nBuild version 8E1000a",
-  "watchOS" : [
-
-  ],
-  "tvOS" : [
-
-  ],
-  "Mac" : [
-
   ]
 }
