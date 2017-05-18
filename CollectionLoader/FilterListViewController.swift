@@ -11,10 +11,10 @@ import Eureka
 import DataSource
 import ViewMapper
 
-class FilterListViewController: FormViewController {
+open class FilterListViewController: FormViewController {
   var filters: [Filter] = []
   
-  override func viewDidLoad() {
+  override open func viewDidLoad() {
     super.viewDidLoad()
     
     for filter in filters {

@@ -9,10 +9,10 @@
 import Foundation
 import ViewMapper
 
-public class CollectionViewMapperAdapter<A: CellMapperAdapter, E: DataLoaderEngine>: NSObject, BaseCollectionAdapter, UICollectionViewDelegate, UICollectionViewDataSource {
+public class CollectionViewMapperAdapter<A: CellMapperAdapter, E: DataLoaderEngine>: NSObject, BaseCollectionAdapter, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
   public typealias EngineType = E
   
-  public var collectionView = UICollectionView()
+  public var collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
   public var scrollView: UIScrollView {
     return collectionView
   }
@@ -29,6 +29,12 @@ public class CollectionViewMapperAdapter<A: CellMapperAdapter, E: DataLoaderEngi
 
     self.collectionView.delegate = self
     self.collectionView.dataSource = self
+    self.collectionView.backgroundColor = UIColor.white
+    
+    let flowLayout = self.collectionView.collectionViewLayout as! UICollectionViewFlowLayout
+    flowLayout.itemSize = CGSize(width: UIScreen.main.bounds.width, height: flowLayout.itemSize.height)
+    flowLayout.minimumInteritemSpacing = 0
+    flowLayout.minimumLineSpacing = 0
   }
   
   public func reloadData() {
@@ -54,9 +60,9 @@ public class CollectionViewMapperAdapter<A: CellMapperAdapter, E: DataLoaderEngi
     
     let identifier = cellAdapter.cellIdentifier(forRow: row as! A.T.T)
     
-    let mappableCell = collectionView.dequeueReusableCell(withReuseIdentifier: identifier, for: indexPath) as! A.T
-    
+    let mappableCell = collectionView.dequeueReusableCell(withReuseIdentifier: identifier, for: indexPath) as! A.T    
     mappableCell.map(object: row as! A.T.T)
+    cellAdapter.onDequeueCell?(mappableCell)
     
     let cell = mappableCell as! UICollectionViewCell
     return cell
@@ -70,6 +76,13 @@ public class CollectionViewMapperAdapter<A: CellMapperAdapter, E: DataLoaderEngi
   public func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
     let row = dataLoader.rowsToDisplay[indexPath.row]
     cellAdapter.onDeselectCell?(row as! A.T.T, viewController)
+  }
+  
+  public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+    let flowLayout = collectionViewLayout as! UICollectionViewFlowLayout
+    
+    let row = dataLoader.rowsToDisplay[indexPath.row]
+    return cellAdapter.size?(row as! A.T.T) ?? flowLayout.itemSize
   }
 }
 

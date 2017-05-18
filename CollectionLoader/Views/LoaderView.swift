@@ -7,10 +7,9 @@
 //
 
 import Foundation
-import Spring
 
-class LoaderView: SpringView {
-  @IBOutlet weak var emptyContainer: SpringView!
+class LoaderView: UIView {
+  @IBOutlet weak var emptyContainer: UIView!
   @IBOutlet weak var imageView: UIImageView!
   @IBOutlet weak var label: UILabel!
   @IBOutlet weak var subtitleLabel: UILabel!

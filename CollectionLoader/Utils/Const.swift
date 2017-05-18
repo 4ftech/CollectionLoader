@@ -1,0 +1,14 @@
+//
+//  Const.swift
+//  CollectionLoader
+//
+//  Created by Nick Kuyakanon on 5/2/17.
+//  Copyright © 2017 Oinkist. All rights reserved.
+//
+
+import Foundation
+
+class Const {
+  static let searchBarHeight: CGFloat = 44
+  static let topBarHeight: CGFloat = 64
+}

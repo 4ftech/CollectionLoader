@@ -7,21 +7,20 @@
 //
 
 import Foundation
-import Spring
 import RxSwift
 import UIScrollView_InfiniteScroll
-
+import UIKit
 
 open class CollectionLoaderController<AdapterType: BaseCollectionAdapter>: UIViewController, CollectionSearchBarDelegate, DataLoaderDelegate {
   let singleLineTableCellIdentifier = "singleLineIconCell"
   let twoLineTableCellIdentifier = "twoLineIconCell"
   let threeLineTableCellIdentifier = "threeLineIconCell"
 
+  public var container: UIView!
   public var emptyViewContent: EmptyViewContent?
+  public var scrollView: UIScrollView!
   
   typealias m = LoaderView
-  var container: SpringView!
-  var scrollView: UIScrollView!
 
   var loaderView: LoaderView!
   var refreshControl: UIRefreshControl?
@@ -38,7 +37,7 @@ open class CollectionLoaderController<AdapterType: BaseCollectionAdapter>: UIVie
     var topInset: CGFloat = 0
     
     if allowSearch {
-      topInset = topInset + Utils.searchBarHeight
+      topInset = topInset + Const.searchBarHeight
     }
     
     return topInset
@@ -48,7 +47,7 @@ open class CollectionLoaderController<AdapterType: BaseCollectionAdapter>: UIVie
     var topInset: CGFloat = 0
     
     if let navController = navigationController, !navController.isNavigationBarHidden {
-      topInset = topInset + Utils.topBarHeight
+      topInset = topInset + Const.topBarHeight
     }
     
     return topInset
@@ -61,7 +60,10 @@ open class CollectionLoaderController<AdapterType: BaseCollectionAdapter>: UIVie
   var dataLoader: DataLoader<AdapterType.EngineType>!
   var disposeBag: DisposeBag = DisposeBag()
 
-  public var refreshOnAppear: DataLoadType? = nil
+  public var refreshOnAppear: DataLoadType? = nil  
+  public var rowsLoading: Bool { return dataLoader.rowsLoading }
+  public var rowsLoaded: Bool { return dataLoader.rowsLoaded }
+  public var rows: [AdapterType.EngineType.T] { return dataLoader.rowsToDisplay }
   
   // MARK: - Initialize
   public init(collectionAdapter: AdapterType) {
@@ -74,6 +76,7 @@ open class CollectionLoaderController<AdapterType: BaseCollectionAdapter>: UIVie
     self.dataLoader.delegate = self
     
     self.emptyViewContent = EmptyViewContent(message: "No results")
+
   }
   
   required public init?(coder aDecoder: NSCoder) {
@@ -88,23 +91,25 @@ open class CollectionLoaderController<AdapterType: BaseCollectionAdapter>: UIVie
     
     //    edgesForExtendedLayout = []
     //    extendedLayoutIncludesOpaqueBars = false
-    automaticallyAdjustsScrollViewInsets = true
+    //    automaticallyAdjustsScrollViewInsets = true
     
     view.backgroundColor = UIColor.white
 
     // Add Container and ScrollView
-    container = SpringView()
+    container = UIView()
     container.alpha = 0
-    Utils.fillContainer(view, withView: container)
+    view.fill(withView: container)
     
     scrollView = collectionAdapter.scrollView
     collectionAdapter.registerCells()
-
-    Utils.fillContainer(container, withView: scrollView)
+    container.fill(withView: scrollView)
     
     // Loader
     loaderView = LoaderView.newInstance(content: emptyViewContent)
-    Utils.fillContainer(view, withView: loaderView, edgeInsets: UIEdgeInsets(top: topBarInset + scrollTopInset, left: 0, bottom: 0, right: 0))
+    view.fill(
+      withView: loaderView,
+      edgeInsets: UIEdgeInsets(top: topBarInset + scrollTopInset, left: 0, bottom: 0, right: 0)
+    )
     
     // ScrollView
     scrollView.alwaysBounceVertical = true
@@ -127,7 +132,11 @@ open class CollectionLoaderController<AdapterType: BaseCollectionAdapter>: UIVie
       searchBar = CollectionSearchBar.newInstance()
       searchBar?.delegate = self
       searchBar?.isHidden = false
-      Utils.addView(searchBar!, toContainer: view, onEdge: .top, edgeInsets: UIEdgeInsets(top: topBarInset, left: 0, bottom: 0, right: 0))
+      view.addView(
+        searchBar!,
+        onEdge: .top,
+        edgeInsets: UIEdgeInsets(top: topBarInset, left: 0, bottom: 0, right: 0)
+      )
     }
     
     // Filters
@@ -201,13 +210,16 @@ open class CollectionLoaderController<AdapterType: BaseCollectionAdapter>: UIVie
   }
   
   // MARK: - Querying
-  func loadRows(loadType: DataLoadType) {
+  open func loadRows(loadType: DataLoadType) {
     if dataLoader.rowsLoading && loadType != .clearAndReplace {
       return
     }
     
     dataLoader.loadRows(loadType: loadType)?.catch { [weak self] error in
-      self?.loaderView.showEmptyView()
+      // TODO: Better handle error
+      if let rows = self?.dataLoader.rowsToDisplay, rows.count == 0 {
+        self?.loaderView.showEmptyView()
+      }
     }
 
     switch loadType {
@@ -242,7 +254,7 @@ open class CollectionLoaderController<AdapterType: BaseCollectionAdapter>: UIVie
       }).addDisposableTo(disposeBag)
   }
   
-  func handleResultsReceivedNotification(_ notification: Notification) {
+  open func handleResultsReceivedNotification(_ notification: Notification) {
     let loadType = dataLoader.loadTypeFromNotification(notification)
 
     if loadType != .more {
@@ -251,7 +263,7 @@ open class CollectionLoaderController<AdapterType: BaseCollectionAdapter>: UIVie
     
   }
   
-  func handleDidFinishLoadingRowsNotification(_ notification: Notification) {
+  open func handleDidFinishLoadingRowsNotification(_ notification: Notification) {
     let loadType = dataLoader.loadTypeFromNotification(notification)
     let results = dataLoader.resultsFromNotification(notification)
 
@@ -312,7 +324,7 @@ open class CollectionLoaderController<AdapterType: BaseCollectionAdapter>: UIVie
   }
   
   // MARK: - Manipulating data
-  func didUpdateRowDataUI() {
+  open func didUpdateRowDataUI() {
     // searchBar?.isHidden = dataLoader.isEmpty
     checkEmpty()
   }
@@ -371,9 +383,9 @@ open class CollectionLoaderController<AdapterType: BaseCollectionAdapter>: UIVie
   
   // MARK: - Displaying results
   func initialDisplay() {
-    container.animation = "fadeIn"
-    container.duration = 1.0
-    container.animate()
+    UIView.animate(withDuration: 1.0, animations: {
+      self.container.alpha = 1.0
+    })
   }
   
   func checkEmpty() {

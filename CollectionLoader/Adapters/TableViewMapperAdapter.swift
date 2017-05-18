@@ -22,14 +22,18 @@ open class TableViewMapperAdapter<A: CellMapperAdapter, E: DataLoaderEngine>: NS
 
   public weak var viewController: UIViewController!
   
-  public init(cellAdapter: A, dataLoaderEngine: E) {
+  public init(cellAdapter: A, dataLoader: DataLoader<E>) {
     super.init()
     
     self.cellAdapter = cellAdapter
-    self.dataLoader = DataLoader<E>(dataLoaderEngine: dataLoaderEngine)
+    self.dataLoader = dataLoader
     
     self.tableView.delegate = self
     self.tableView.dataSource = self
+  }
+  
+  public convenience init(cellAdapter: A, dataLoaderEngine: E) {
+    self.init(cellAdapter: cellAdapter, dataLoader: DataLoader<E>(dataLoaderEngine: dataLoaderEngine))
   }
   
   public func reloadData() {
@@ -56,10 +60,11 @@ open class TableViewMapperAdapter<A: CellMapperAdapter, E: DataLoaderEngine>: NS
     let identifier = cellAdapter.cellIdentifier(forRow: row as! A.T.T)
     
     let mappableCell = tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath) as! A.T
-    
     mappableCell.map(object: row as! A.T.T)
+    cellAdapter.onDequeueCell?(mappableCell)
     
     let cell = mappableCell as! UITableViewCell
+    
     return cell
   }
   

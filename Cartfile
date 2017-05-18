@@ -2,7 +2,6 @@ github "mxcl/PromiseKit" ~> 4.0
 github "ReactiveX/RxSwift" ~> 3.0
 
 
-github "MengTo/Spring" "swift3"
 github "pronebird/UIScrollView-InfiniteScroll"
 
 

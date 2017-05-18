@@ -23,8 +23,6 @@
 		705D30661E6776D5005D3A5F /* ParseTableLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705D30651E6776D5005D3A5F /* ParseTableLoader.swift */; };
 		705D307E1E678144005D3A5F /* DataLoaderEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705D307D1E678144005D3A5F /* DataLoaderEngine.swift */; };
 		70961C0C1EA82468007CD33E /* FilterListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70961C0B1EA82468007CD33E /* FilterListViewController.swift */; };
-		70A884201E5736C400823C0F /* CollectionLoader.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 70A884161E5736C400823C0F /* CollectionLoader.framework */; };
-		70A884251E5736C400823C0F /* CollectionLoaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70A884241E5736C400823C0F /* CollectionLoaderTests.swift */; };
 		70A884271E5736C400823C0F /* CollectionLoader.h in Headers */ = {isa = PBXBuildFile; fileRef = 70A884191E5736C400823C0F /* CollectionLoader.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		70A884311E57373800823C0F /* CollectionLoaderController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70A884301E57373800823C0F /* CollectionLoaderController.swift */; };
 		70A884331E5738CA00823C0F /* Cartfile in Resources */ = {isa = PBXBuildFile; fileRef = 70A884321E5738CA00823C0F /* Cartfile */; };
@@ -35,7 +33,6 @@
 		70A884CD1E573FF900823C0F /* DataLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70A884CC1E573FF900823C0F /* DataLoader.swift */; };
 		70A884CF1E57403A00823C0F /* CollectionSearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70A884CE1E57403A00823C0F /* CollectionSearchBar.swift */; };
 		70A884D11E57404B00823C0F /* LoaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70A884D01E57404B00823C0F /* LoaderView.swift */; };
-		70A884D61E574BAC00823C0F /* WeakArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70A884D51E574BAC00823C0F /* WeakArray.swift */; };
 		70A884DB1E575FED00823C0F /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70A884DA1E575FED00823C0F /* Utils.swift */; };
 		70A884DD1E5762F000823C0F /* UITableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70A884DC1E5762F000823C0F /* UITableView.swift */; };
 		70A884DF1E576D6700823C0F /* UIScrollView_InfiniteScroll.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 70A884DE1E576D6700823C0F /* UIScrollView_InfiniteScroll.framework */; };
@@ -47,9 +44,11 @@
 		70A886231E57EE8D00823C0F /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 70A886221E57EE8D00823C0F /* Parse.framework */; };
 		70A886291E5822B700823C0F /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70A886281E5822B700823C0F /* UIView.swift */; };
 		70A8862C1E58A63300823C0F /* CollectionLoader.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 70A884161E5736C400823C0F /* CollectionLoader.framework */; };
+		70AEF63B1EBACA5400352D38 /* TestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70AEF63A1EBACA5400352D38 /* TestViewController.swift */; };
 		70C407BC1E68DDCD00A14EB7 /* ParseViewMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70C407BB1E68DDCD00A14EB7 /* ParseViewMapper.swift */; };
 		70C407CC1E69F37800A14EB7 /* DataLoadType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70C407CB1E69F37800A14EB7 /* DataLoadType.swift */; };
 		70C408C01E6AFF1F00A14EB7 /* ParseEurekaViewMapper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 705D301A1E676E96005D3A5F /* ParseEurekaViewMapper.framework */; };
+		70FBAA7C1EB9115600ECC20E /* Const.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70FBAA7B1EB9115600ECC20E /* Const.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -102,13 +101,6 @@
 			remoteGlobalIDString = 705D2F751E668705005D3A5F;
 			remoteInfo = ParseEurekaViewMapper;
 		};
-		70A884211E5736C400823C0F /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 70A8840D1E5736C400823C0F /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 70A884151E5736C400823C0F;
-			remoteInfo = CollectionLoader;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -129,7 +121,6 @@
 		70A884161E5736C400823C0F /* CollectionLoader.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CollectionLoader.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		70A884191E5736C400823C0F /* CollectionLoader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CollectionLoader.h; sourceTree = "<group>"; };
 		70A8841A1E5736C400823C0F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		70A8841F1E5736C400823C0F /* CollectionLoaderTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CollectionLoaderTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		70A884241E5736C400823C0F /* CollectionLoaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionLoaderTests.swift; sourceTree = "<group>"; };
 		70A884261E5736C400823C0F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		70A884301E57373800823C0F /* CollectionLoaderController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionLoaderController.swift; sourceTree = "<group>"; };
@@ -141,7 +132,6 @@
 		70A884CC1E573FF900823C0F /* DataLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataLoader.swift; sourceTree = "<group>"; };
 		70A884CE1E57403A00823C0F /* CollectionSearchBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionSearchBar.swift; sourceTree = "<group>"; };
 		70A884D01E57404B00823C0F /* LoaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoaderView.swift; sourceTree = "<group>"; };
-		70A884D51E574BAC00823C0F /* WeakArray.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeakArray.swift; sourceTree = "<group>"; };
 		70A884DA1E575FED00823C0F /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		70A884DC1E5762F000823C0F /* UITableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UITableView.swift; sourceTree = "<group>"; };
 		70A884DE1E576D6700823C0F /* UIScrollView_InfiniteScroll.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIScrollView_InfiniteScroll.framework; path = Carthage/Build/iOS/UIScrollView_InfiniteScroll.framework; sourceTree = "<group>"; };
@@ -154,8 +144,10 @@
 		70A886101E57E93000823C0F /* ParseDataEngine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParseDataEngine.swift; sourceTree = "<group>"; };
 		70A886221E57EE8D00823C0F /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Parse.framework; path = Carthage/Build/iOS/Parse.framework; sourceTree = "<group>"; };
 		70A886281E5822B700823C0F /* UIView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIView.swift; sourceTree = "<group>"; };
+		70AEF63A1EBACA5400352D38 /* TestViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestViewController.swift; sourceTree = "<group>"; };
 		70C407BB1E68DDCD00A14EB7 /* ParseViewMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParseViewMapper.swift; sourceTree = "<group>"; };
 		70C407CB1E69F37800A14EB7 /* DataLoadType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataLoadType.swift; sourceTree = "<group>"; };
+		70FBAA7B1EB9115600ECC20E /* Const.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Const.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -172,14 +164,6 @@
 				705D2DBC1E5F3B37005D3A5F /* PromiseKit.framework in Frameworks */,
 				705D301C1E676EB1005D3A5F /* ViewMapper.framework in Frameworks */,
 				705D30281E67725C005D3A5F /* Eureka.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		70A8841C1E5736C400823C0F /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				70A884201E5736C400823C0F /* CollectionLoader.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -204,6 +188,7 @@
 				70A884301E57373800823C0F /* CollectionLoaderController.swift */,
 				705D30251E67720F005D3A5F /* DataSourceFormController.swift */,
 				70961C0B1EA82468007CD33E /* FilterListViewController.swift */,
+				70AEF63A1EBACA5400352D38 /* TestViewController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -265,7 +250,6 @@
 			isa = PBXGroup;
 			children = (
 				70A884161E5736C400823C0F /* CollectionLoader.framework */,
-				70A8841F1E5736C400823C0F /* CollectionLoaderTests.xctest */,
 				70A886081E57E92500823C0F /* ParseDataEngine.framework */,
 			);
 			name = Products;
@@ -337,8 +321,8 @@
 		70A884D41E574B9F00823C0F /* Utils */ = {
 			isa = PBXGroup;
 			children = (
-				70A884D51E574BAC00823C0F /* WeakArray.swift */,
 				70A884DA1E575FED00823C0F /* Utils.swift */,
+				70FBAA7B1EB9115600ECC20E /* Const.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -403,7 +387,6 @@
 				70A884121E5736C400823C0F /* Frameworks */,
 				70A884131E5736C400823C0F /* Headers */,
 				70A884141E5736C400823C0F /* Resources */,
-				705D2F6F1E66711E005D3A5F /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -413,24 +396,6 @@
 			productName = CollectionLoader;
 			productReference = 70A884161E5736C400823C0F /* CollectionLoader.framework */;
 			productType = "com.apple.product-type.framework";
-		};
-		70A8841E1E5736C400823C0F /* CollectionLoaderTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 70A8842D1E5736C400823C0F /* Build configuration list for PBXNativeTarget "CollectionLoaderTests" */;
-			buildPhases = (
-				70A8841B1E5736C400823C0F /* Sources */,
-				70A8841C1E5736C400823C0F /* Frameworks */,
-				70A8841D1E5736C400823C0F /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				70A884221E5736C400823C0F /* PBXTargetDependency */,
-			);
-			name = CollectionLoaderTests;
-			productName = CollectionLoaderTests;
-			productReference = 70A8841F1E5736C400823C0F /* CollectionLoaderTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		70A886071E57E92500823C0F /* ParseDataEngine */ = {
 			isa = PBXNativeTarget;
@@ -466,11 +431,6 @@
 						LastSwiftMigration = 0820;
 						ProvisioningStyle = Automatic;
 					};
-					70A8841E1E5736C400823C0F = {
-						CreatedOnToolsVersion = 8.2.1;
-						DevelopmentTeam = M68244X38L;
-						ProvisioningStyle = Automatic;
-					};
 					70A886071E57E92500823C0F = {
 						CreatedOnToolsVersion = 8.2.1;
 						DevelopmentTeam = M68244X38L;
@@ -503,7 +463,6 @@
 			projectRoot = "";
 			targets = (
 				70A884151E5736C400823C0F /* CollectionLoader */,
-				70A8841E1E5736C400823C0F /* CollectionLoaderTests */,
 				70A886071E57E92500823C0F /* ParseDataEngine */,
 			);
 		};
@@ -573,13 +532,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		70A8841D1E5736C400823C0F /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		70A886061E57E92500823C0F /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -589,38 +541,15 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
-/* Begin PBXShellScriptBuildPhase section */
-		705D2F6F1E66711E005D3A5F /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"$(SRCROOT)/Carthage/Build/iOS/UIScrollView_InfiniteScroll.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/Spring.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/RxBlocking.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/RxSwift.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/RxCocoa.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/PromiseKit.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/Eureka.framework",
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "carthage copy-frameworks";
-		};
-/* End PBXShellScriptBuildPhase section */
-
 /* Begin PBXSourcesBuildPhase section */
 		70A884111E5736C400823C0F /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				70A886291E5822B700823C0F /* UIView.swift in Sources */,
+				70AEF63B1EBACA5400352D38 /* TestViewController.swift in Sources */,
 				705D2E5F1E609584005D3A5F /* BaseCollectionAdapter.swift in Sources */,
 				705D30261E67720F005D3A5F /* DataSourceFormController.swift in Sources */,
-				70A884D61E574BAC00823C0F /* WeakArray.swift in Sources */,
 				705D30221E676FEC005D3A5F /* CollectionLoaderSelectRow.swift in Sources */,
 				705D2E611E609591005D3A5F /* CollectionViewType.swift in Sources */,
 				70A884311E57373800823C0F /* CollectionLoaderController.swift in Sources */,
@@ -635,14 +564,7 @@
 				70A884D11E57404B00823C0F /* LoaderView.swift in Sources */,
 				705D30201E676FBA005D3A5F /* NotifiableViewMappable.swift in Sources */,
 				70A884DB1E575FED00823C0F /* Utils.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		70A8841B1E5736C400823C0F /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				70A884251E5736C400823C0F /* CollectionLoaderTests.swift in Sources */,
+				70FBAA7C1EB9115600ECC20E /* Const.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -657,14 +579,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		70A884221E5736C400823C0F /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 70A884151E5736C400823C0F /* CollectionLoader */;
-			targetProxy = 70A884211E5736C400823C0F /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		70A884281E5736C400823C0F /* Debug */ = {
@@ -779,7 +693,6 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
-					"$(PROJECT_DIR)/Carthage/Checkouts/Spring/Carthage/Build/iOS",
 				);
 				INFOPLIST_FILE = CollectionLoader/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -805,7 +718,6 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
-					"$(PROJECT_DIR)/Carthage/Checkouts/Spring/Carthage/Build/iOS",
 				);
 				INFOPLIST_FILE = CollectionLoader/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -813,32 +725,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = co.bukapp.CollectionLoader;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 3.0;
-			};
-			name = Release;
-		};
-		70A8842E1E5736C400823C0F /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				DEVELOPMENT_TEAM = M68244X38L;
-				INFOPLIST_FILE = CollectionLoaderTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = co.bukapp.CollectionLoaderTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0;
-			};
-			name = Debug;
-		};
-		70A8842F1E5736C400823C0F /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				DEVELOPMENT_TEAM = M68244X38L;
-				INFOPLIST_FILE = CollectionLoaderTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = co.bukapp.CollectionLoaderTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
@@ -909,15 +795,6 @@
 			buildConfigurations = (
 				70A8842B1E5736C400823C0F /* Debug */,
 				70A8842C1E5736C400823C0F /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		70A8842D1E5736C400823C0F /* Build configuration list for PBXNativeTarget "CollectionLoaderTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				70A8842E1E5736C400823C0F /* Debug */,
-				70A8842F1E5736C400823C0F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

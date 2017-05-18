@@ -8,8 +8,12 @@
 
 import Foundation
 
+public enum ContainerViewEdge {
+  case top, bottom, fill
+}
+
 // MARK: - UIView
-extension UIView {
+public extension UIView {
   
   @IBInspectable var cornerRadius: CGFloat {
     get {
@@ -125,6 +129,47 @@ extension UIView {
       }
     }
   }
+  
+  func fill(withView view: UIView, edgeInsets: UIEdgeInsets? = nil) {
+    self.addView(view, onEdge: .fill, edgeInsets: edgeInsets)
+  }
+  
+  func addView(_ view: UIView, onEdge edge: ContainerViewEdge, edgeInsets: UIEdgeInsets? = nil) {
+    view.translatesAutoresizingMaskIntoConstraints = false
+    self.addSubview(view)
+    
+    let hVisual = "|-(==leftInset)-[view]-(==rightInset)-|"
+    
+    var vVisual: String!
+    switch edge {
+    case .top:
+      vVisual = "V:|-(==topInset)-[view]"
+    case .bottom:
+      vVisual = "V:[view]-(==bottomInset)-|"
+    default:
+      vVisual = "V:|-(==topInset)-[view]-(==bottomInset)-|"
+    }
+    
+    let hConstraints = NSLayoutConstraint.constraints(
+      withVisualFormat: hVisual,
+      options: [],
+      metrics: [
+        "leftInset": edgeInsets?.left ?? 0,
+        "rightInset": edgeInsets?.right ?? 0,
+        ],
+      views: ["view": view])
+    let vConstraints = NSLayoutConstraint.constraints(
+      withVisualFormat: vVisual,
+      options: [],
+      metrics: [
+        "topInset": edgeInsets?.top ?? 0,
+        "bottomInset": edgeInsets?.bottom ?? 0,
+        ],
+      views: ["view": view])
+    
+    self.addConstraints(hConstraints + vConstraints)
+  }
+  
 }
 
 class BorderView: UIView { }
