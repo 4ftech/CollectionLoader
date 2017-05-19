@@ -29,6 +29,7 @@ public protocol DataLoaderEngine {
   var queryLimit: Int? { get }
   var skip: Int { get set }
 
+  init()
   
   mutating func promise(forLoadType loadType: DataLoadType, queryString: String?) -> Promise<[T]>
 }
@@ -48,6 +49,10 @@ open class BaseDataLoaderEngine<U: BaseDataModel>: NSObject, DataLoaderEngine {
   
   open var queryLimit: Int? { return nil }
   public var skip: Int = 0
+  
+  public required override init() {
+    super.init()
+  }
   
   open func request(forLoadType loadType: DataLoadType, queryString: String?) -> FetchRequest {
     let request: FetchRequest = T.fetchRequest()

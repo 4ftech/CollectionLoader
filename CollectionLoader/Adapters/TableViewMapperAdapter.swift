@@ -12,7 +12,7 @@ import ViewMapper
 open class TableViewMapperAdapter<A: CellMapperAdapter, E: DataLoaderEngine>: NSObject, BaseCollectionAdapter, UITableViewDelegate, UITableViewDataSource {
   public typealias EngineType = E
   
-  public var tableView = UITableView()
+  public var tableView: UITableView!
   public var scrollView: UIScrollView {
     return tableView
   }
@@ -28,12 +28,17 @@ open class TableViewMapperAdapter<A: CellMapperAdapter, E: DataLoaderEngine>: NS
     self.cellAdapter = cellAdapter
     self.dataLoader = dataLoader
     
+    self.tableView = UITableView()
     self.tableView.delegate = self
-    self.tableView.dataSource = self
+    self.tableView.dataSource = self    
   }
   
   public convenience init(cellAdapter: A, dataLoaderEngine: E) {
     self.init(cellAdapter: cellAdapter, dataLoader: DataLoader<E>(dataLoaderEngine: dataLoaderEngine))
+  }
+  
+  public convenience init(cellAdapter: A) {
+    self.init(cellAdapter: cellAdapter, dataLoaderEngine: E())
   }
   
   public func reloadData() {
@@ -91,7 +96,7 @@ open class TableViewMapperAdapter<A: CellMapperAdapter, E: DataLoaderEngine>: NS
     if editingStyle == .delete {
       let row = dataLoader.rowsToDisplay[indexPath.row]
       row.delete().then { success in
-        NotificationCenter.default.postCRUDNotification(.Delete, crudObject: row)
+        NotificationCenter.default.postCRUDNotification(.delete, crudObject: row)
       }.catch { error in
             
       }

@@ -40,7 +40,7 @@ public final class CollectionLoaderSelectRow<T: CellMapperAdapter, U: DataLoader
   }
 }
 
-public class CollectionLoaderSelectController<T: CellMapperAdapter, U: DataLoaderEngine>: CollectionLoaderController<TableViewMapperAdapter<T, U>>, TypedRowControllerType {
+public class CollectionLoaderSelectController<T: CellMapperAdapter, U: DataLoaderEngine>: ListLoaderController<TableViewMapperAdapter<T, U>>, TypedRowControllerType {
   public var row: RowOf<U.T>!
   public var onDismissCallback: ((UIViewController) -> ())?
   
@@ -73,7 +73,7 @@ public class CollectionLoaderSelectController<T: CellMapperAdapter, U: DataLoade
     
   }
   
-  override func refreshScrollView() {
+  override open func refreshScrollView() {
     super.refreshScrollView()
 
     if let selectedObject = row.value, let index = dataLoader.rowsToDisplay.index(of: selectedObject), let tableView = scrollView as? UITableView {
@@ -119,7 +119,7 @@ public final class CollectionLoaderSelectMultipleRow<T: CellMapperAdapter, U: Da
   }
 }
 
-public class CollectionLoaderSelectMultipleController<T: CellMapperAdapter, U: DataLoaderEngine>: CollectionLoaderController<TableViewMapperAdapter<T, U>>, TypedRowControllerType {
+public class CollectionLoaderSelectMultipleController<T: CellMapperAdapter, U: DataLoaderEngine>: ListLoaderController<TableViewMapperAdapter<T, U>>, TypedRowControllerType {
   public var row: RowOf<Set<U.T>>!
   public var onDismissCallback: ((UIViewController) -> ())?
   
@@ -153,7 +153,7 @@ public class CollectionLoaderSelectMultipleController<T: CellMapperAdapter, U: D
     onDismissCallback = callback
   }
   
-  override func refreshScrollView() {
+  override open func refreshScrollView() {
     super.refreshScrollView()
     
     if let rows = row.value, let tableView = scrollView as? UITableView, rows.count > 0 {

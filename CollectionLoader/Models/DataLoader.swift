@@ -107,18 +107,18 @@ public class DataLoader<EngineType: DataLoaderEngine>: NSObject {
     NSLog("dataLoader received notification: \(notification.crudNotificationType) \(object)")
     
     switch notification.crudNotificationType {
-    case .Create:
+    case .create:
       switch newRowsPosition {
       case .beginning:
         insertRow(object, atIndex: 0)
       case .end:
         appendRow(object)
       }
-    case .Update:
+    case .update:
       if let index = rows.index(of: object) {
         updateRowAtIndex(index, withObject: object)
       }
-    case .Delete:
+    case .delete:
       if let index = rows.index(of: object) {
         removeRowAtIndex(index)
       }

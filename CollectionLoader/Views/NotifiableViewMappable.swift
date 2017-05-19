@@ -20,7 +20,7 @@ open class NotifiableViewMappable<ModelType: BaseDataModel>: UIView, ViewMappabl
       .takeUntil(self.rx.deallocated)
       .subscribe(onNext: { [weak self] notification in
         switch notification.crudNotificationType {
-        case .Update:
+        case .update:
           let updatedObject = notification.crudObject as! ModelType
           if updatedObject == object {
             self?.map(object: updatedObject)

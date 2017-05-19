@@ -1,5 +1,5 @@
 //
-//  CollectionLoaderController.swift
+//  ListLoaderController.swift
 //  CollectionLoader
 //
 //  Created by Nick Kuyakanon on 2/17/17.
@@ -11,25 +11,27 @@ import RxSwift
 import UIScrollView_InfiniteScroll
 import UIKit
 
-open class CollectionLoaderController<AdapterType: BaseCollectionAdapter>: UIViewController, CollectionSearchBarDelegate, DataLoaderDelegate {
+open class ListLoaderController<AdapterType: BaseCollectionAdapter>: UIViewController, CollectionSearchBarDelegate, DataLoaderDelegate {
   let singleLineTableCellIdentifier = "singleLineIconCell"
   let twoLineTableCellIdentifier = "twoLineIconCell"
   let threeLineTableCellIdentifier = "threeLineIconCell"
 
+  typealias m = LoaderView
+  
+  public var loaderView: LoaderView!
+  var collectionAdapter: AdapterType!
+  var refreshControl: UIRefreshControl?
+
+  public var pullToRefresh: Bool = false
+
   public var container: UIView!
   public var emptyViewContent: EmptyViewContent?
-  public var scrollView: UIScrollView!
-  
-  typealias m = LoaderView
-
-  var loaderView: LoaderView!
-  var refreshControl: UIRefreshControl?
-  public var pullToRefresh: Bool = false
-  
-  var collectionAdapter: AdapterType!
+  public var scrollView: UIScrollView {
+    return collectionAdapter.scrollView
+  }  
   
   // Search
-  public var allowSearch: Bool = true
+  public var allowSearch: Bool = false
   var searchBar: CollectionSearchBar?
   
   // Insets
@@ -46,7 +48,7 @@ open class CollectionLoaderController<AdapterType: BaseCollectionAdapter>: UIVie
   var topBarInset: CGFloat {
     var topInset: CGFloat = 0
     
-    if let navController = navigationController, !navController.isNavigationBarHidden {
+    if let navController = navigationController, !navController.isNavigationBarHidden && extendedLayoutIncludesOpaqueBars && edgesForExtendedLayout.contains(.top) {
       topInset = topInset + Const.topBarHeight
     }
     
@@ -87,7 +89,7 @@ open class CollectionLoaderController<AdapterType: BaseCollectionAdapter>: UIVie
   override open func viewDidLoad() {
     super.viewDidLoad()
 
-    NSLog("viewDidLoad for CollectionLoaderController")
+    NSLog("viewDidLoad for ListLoaderController")
     
     //    edgesForExtendedLayout = []
     //    extendedLayoutIncludesOpaqueBars = false
@@ -96,12 +98,12 @@ open class CollectionLoaderController<AdapterType: BaseCollectionAdapter>: UIVie
     view.backgroundColor = UIColor.white
 
     // Add Container and ScrollView
-    container = UIView()
+    container = UIView(frame: view.frame)
     container.alpha = 0
     view.fill(withView: container)
     
-    scrollView = collectionAdapter.scrollView
     collectionAdapter.registerCells()
+    scrollView.frame = container.frame
     container.fill(withView: scrollView)
     
     // Loader
@@ -329,7 +331,7 @@ open class CollectionLoaderController<AdapterType: BaseCollectionAdapter>: UIVie
     checkEmpty()
   }
   
-  var rowCRUDCompletion: (Bool) -> Void {
+  open var rowCRUDCompletion: (Bool) -> Void {
     return { complete in
       if self.dataLoader.isEmpty {
         self.refreshScrollView()
@@ -340,7 +342,7 @@ open class CollectionLoaderController<AdapterType: BaseCollectionAdapter>: UIVie
   }
   
   // MARK: DataLoaderDelegate
-  func didInsertRowAtIndex(_ index: Int) {
+  open func didInsertRowAtIndex(_ index: Int) {
     if let collectionView = scrollView as? UICollectionView {
       collectionView.performBatchUpdates({
         collectionView.insertItems(at: [IndexPath(item: index, section: 0)])
@@ -352,7 +354,7 @@ open class CollectionLoaderController<AdapterType: BaseCollectionAdapter>: UIVie
     }
   }
   
-  func didUpdateRowAtIndex(_ index: Int) {
+  open func didUpdateRowAtIndex(_ index: Int) {
     if let collectionView = scrollView as? UICollectionView {
       collectionView.performBatchUpdates({
         collectionView.reloadItems(at: [IndexPath(item: index, section: 0)])
@@ -364,7 +366,7 @@ open class CollectionLoaderController<AdapterType: BaseCollectionAdapter>: UIVie
     }
   }
 
-  func didRemoveRowAtIndex(_ index: Int) {
+  open func didRemoveRowAtIndex(_ index: Int) {
     if let collectionView = scrollView as? UICollectionView {
       collectionView.performBatchUpdates({
         collectionView.deleteItems(at: [IndexPath(item: index, section: 0)])
@@ -376,19 +378,19 @@ open class CollectionLoaderController<AdapterType: BaseCollectionAdapter>: UIVie
     }    
   }
   
-  func didClearRows() {
+  open func didClearRows() {
     refreshScrollView()
     loaderView.showSpinner()
   }
   
   // MARK: - Displaying results
-  func initialDisplay() {
+  open func initialDisplay() {
     UIView.animate(withDuration: 1.0, animations: {
       self.container.alpha = 1.0
     })
   }
   
-  func checkEmpty() {
+  open func checkEmpty() {
     if dataLoader.isEmpty {
       loaderView.showEmptyView()
     } else {
@@ -396,7 +398,7 @@ open class CollectionLoaderController<AdapterType: BaseCollectionAdapter>: UIVie
     }
   }
   
-  func refreshScrollView() {
+  open func refreshScrollView() {
     collectionAdapter.reloadData()
   }
   

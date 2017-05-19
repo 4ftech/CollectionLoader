@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7027E3631ECDE22A00C36C76 /* TableNibAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7027E3621ECDE22A00C36C76 /* TableNibAdapter.swift */; };
+		7027E36C1ECDE48800C36C76 /* TableNibLoaderController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7027E36B1ECDE48800C36C76 /* TableNibLoaderController.swift */; };
+		7027E3A71ECE0A2A00C36C76 /* TableLoaderController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7027E3A61ECE0A2A00C36C76 /* TableLoaderController.swift */; };
 		705D2DBC1E5F3B37005D3A5F /* PromiseKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 705D2DBB1E5F3B37005D3A5F /* PromiseKit.framework */; };
 		705D2E3A1E600613005D3A5F /* DataSource.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 705D2E341E6005E8005D3A5F /* DataSource.framework */; };
 		705D2E3B1E60061B005D3A5F /* ParseDataSource.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 705D2E361E6005E8005D3A5F /* ParseDataSource.framework */; };
@@ -24,9 +27,8 @@
 		705D307E1E678144005D3A5F /* DataLoaderEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705D307D1E678144005D3A5F /* DataLoaderEngine.swift */; };
 		70961C0C1EA82468007CD33E /* FilterListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70961C0B1EA82468007CD33E /* FilterListViewController.swift */; };
 		70A884271E5736C400823C0F /* CollectionLoader.h in Headers */ = {isa = PBXBuildFile; fileRef = 70A884191E5736C400823C0F /* CollectionLoader.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		70A884311E57373800823C0F /* CollectionLoaderController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70A884301E57373800823C0F /* CollectionLoaderController.swift */; };
+		70A884311E57373800823C0F /* ListLoaderController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70A884301E57373800823C0F /* ListLoaderController.swift */; };
 		70A884331E5738CA00823C0F /* Cartfile in Resources */ = {isa = PBXBuildFile; fileRef = 70A884321E5738CA00823C0F /* Cartfile */; };
-		70A884C11E573AC300823C0F /* Spring.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 70A884C01E573AC300823C0F /* Spring.framework */; };
 		70A884C51E573C6800823C0F /* RxBlocking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 70A884C21E573C6800823C0F /* RxBlocking.framework */; };
 		70A884C61E573C6800823C0F /* RxCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 70A884C31E573C6800823C0F /* RxCocoa.framework */; };
 		70A884C71E573C6800823C0F /* RxSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 70A884C41E573C6800823C0F /* RxSwift.framework */; };
@@ -44,7 +46,6 @@
 		70A886231E57EE8D00823C0F /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 70A886221E57EE8D00823C0F /* Parse.framework */; };
 		70A886291E5822B700823C0F /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70A886281E5822B700823C0F /* UIView.swift */; };
 		70A8862C1E58A63300823C0F /* CollectionLoader.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 70A884161E5736C400823C0F /* CollectionLoader.framework */; };
-		70AEF63B1EBACA5400352D38 /* TestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70AEF63A1EBACA5400352D38 /* TestViewController.swift */; };
 		70C407BC1E68DDCD00A14EB7 /* ParseViewMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70C407BB1E68DDCD00A14EB7 /* ParseViewMapper.swift */; };
 		70C407CC1E69F37800A14EB7 /* DataLoadType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70C407CB1E69F37800A14EB7 /* DataLoadType.swift */; };
 		70C408C01E6AFF1F00A14EB7 /* ParseEurekaViewMapper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 705D301A1E676E96005D3A5F /* ParseEurekaViewMapper.framework */; };
@@ -104,6 +105,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		7027E3621ECDE22A00C36C76 /* TableNibAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableNibAdapter.swift; sourceTree = "<group>"; };
+		7027E36B1ECDE48800C36C76 /* TableNibLoaderController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableNibLoaderController.swift; sourceTree = "<group>"; };
+		7027E3A61ECE0A2A00C36C76 /* TableLoaderController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableLoaderController.swift; sourceTree = "<group>"; };
 		705D2DBB1E5F3B37005D3A5F /* PromiseKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PromiseKit.framework; path = Carthage/Build/iOS/PromiseKit.framework; sourceTree = "<group>"; };
 		705D2E2D1E6005E8005D3A5F /* DataSource.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = DataSource.xcodeproj; path = ../DataSource/DataSource.xcodeproj; sourceTree = "<group>"; };
 		705D2E5A1E60955A005D3A5F /* TableViewMapperAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewMapperAdapter.swift; sourceTree = "<group>"; };
@@ -123,7 +127,7 @@
 		70A8841A1E5736C400823C0F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		70A884241E5736C400823C0F /* CollectionLoaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionLoaderTests.swift; sourceTree = "<group>"; };
 		70A884261E5736C400823C0F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		70A884301E57373800823C0F /* CollectionLoaderController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionLoaderController.swift; sourceTree = "<group>"; };
+		70A884301E57373800823C0F /* ListLoaderController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListLoaderController.swift; sourceTree = "<group>"; };
 		70A884321E5738CA00823C0F /* Cartfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Cartfile; sourceTree = "<group>"; };
 		70A884C01E573AC300823C0F /* Spring.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Spring.framework; path = Carthage/Build/iOS/Spring.framework; sourceTree = "<group>"; };
 		70A884C21E573C6800823C0F /* RxBlocking.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxBlocking.framework; path = Carthage/Build/iOS/RxBlocking.framework; sourceTree = "<group>"; };
@@ -144,7 +148,6 @@
 		70A886101E57E93000823C0F /* ParseDataEngine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParseDataEngine.swift; sourceTree = "<group>"; };
 		70A886221E57EE8D00823C0F /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Parse.framework; path = Carthage/Build/iOS/Parse.framework; sourceTree = "<group>"; };
 		70A886281E5822B700823C0F /* UIView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIView.swift; sourceTree = "<group>"; };
-		70AEF63A1EBACA5400352D38 /* TestViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestViewController.swift; sourceTree = "<group>"; };
 		70C407BB1E68DDCD00A14EB7 /* ParseViewMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParseViewMapper.swift; sourceTree = "<group>"; };
 		70C407CB1E69F37800A14EB7 /* DataLoadType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataLoadType.swift; sourceTree = "<group>"; };
 		70FBAA7B1EB9115600ECC20E /* Const.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Const.swift; sourceTree = "<group>"; };
@@ -157,7 +160,6 @@
 			files = (
 				705D2FC51E669763005D3A5F /* DataSource.framework in Frameworks */,
 				70A884DF1E576D6700823C0F /* UIScrollView_InfiniteScroll.framework in Frameworks */,
-				70A884C11E573AC300823C0F /* Spring.framework in Frameworks */,
 				70A884C51E573C6800823C0F /* RxBlocking.framework in Frameworks */,
 				70A884C61E573C6800823C0F /* RxCocoa.framework in Frameworks */,
 				70A884C71E573C6800823C0F /* RxSwift.framework in Frameworks */,
@@ -185,10 +187,11 @@
 		705902251E7AE0F400E5B7EE /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				70A884301E57373800823C0F /* CollectionLoaderController.swift */,
+				70A884301E57373800823C0F /* ListLoaderController.swift */,
+				7027E3A61ECE0A2A00C36C76 /* TableLoaderController.swift */,
+				7027E36B1ECDE48800C36C76 /* TableNibLoaderController.swift */,
 				705D30251E67720F005D3A5F /* DataSourceFormController.swift */,
 				70961C0B1EA82468007CD33E /* FilterListViewController.swift */,
-				70AEF63A1EBACA5400352D38 /* TestViewController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -217,6 +220,7 @@
 				705D2E5E1E609584005D3A5F /* BaseCollectionAdapter.swift */,
 				705D2E5A1E60955A005D3A5F /* TableViewMapperAdapter.swift */,
 				705D2E5C1E609573005D3A5F /* CollectionViewMapperAdapter.swift */,
+				7027E3621ECDE22A00C36C76 /* TableNibAdapter.swift */,
 			);
 			path = Adapters;
 			sourceTree = "<group>";
@@ -547,18 +551,20 @@
 			buildActionMask = 2147483647;
 			files = (
 				70A886291E5822B700823C0F /* UIView.swift in Sources */,
-				70AEF63B1EBACA5400352D38 /* TestViewController.swift in Sources */,
+				7027E3631ECDE22A00C36C76 /* TableNibAdapter.swift in Sources */,
 				705D2E5F1E609584005D3A5F /* BaseCollectionAdapter.swift in Sources */,
 				705D30261E67720F005D3A5F /* DataSourceFormController.swift in Sources */,
 				705D30221E676FEC005D3A5F /* CollectionLoaderSelectRow.swift in Sources */,
+				7027E3A71ECE0A2A00C36C76 /* TableLoaderController.swift in Sources */,
 				705D2E611E609591005D3A5F /* CollectionViewType.swift in Sources */,
-				70A884311E57373800823C0F /* CollectionLoaderController.swift in Sources */,
+				70A884311E57373800823C0F /* ListLoaderController.swift in Sources */,
 				705D2E5B1E60955A005D3A5F /* TableViewMapperAdapter.swift in Sources */,
 				705D307E1E678144005D3A5F /* DataLoaderEngine.swift in Sources */,
 				70A884CF1E57403A00823C0F /* CollectionSearchBar.swift in Sources */,
 				70C407CC1E69F37800A14EB7 /* DataLoadType.swift in Sources */,
 				70A884DD1E5762F000823C0F /* UITableView.swift in Sources */,
 				70961C0C1EA82468007CD33E /* FilterListViewController.swift in Sources */,
+				7027E36C1ECDE48800C36C76 /* TableNibLoaderController.swift in Sources */,
 				705D2E5D1E609573005D3A5F /* CollectionViewMapperAdapter.swift in Sources */,
 				70A884CD1E573FF900823C0F /* DataLoader.swift in Sources */,
 				70A884D11E57404B00823C0F /* LoaderView.swift in Sources */,

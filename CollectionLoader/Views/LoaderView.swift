@@ -8,7 +8,7 @@
 
 import Foundation
 
-class LoaderView: UIView {
+public class LoaderView: UIView {
   @IBOutlet weak var emptyContainer: UIView!
   @IBOutlet weak var imageView: UIImageView!
   @IBOutlet weak var label: UILabel!
@@ -20,14 +20,14 @@ class LoaderView: UIView {
   let imageHeight: CGFloat = 128
   var buttonAction: (() -> Void)?
   
-  class func newInstance(_ owner: AnyObject? = nil, content: EmptyViewContent? = nil) -> LoaderView {
+  public class func newInstance(_ owner: AnyObject? = nil, content: EmptyViewContent? = nil) -> LoaderView {
     let loaderView = Bundle(for: self).loadNibNamed("LoaderView", owner: owner, options: nil)!.first as! LoaderView
     loaderView.loadContent(content)
     
     return loaderView
   }
   
-  override func awakeFromNib() {
+  override public func awakeFromNib() {
     super.awakeFromNib()
     
     isHidden = true
@@ -60,24 +60,24 @@ class LoaderView: UIView {
     buttonAction?()
   }
   
-  func showSpinner() {
+  public func showSpinner() {
     isHidden = false
     hideEmptyView()
     activityIndicator.isHidden = false
     activityIndicator.startAnimating()
   }
   
-  func hideSpinner() {
+  public func hideSpinner() {
     activityIndicator.isHidden = true
     activityIndicator.stopAnimating()
   }
   
   
-  func hideEmptyView() {
+  public func hideEmptyView() {
     emptyContainer.isHidden = true
   }
   
-  func showEmptyView() {
+  public func showEmptyView() {
     isHidden = false
     hideSpinner()
     emptyContainer.isHidden = false

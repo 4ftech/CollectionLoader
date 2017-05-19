@@ -64,9 +64,9 @@ open class DataSourceFormController<T: BaseDataModel>: FormViewController, ViewM
     
     let promise: Promise<T> = object.save()
     promise.then { result in
-      self.handleSuccess(crudType: isNew ? .Create : .Update, crudObject: result)
-      }.catch { error in
-        self.handleError(error: error)
+      self.handleSuccess(crudType: isNew ? .create : .update, crudObject: result)
+    }.catch { error in
+      self.handleError(error: error)
     }
   }
   
