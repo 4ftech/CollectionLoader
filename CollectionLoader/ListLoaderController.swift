@@ -7,11 +7,14 @@
 //
 
 import Foundation
-import RxSwift
-import UIScrollView_InfiniteScroll
 import UIKit
 
-open class ListLoaderController<AdapterType: BaseCollectionAdapter>: UIViewController, CollectionSearchBarDelegate, DataLoaderDelegate {
+import RxSwift
+import UIScrollView_InfiniteScroll
+
+import DataSource
+
+open class ListLoaderController<AdapterType: BaseListAdapter>: UIViewController, CollectionSearchBarDelegate, DataLoaderDelegate {
   let singleLineTableCellIdentifier = "singleLineIconCell"
   let twoLineTableCellIdentifier = "twoLineIconCell"
   let threeLineTableCellIdentifier = "threeLineIconCell"
@@ -19,33 +22,62 @@ open class ListLoaderController<AdapterType: BaseCollectionAdapter>: UIViewContr
   typealias m = LoaderView
   
   public var loaderView: LoaderView!
-  var collectionAdapter: AdapterType!
-  var refreshControl: UIRefreshControl?
-
+  public var listAdapter: AdapterType!
+  
   public var pullToRefresh: Bool = false
+  var refreshControl: UIRefreshControl?
 
   public var container: UIView!
   public var emptyViewContent: EmptyViewContent?
   public var scrollView: UIScrollView {
-    return collectionAdapter.scrollView
+    return listAdapter.scrollView
   }  
+  
+  // Filters
+  public var filters: [Filter] {
+    get {
+      return dataLoader.filters
+    }
+    set {
+      dataLoader.filters = newValue
+    }
+  }
+  
+  public var isAnyFilterApplied: Bool {
+    for filter in filters {
+      if filter.isApplied {
+        return true
+      }
+    }
+    
+    return false
+  }
+  
+  public var filtersDescription: String? {
+    let descriptions = filters.filter({ $0.isApplied && $0.filterDescription != nil && !$0.filterDescription!.isEmpty }).map({ $0.filterDescription! })
+    if descriptions.count > 0 {
+      return descriptions.joined(separator: ", ")
+    }
+    
+    return nil
+  }
   
   // Search
   public var allowSearch: Bool = false
-  var searchBar: CollectionSearchBar?
+  public var searchBar: CollectionSearchBar?
   
   // Insets
-  var scrollTopInset: CGFloat {
+  open var scrollTopInset: CGFloat {
     var topInset: CGFloat = 0
     
-    if allowSearch {
-      topInset = topInset + Const.searchBarHeight
+    if let searchBar = searchBar, allowSearch {
+      topInset = topInset + searchBar.frame.size.height
     }
     
     return topInset
   }
   
-  var topBarInset: CGFloat {
+  open var topBarInset: CGFloat {
     var topInset: CGFloat = 0
     
     if let navController = navigationController, !navController.isNavigationBarHidden && extendedLayoutIncludesOpaqueBars && edgesForExtendedLayout.contains(.top) {
@@ -59,23 +91,27 @@ open class ListLoaderController<AdapterType: BaseCollectionAdapter>: UIViewContr
   
   // DATA
   var collectionInitialized = false
-  var dataLoader: DataLoader<AdapterType.EngineType>!
   var disposeBag: DisposeBag = DisposeBag()
 
+  public var dataLoader: DataLoader<AdapterType.EngineType> {
+    return listAdapter.dataLoader
+  }
+  
+  public var dataLoaderEngine: AdapterType.EngineType {
+    return dataLoader.dataLoaderEngine
+  }
+  
   public var refreshOnAppear: DataLoadType? = nil  
   public var rowsLoading: Bool { return dataLoader.rowsLoading }
   public var rowsLoaded: Bool { return dataLoader.rowsLoaded }
   public var rows: [AdapterType.EngineType.T] { return dataLoader.rowsToDisplay }
   
   // MARK: - Initialize
-  public init(collectionAdapter: AdapterType) {
+  public init(listAdapter: AdapterType) {
     super.init(nibName: nil, bundle: nil)
     
-    self.collectionAdapter = collectionAdapter
-    self.collectionAdapter.viewController = self
-    
-    self.dataLoader = collectionAdapter.dataLoader
-    self.dataLoader.delegate = self
+    self.listAdapter = listAdapter
+    self.listAdapter.viewController = self
     
     self.emptyViewContent = EmptyViewContent(message: "No results")
 
@@ -91,18 +127,36 @@ open class ListLoaderController<AdapterType: BaseCollectionAdapter>: UIViewContr
 
     NSLog("viewDidLoad for ListLoaderController")
     
+    // Don't set delegate until view is loaded
+    self.dataLoader.delegate = self
+    
     //    edgesForExtendedLayout = []
     //    extendedLayoutIncludesOpaqueBars = false
     //    automaticallyAdjustsScrollViewInsets = true
     
     view.backgroundColor = UIColor.white
-
+    
+    // Search
+    if allowSearch {
+      if searchBar == nil {
+        searchBar = CollectionSearchBar.newInstance()
+      }
+      
+      searchBar?.delegate = self
+      searchBar?.isHidden = false
+      view.addView(
+        searchBar!,
+        onEdge: .top,
+        edgeInsets: UIEdgeInsets(top: topBarInset, left: 0, bottom: 0, right: 0)
+      )
+    }
+    
     // Add Container and ScrollView
     container = UIView(frame: view.frame)
     container.alpha = 0
     view.fill(withView: container)
     
-    collectionAdapter.registerCells()
+    listAdapter.registerCells()
     scrollView.frame = container.frame
     container.fill(withView: scrollView)
     
@@ -128,24 +182,15 @@ open class ListLoaderController<AdapterType: BaseCollectionAdapter>: UIViewContr
     
     // Subscribe to data loader notifications
     subscribeToDataLoaderNotifications()
-    
-    // Search
-    if allowSearch {
-      searchBar = CollectionSearchBar.newInstance()
-      searchBar?.delegate = self
-      searchBar?.isHidden = false
-      view.addView(
-        searchBar!,
-        onEdge: .top,
-        edgeInsets: UIEdgeInsets(top: topBarInset, left: 0, bottom: 0, right: 0)
-      )
-    }
-    
-    // Filters
-    
+
     // Table
     //    container.autohide = true
     //    container.autostart = false
+    
+    // Make sure Search Bar is on top
+    if let searchBar = searchBar {
+      view.bringSubview(toFront: searchBar)
+    }
     
     // OK GO
     if !dataLoader.rowsLoaded && !dataLoader.rowsLoading {
@@ -158,6 +203,11 @@ open class ListLoaderController<AdapterType: BaseCollectionAdapter>: UIViewContr
     } else {
       loaderView.isHidden = true
     }
+    
+    if allowSearch {
+      NotificationCenter.default.addObserver(self, selector: #selector(searchKeyboardWillShow(_:)), name: Notification.Name.UIKeyboardWillShow, object: nil)
+      NotificationCenter.default.addObserver(self, selector: #selector(searchKeyboardWillHide(_:)), name: Notification.Name.UIKeyboardWillHide, object: nil)
+    }
   }
   
   override open func viewWillAppear(_ animated: Bool) {
@@ -168,46 +218,44 @@ open class ListLoaderController<AdapterType: BaseCollectionAdapter>: UIViewContr
     } else if dataLoader.rowsLoaded && !dataLoader.rowsLoading && collectionInitialized && dataLoader.isEmpty {
       loadRows(loadType: .replace)
     }
-    
-    if allowSearch {
-      NotificationCenter.default.addObserver(self, selector: #selector(searchKeyboardWillShow(_:)), name: Notification.Name.UIKeyboardWillShow, object: nil)
-      NotificationCenter.default.addObserver(self, selector: #selector(searchKeyboardWillHide(_:)), name: Notification.Name.UIKeyboardWillHide, object: nil)
-    }
   }
   
-  open override func viewWillDisappear(_ animated: Bool) {
-    super.viewWillDisappear(animated)
-    
-    if allowSearch {
-      NotificationCenter.default.removeObserver(self, name: Notification.Name.UIKeyboardWillShow, object: nil)
-      NotificationCenter.default.removeObserver(self, name: Notification.Name.UIKeyboardWillHide, object: nil)
-    }
-  }
-  
-  func searchKeyboardWillShow(_ notification: Notification) {
+  open func searchKeyboardWillShow(_ notification: Notification) {
     if let userInfo = notification.userInfo {
       let animationDuration: TimeInterval = (userInfo[UIKeyboardAnimationDurationUserInfoKey] as! NSNumber).doubleValue
       if let keyboardSize = (userInfo[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
         scrollBottomInset = scrollView.contentInset.bottom
         
-        UIView.animate(withDuration: animationDuration, delay: 0, options: .beginFromCurrentState, animations: {
-          self.scrollView.contentInset.bottom = keyboardSize.height
-        }, completion: nil)
+        UIView.animate(
+          withDuration: animationDuration,
+          delay: 0,
+          options: [.beginFromCurrentState, .allowUserInteraction],
+          animations: {
+            self.scrollView.contentInset.bottom = keyboardSize.height
+          },
+          completion: nil
+        )
       }
     }
   }
   
-  func searchKeyboardWillHide(_ notification: Notification) {
+  open func searchKeyboardWillHide(_ notification: Notification) {
     if let userInfo = notification.userInfo {
       let animationDuration: TimeInterval = (userInfo[UIKeyboardAnimationDurationUserInfoKey] as! NSNumber).doubleValue
-      UIView.animate(withDuration: animationDuration, delay: 0, options: .beginFromCurrentState, animations: {
-        let bottomInset = self.scrollBottomInset ?? 0
-        self.scrollView.contentInset.bottom = bottomInset
-      }, completion: nil)
+      UIView.animate(
+        withDuration: animationDuration,
+        delay: 0,
+        options: [.beginFromCurrentState, .allowUserInteraction],
+        animations: {
+          let bottomInset = self.scrollBottomInset ?? 0
+          self.scrollView.contentInset.bottom = bottomInset
+        },
+        completion: nil
+      )
     }
   }
   
-  func didPullToRefresh(refreshControl: UIRefreshControl) {
+  open func didPullToRefresh(refreshControl: UIRefreshControl) {
     loadRows(loadType: .replace)
   }
   
@@ -221,19 +269,6 @@ open class ListLoaderController<AdapterType: BaseCollectionAdapter>: UIViewContr
       // TODO: Better handle error
       if let rows = self?.dataLoader.rowsToDisplay, rows.count == 0 {
         self?.loaderView.showEmptyView()
-      }
-    }
-
-    switch loadType {
-    case .more, .newRows:
-      // Don't show spinner if doing infinite scroll load
-      // or refreshing for new rows
-      break
-    default:
-      if loadType == .replace && dataLoader.rowsToDisplay.count > 0 {
-        // No spinner here either
-      } else {
-        loaderView.showSpinner()
       }
     }
   }
@@ -341,7 +376,7 @@ open class ListLoaderController<AdapterType: BaseCollectionAdapter>: UIViewContr
     }
   }
   
-  // MARK: DataLoaderDelegate
+  // MARK: - DataLoaderDelegate
   open func didInsertRowAtIndex(_ index: Int) {
     if let collectionView = scrollView as? UICollectionView {
       collectionView.performBatchUpdates({
@@ -383,27 +418,69 @@ open class ListLoaderController<AdapterType: BaseCollectionAdapter>: UIViewContr
     loaderView.showSpinner()
   }
   
+  open func didStartLoadingRows(loadType: DataLoadType) {    
+    switch loadType {
+    case .more, .newRows:
+      // Don't show spinner if doing infinite scroll load
+      // or refreshing for new rows
+      break
+    default:
+      if loadType == .replace && dataLoader.rowsToDisplay.count > 0 {
+        // No spinner here either
+      } else {
+        loaderView.showSpinner()
+      }
+    }
+  }
+  
   // MARK: - Displaying results
   open func initialDisplay() {
-    UIView.animate(withDuration: 1.0, animations: {
-      self.container.alpha = 1.0
-    })
+    UIView.animate(
+      withDuration: Const.fadeDuration,
+      delay: 0,
+      options: .allowUserInteraction,
+      animations: { self.container.alpha = 1.0 },
+      completion: nil
+    )
   }
   
   open func checkEmpty() {
     if dataLoader.isEmpty {
+      scrollView.isHidden = true
       loaderView.showEmptyView()
     } else {
+      scrollView.isHidden = false
       loaderView.isHidden = true
     }
   }
   
   open func refreshScrollView() {
-    collectionAdapter.reloadData()
+    listAdapter.reloadData()
   }
   
   // MARK: - CollectionSearchBarDelegate
-  func searchBarTextDidChange(_ searchBar: CollectionSearchBar) {
+  open func searchBarTextDidChange(_ searchBar: CollectionSearchBar) {
+    if searchBar.throttle == nil {
+      dataLoader.searchByString(searchBar.text)
+    }
+  }
+  
+  open func searchBarDidTapClearButton(_ searchBar: CollectionSearchBar) {
+    
+  }
+  
+  open func searchBarTextDidBeginEditing(_ searchBar: CollectionSearchBar) {
+    
+  }
+  
+  open func searchBarTextDidChangeAfterThrottle(_ searchBar: CollectionSearchBar) {
     dataLoader.searchByString(searchBar.text)
+  }
+  
+  // MARK: - Filters
+  open func clearFilters() {
+    for filter in filters {
+      filter.clearFilter()
+    }
   }
 }

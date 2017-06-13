@@ -11,4 +11,5 @@ import Foundation
 class Const {
   static let searchBarHeight: CGFloat = 44
   static let topBarHeight: CGFloat = 64
+  static let fadeDuration: TimeInterval = 0.5
 }

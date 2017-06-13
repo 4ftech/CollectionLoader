@@ -1,5 +1,5 @@
 //
-//  TableLoaderController.swift
+//  CollectionLoaderController.swift
 //  CollectionLoader
 //
 //  Created by Nick Kuyakanon on 6/12/17.
@@ -9,9 +9,13 @@
 import Foundation
 import ViewMapper
 
-open class TableLoaderController<A, E>: ListLoaderController<A> where A:TableListAdapter<E>, E:DataLoaderEngine {
-  public var tableView: UITableView {
-    return listAdapter.tableView
+open class CollectionLoaderController<A, E>: ListLoaderController<A> where A:CollectionListAdapter<E>, E: DataLoaderEngine {
+  public var collectionView: UICollectionView {
+    return listAdapter.collectionView
+  }
+  
+  public var flowLayout: UICollectionViewFlowLayout {
+    return collectionView.collectionViewLayout as! UICollectionViewFlowLayout
   }
   
   required public init?(coder aDecoder: NSCoder) {

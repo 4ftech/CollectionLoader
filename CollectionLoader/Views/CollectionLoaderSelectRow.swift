@@ -17,12 +17,12 @@ public final class CollectionLoaderSelectRow<T: CellMapperAdapter, U: DataLoader
     super.init(tag: tag)
   }
   
-  public init(collectionAdapter: TableViewMapperAdapter<T, U>, tag: String? = nil, initializer: ((CollectionLoaderSelectRow) -> Void)? = nil) {
+  public init(listAdapter: TableViewMapperAdapter<T, U>, tag: String? = nil, initializer: ((CollectionLoaderSelectRow) -> Void)? = nil) {
     super.init(tag: tag)
     
     presentationMode = .show(
       controllerProvider: ControllerProvider.callback {
-        return CollectionLoaderSelectController(collectionAdapter: collectionAdapter) { _ in
+        return CollectionLoaderSelectController(listAdapter: listAdapter) { _ in
           
         }
       },
@@ -48,16 +48,16 @@ public class CollectionLoaderSelectController<T: CellMapperAdapter, U: DataLoade
     super.init(coder: aDecoder)
   }
   
-  required public init(collectionAdapter: TableViewMapperAdapter<T, U>, callback: ((UIViewController) -> ())? = nil) {
-    super.init(collectionAdapter: collectionAdapter)
+  required public init(listAdapter: TableViewMapperAdapter<T, U>, callback: ((UIViewController) -> ())? = nil) {
+    super.init(listAdapter: listAdapter)
     
-    collectionAdapter.cellAdapter.onSelectCell = { value, _ in
+    listAdapter.cellAdapter.onSelectCell = { value, _ in
       if let value = value as? U.T {
         if self.row.value == value {
           self.row.value = nil
           
           if let index = self.dataLoader.rowsToDisplay.index(of: value) {
-            self.collectionAdapter.tableView.deselectRow(at: IndexPath(row: index, section: 0), animated: true)
+            self.listAdapter.tableView.deselectRow(at: IndexPath(row: index, section: 0), animated: true)
           }
         } else {
           self.row.value = value
@@ -66,6 +66,10 @@ public class CollectionLoaderSelectController<T: CellMapperAdapter, U: DataLoade
     }
     
     onDismissCallback = callback
+  }
+  
+  public required override init(listAdapter: TableViewMapperAdapter<T, U>) {
+    super.init(listAdapter: listAdapter)
   }
   
   public override func viewDidLoad() {
@@ -90,12 +94,12 @@ public final class CollectionLoaderSelectMultipleRow<T: CellMapperAdapter, U: Da
     super.init(tag: tag)
   }
   
-  public init(collectionAdapter: TableViewMapperAdapter<T, U>, tag: String? = nil, initializer: ((CollectionLoaderSelectMultipleRow) -> Void)? = nil) {
+  public init(listAdapter: TableViewMapperAdapter<T, U>, tag: String? = nil, initializer: ((CollectionLoaderSelectMultipleRow) -> Void)? = nil) {
     super.init(tag: tag)
     
     presentationMode = .show(
       controllerProvider: ControllerProvider.callback {
-        return CollectionLoaderSelectMultipleController(collectionAdapter: collectionAdapter) { _ in
+        return CollectionLoaderSelectMultipleController(listAdapter: listAdapter) { _ in
           
         }
       },
@@ -127,12 +131,12 @@ public class CollectionLoaderSelectMultipleController<T: CellMapperAdapter, U: D
     super.init(coder: aDecoder)
   }
   
-  public init(collectionAdapter: TableViewMapperAdapter<T, U>, callback: ((UIViewController) -> ())? = nil) {
-    super.init(collectionAdapter: collectionAdapter)
+  public init(listAdapter: TableViewMapperAdapter<T, U>, callback: ((UIViewController) -> ())? = nil) {
+    super.init(listAdapter: listAdapter)
     
-    collectionAdapter.tableView.allowsMultipleSelection = true
+    listAdapter.tableView.allowsMultipleSelection = true
     
-    collectionAdapter.cellAdapter.onSelectCell = { value, _ in
+    listAdapter.cellAdapter.onSelectCell = { value, _ in
       var values: Set<U.T> = self.row.value ?? Set<U.T>()
       if let value = value as? U.T, !values.contains(value) {
         values.insert(value)
@@ -141,7 +145,7 @@ public class CollectionLoaderSelectMultipleController<T: CellMapperAdapter, U: D
       self.row.value = values
     }
     
-    collectionAdapter.cellAdapter.onDeselectCell = { value, _ in
+    listAdapter.cellAdapter.onDeselectCell = { value, _ in
       var values: Set<U.T> = self.row.value ?? Set<U.T>()
       if let value = value as? U.T, values.contains(value) {
         values.remove(value)
@@ -151,6 +155,10 @@ public class CollectionLoaderSelectMultipleController<T: CellMapperAdapter, U: D
     }
     
     onDismissCallback = callback
+  }
+  
+  public required override init(listAdapter: TableViewMapperAdapter<T, U>) {
+    super.init(listAdapter: listAdapter)
   }
   
   override open func refreshScrollView() {

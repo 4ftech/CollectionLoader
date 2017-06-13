@@ -25,7 +25,7 @@ open class FilterListViewController: FormViewController {
         }.onChange() { row in
           dateFilter.selectedDate = row.value
         }
-      } else if let selectFilter = filter as? SelectFilter<String> {
+      } else if let selectFilter = filter as? SelectFilter {
         switch selectFilter.selectType {
         case .one:
           form +++ selectOneRow(forFilter: selectFilter)
@@ -36,8 +36,8 @@ open class FilterListViewController: FormViewController {
     }
   }
   
-  func selectOneRow<T>(forFilter filter: SelectFilter<T>) -> PushRow<SelectFilterOption<T>> where T:Equatable {
-    return PushRow<SelectFilterOption<T>>() { row in
+  func selectOneRow(forFilter filter: SelectFilter) -> PushRow<SelectFilterOption> {
+    return PushRow<SelectFilterOption>() { row in
       row.title = filter.title
       
       if filter.optionsLoaded {
@@ -45,7 +45,7 @@ open class FilterListViewController: FormViewController {
       } else {
         row.presentationMode = .show(
           controllerProvider: ControllerProvider.callback {
-            let controller = SelectorViewController<SelectFilterOption<T>> { controller in
+            let controller = SelectorViewController<SelectFilterOption> { controller in
               
             }
             
@@ -72,8 +72,8 @@ open class FilterListViewController: FormViewController {
     }
   }
 
-  func selectMultipleRow<T>(forFilter filter:SelectFilter<T>) -> MultipleSelectorRow<SelectFilterOption<T>> where T:Equatable {
-    return MultipleSelectorRow<SelectFilterOption<T>>() { row in
+  func selectMultipleRow(forFilter filter:SelectFilter) -> MultipleSelectorRow<SelectFilterOption> {
+    return MultipleSelectorRow<SelectFilterOption>() { row in
       row.title = filter.title
       
       if filter.optionsLoaded {
@@ -81,7 +81,7 @@ open class FilterListViewController: FormViewController {
       } else {
         row.presentationMode = .show(
           controllerProvider: ControllerProvider.callback {
-            let controller = MultipleSelectorViewController<SelectFilterOption<T>> { controller in
+            let controller = MultipleSelectorViewController<SelectFilterOption> { controller in
               
             }
             

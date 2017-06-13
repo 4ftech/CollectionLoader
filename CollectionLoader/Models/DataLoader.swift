@@ -26,6 +26,7 @@ protocol DataLoaderDelegate: class {
   func didUpdateRowAtIndex(_ index: Int)
   func didRemoveRowAtIndex(_ index: Int)
   func didClearRows()
+  func didStartLoadingRows(loadType: DataLoadType)
 }
 
 public class DataLoader<EngineType: DataLoaderEngine>: NSObject {
@@ -47,10 +48,12 @@ public class DataLoader<EngineType: DataLoaderEngine>: NSObject {
   var mightHaveMore = true
   var newRowsPosition: NewRowsPosition = .beginning
   
-  fileprivate var rows: [T] = []
-  var isEmpty: Bool { return rows.count == 0 }
+  var filters: [Filter] = []
   
-  var searchQueryString: String? = nil
+  fileprivate var rows: [T] = []
+  public var isEmpty: Bool { return rows.count == 0 }
+  
+  public var searchQueryString: String? = nil
 
   public var rowsToDisplay: [T] {
     return rows
@@ -70,9 +73,6 @@ public class DataLoader<EngineType: DataLoaderEngine>: NSObject {
   
   var cancellationToken: Operation?
   var dataLoaderEngine: EngineType!
-  
-  var filterFunction: ((T) -> Bool)? = nil
-  var sortFunction: ((T, T) -> Bool)? = nil
   
   // MARK: - Initialize
   required override public init() {
@@ -126,7 +126,7 @@ public class DataLoader<EngineType: DataLoaderEngine>: NSObject {
   }
 
   // MARK: - Get Data
-  func searchByString(_ string: String?) {
+  public func searchByString(_ string: String?) {
     searchQueryString = string
     loadRows(loadType: .clearAndReplace)
   }
@@ -151,6 +151,8 @@ public class DataLoader<EngineType: DataLoaderEngine>: NSObject {
     error = nil
     rowsLoading = true
     
+    delegate?.didStartLoadingRows(loadType: loadType)
+    
     return fetchData(forLoadType: loadType)
   }
   
@@ -166,8 +168,8 @@ public class DataLoader<EngineType: DataLoaderEngine>: NSObject {
     let thisCancellationToken = Operation()
     cancellationToken = thisCancellationToken
     
-    NSLog("Will execute: \(loadType)")
-    return dataLoaderEngine.promise(forLoadType: loadType, queryString: searchQueryString).always {
+    NSLog("Will execute: \(loadType); queryString: \(searchQueryString)")
+    return dataLoaderEngine.promise(forLoadType: loadType, queryString: searchQueryString, filters: filters).always {
       if !thisCancellationToken.isCancelled {
         self.rowsLoading = false
         
@@ -186,7 +188,7 @@ public class DataLoader<EngineType: DataLoaderEngine>: NSObject {
       //        NSLog("\(result.objectId)")
       //      }
       
-      if let fn = self.filterFunction {
+      if let fn = self.dataLoaderEngine.filterFunction {
         results = results.filter(fn)
       }
       
@@ -205,7 +207,7 @@ public class DataLoader<EngineType: DataLoaderEngine>: NSObject {
     var results = queryResults
     
     // Sort/filter as necessary
-    if let fn = sortFunction {
+    if let fn = dataLoaderEngine.sortFunction {
       results = results.sorted(by: fn)
     }
 

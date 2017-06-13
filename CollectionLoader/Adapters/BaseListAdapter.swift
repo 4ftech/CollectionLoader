@@ -1,5 +1,5 @@
 //
-//  BaseCollectionAdapter.swift
+//  BaseListAdapter.swift
 //  CollectionLoader
 //
 //  Created by Nick Kuyakanon on 2/24/17.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-public protocol BaseCollectionAdapter {
+public protocol BaseListAdapter {
   associatedtype EngineType: DataLoaderEngine
 
   var viewController: UIViewController! { get set }

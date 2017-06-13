@@ -26,12 +26,15 @@ public protocol DataLoaderEngine {
   var orderByLastValue: Any? { get }
   var order: QueryOrder { get }
 
+  var filterFunction: ((T) -> Bool)? { get }
+  var sortFunction: ((T, T) -> Bool)? { get }
+  
   var queryLimit: Int? { get }
   var skip: Int { get set }
 
   init()
   
-  mutating func promise(forLoadType loadType: DataLoadType, queryString: String?) -> Promise<[T]>
+  mutating func promise(forLoadType loadType: DataLoadType, queryString: String?, filters: [Filter]?) -> Promise<[T]>
 }
 
 
@@ -47,6 +50,9 @@ open class BaseDataLoaderEngine<U: BaseDataModel>: NSObject, DataLoaderEngine {
   open var orderByLastValue: Any? { return nil }
   open var order: QueryOrder { return .ascending }
   
+  open var filterFunction: ((T) -> Bool)? { return nil }
+  open var sortFunction: ((T, T) -> Bool)? { return nil }
+  
   open var queryLimit: Int? { return nil }
   public var skip: Int = 0
   
@@ -54,7 +60,7 @@ open class BaseDataLoaderEngine<U: BaseDataModel>: NSObject, DataLoaderEngine {
     super.init()
   }
   
-  open func request(forLoadType loadType: DataLoadType, queryString: String?) -> FetchRequest {
+  open func request(forLoadType loadType: DataLoadType, queryString: String?, filters: [Filter]?) -> FetchRequest {
     let request: FetchRequest = T.fetchRequest()
     
     if let queryString = queryString, let searchKey = searchKey {
@@ -93,28 +99,30 @@ open class BaseDataLoaderEngine<U: BaseDataModel>: NSObject, DataLoaderEngine {
       }
     }
     
-    return request
+    return request.apply(filters: filters)
   }
   
-  open func promise(forLoadType loadType: DataLoadType, queryString: String?) -> Promise<[T]> {
+  open func promiseForFetch(forLoadType loadType: DataLoadType, queryString: String?, filters: [Filter]?) -> Promise<[T]> {
+    let request: FetchRequest = self.request(forLoadType: loadType, queryString: queryString, filters: filters)
+    return request.fetch()
+  }
+  
+  open func promise(forLoadType loadType: DataLoadType, queryString: String? = nil, filters: [Filter]?) -> Promise<[T]> {
     if loadType == .newRows && orderByLastValue == nil {
       return Promise(value: [])
     }
     
-    let request: FetchRequest = self.request(forLoadType: loadType, queryString: queryString)
-    
-    let realSelf = self
     return Promise<[T]> { fulfill, reject in
-      request.fetch().then { (results: [T]) -> Void in
+      self.promiseForFetch(forLoadType: loadType, queryString: queryString, filters: filters).then { (results: [T]) -> Void in
         if loadType != .more {
-          realSelf.firstRow = results.first
+          self.firstRow = results.first
         }
         
-        if realSelf.paginate {
+        if self.paginate {
           if loadType == .more || loadType == .newRows {
-            realSelf.skip += results.count
+            self.skip += results.count
           } else {
-            realSelf.skip = results.count
+            self.skip = results.count
           }
         }
         
@@ -123,5 +131,25 @@ open class BaseDataLoaderEngine<U: BaseDataModel>: NSObject, DataLoaderEngine {
         reject(error)
       }
     }
+  }
+}
+
+
+open class NestedDataLoaderEngine<T: BaseDataModel, U: BaseDataModel>: BaseDataLoaderEngine<T> {
+  public var parentObject: U!
+  
+  public init(parentObject: U) {
+    super.init()
+    
+    self.parentObject = parentObject
+  }
+  
+  public required init() {
+    super.init()
+  }
+  
+  open override func promiseForFetch(forLoadType loadType: DataLoadType, queryString: String?, filters: [Filter]?) -> Promise<[T]> {
+    let request: FetchRequest = self.request(forLoadType: loadType, queryString: queryString, filters: filters)
+    return T.sharedDataSource.fetch(request: request, forParentObject: parentObject)
   }
 }

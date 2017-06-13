@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11762" systemVersion="16D32" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12120" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12088"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -30,7 +30,6 @@
                             <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="14"/>
                             <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="done"/>
                             <connections>
-                                <action selector="textFieldDidChange:" destination="gDr-mZ-scr" eventType="editingChanged" id="OwQ-c4-gWt"/>
                                 <outlet property="delegate" destination="gDr-mZ-scr" id="1Vm-f4-X4e"/>
                             </connections>
                         </textField>
@@ -41,9 +40,6 @@
                             <state key="normal" image="ic_clear">
                                 <color key="titleColor" red="0.18318156898021698" green="0.45537653565406799" blue="0.55455857515335083" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </state>
-                            <connections>
-                                <action selector="didTapClearButton:" destination="gDr-mZ-scr" eventType="touchUpInside" id="vEU-iL-KFK"/>
-                            </connections>
                         </button>
                     </subviews>
                     <constraints>

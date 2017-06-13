@@ -170,6 +170,42 @@ public extension UIView {
     self.addConstraints(hConstraints + vConstraints)
   }
   
+  func addViews(_ views: [UIView], withHeightConstraints heightConstraints: Bool) {
+    removeAllSubviews()
+    appendViews(views, withHeightConstraints: heightConstraints)
+  }
+  
+  func appendViews(_ views: [UIView], withHeightConstraints heightConstraints: Bool) {
+    var lastView: UIView? = nil
+    for view in views {
+      addSubview(view)
+      
+      view.translatesAutoresizingMaskIntoConstraints = false
+      
+      let height = view.frame.size.height
+      let format: String = heightConstraints ? "[view(==height)]" : "[view]"
+      
+      if lastView == nil {
+        let vConstraints = NSLayoutConstraint.constraints(withVisualFormat: "V:|\(format)", options: [], metrics: ["height": height], views: ["view": view])
+        addConstraints(vConstraints)
+      } else {
+        let vConstraints = NSLayoutConstraint.constraints(withVisualFormat: "V:[lastView]\(format)", options: [], metrics: ["height": height], views: ["lastView": lastView!, "view": view])
+        addConstraints(vConstraints)
+      }
+      
+      let hConstraints = NSLayoutConstraint.constraints(withVisualFormat: "|[view]|", options: [], metrics: nil, views: ["view": view])
+      addConstraints(hConstraints)
+      
+      lastView = view
+    }
+    
+    if lastView != nil {
+      let vConstraints = NSLayoutConstraint.constraints(withVisualFormat: "V:[view]|", options: [], metrics: nil, views: ["view": lastView!])
+      addConstraints(vConstraints)
+    }
+    
+  }
+
 }
 
 class BorderView: UIView { }

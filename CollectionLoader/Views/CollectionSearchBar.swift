@@ -11,34 +11,42 @@ import Foundation
 import RxSwift
 import RxCocoa
 
-@objc protocol CollectionSearchBarDelegate {
+public protocol CollectionSearchBarDelegate: class {
   func searchBarTextDidChange(_ searchBar: CollectionSearchBar)
-  @objc optional func searchBarTextDidChangeAfterThrottle(_ searchBar: CollectionSearchBar)
-  @objc optional func searchBarTextDidBeginEditing(_ searchBar: CollectionSearchBar)
-  @objc optional func searchBarDidTapClearButton(_ searchBar: CollectionSearchBar)
+  func searchBarTextDidChangeAfterThrottle(_ searchBar: CollectionSearchBar)
+  func searchBarTextDidBeginEditing(_ searchBar: CollectionSearchBar)
+  func searchBarDidTapClearButton(_ searchBar: CollectionSearchBar)
 }
 
-class CollectionSearchBar: UIView {
-  @IBOutlet weak var container: UIView!
-  @IBOutlet weak var textField: UITextField!
-  @IBOutlet weak var clearButton: UIButton!
-  @IBOutlet weak var searchIcon: UIImageView!
+open class CollectionSearchBar: UIView {
+  @IBOutlet public var textField: UITextField!
+  @IBOutlet public var container: UIView!
+  @IBOutlet public var clearButton: UIButton!
+  @IBOutlet public var searchIcon: UIImageView!
   
-  var clearAlwaysVisible = false
+  public var clearAlwaysVisible = false {
+    didSet {
+      if clearAlwaysVisible {
+        clearButton.isHidden = false
+      }
+    }
+  }
+  
   let disposeBag = DisposeBag()
   
   weak var delegate: CollectionSearchBarDelegate?
-  var throttle: Double? {
+  
+  public var throttle: Double? {
     didSet {
       if let time = throttle {
-        textField.rx.textInput.text
+        textField.rx.text
+          .throttle(time, scheduler: MainScheduler.instance)
           .distinctUntilChanged({ $0 }, comparer: { $0 == $1 })
           .takeUntil(self.rx.deallocated)
-          .throttle(time, scheduler: MainScheduler.instance).subscribe(onNext: { [weak self] text in
-            if let realSelf = self {
-              self?.delegate?.searchBarTextDidChangeAfterThrottle?(realSelf)
-            }
-          }).addDisposableTo(disposeBag)
+          .subscribe(onNext: { [weak self] text in
+            self?.delegate?.searchBarTextDidChangeAfterThrottle(self!)
+          })
+          .addDisposableTo(disposeBag)
       }
     }
   }
@@ -55,8 +63,19 @@ class CollectionSearchBar: UIView {
     return Bundle(for: self).loadNibNamed("CollectionSearchBar", owner: nil, options: nil)!.first as! CollectionSearchBar
   }
   
-  @IBAction func didTapClearButton(_ sender: AnyObject) {
-    delegate?.searchBarDidTapClearButton?(self)
+  open override func awakeFromNib() {
+    super.awakeFromNib()
+    
+    clearButton.addTarget(self, action: #selector(didTapClearButton(_:)), for: .touchUpInside)
+    textField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
+    
+    if !clearAlwaysVisible {
+      clearButton.isHidden = true
+    }
+  }
+  
+  func didTapClearButton(_ sender: AnyObject) {
+    delegate?.searchBarDidTapClearButton(self)
     
     if !clearAlwaysVisible {
       if let text = text , !text.isEmpty {
@@ -68,7 +87,7 @@ class CollectionSearchBar: UIView {
     }
   }
   
-  @IBAction func textFieldDidChange(_ sender: AnyObject) {
+  func textFieldDidChange(_ sender: AnyObject) {
     if !clearAlwaysVisible {
       if let text = text , !text.isEmpty {
         clearButton.isHidden = false
@@ -82,12 +101,12 @@ class CollectionSearchBar: UIView {
 }
 
 extension CollectionSearchBar: UITextFieldDelegate {
-  func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+  public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
     textField.resignFirstResponder()
     return true
   }
   
-  func textFieldDidBeginEditing(_ textField: UITextField) {
-    delegate?.searchBarTextDidBeginEditing?(self)
+  public func textFieldDidBeginEditing(_ textField: UITextField) {
+    delegate?.searchBarTextDidBeginEditing(self)
   }
 }
