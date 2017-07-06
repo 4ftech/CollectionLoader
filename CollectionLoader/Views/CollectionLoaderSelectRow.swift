@@ -51,16 +51,16 @@ public class CollectionLoaderSelectController<T: CellMapperAdapter, U: DataLoade
   required public init(listAdapter: TableViewMapperAdapter<T, U>, callback: ((UIViewController) -> ())? = nil) {
     super.init(listAdapter: listAdapter)
     
-    listAdapter.cellAdapter.onSelectCell = { value, _ in
+    listAdapter.cellAdapter.onSelectCell = { [weak self] (value, _) in
       if let value = value as? U.T {
-        if self.row.value == value {
-          self.row.value = nil
+        if self?.row.value == value {
+          self?.row.value = nil
           
-          if let index = self.dataLoader.rowsToDisplay.index(of: value) {
-            self.listAdapter.tableView.deselectRow(at: IndexPath(row: index, section: 0), animated: true)
+          if let index = self?.dataLoader.rowsToDisplay.index(of: value) {
+            self?.listAdapter.tableView.deselectRow(at: IndexPath(row: index, section: 0), animated: true)
           }
         } else {
-          self.row.value = value
+          self?.row.value = value
         }
       }
     }
@@ -136,22 +136,22 @@ public class CollectionLoaderSelectMultipleController<T: CellMapperAdapter, U: D
     
     listAdapter.tableView.allowsMultipleSelection = true
     
-    listAdapter.cellAdapter.onSelectCell = { value, _ in
-      var values: Set<U.T> = self.row.value ?? Set<U.T>()
+    listAdapter.cellAdapter.onSelectCell = { [weak self] (value, _) in
+      var values: Set<U.T> = self?.row.value ?? Set<U.T>()
       if let value = value as? U.T, !values.contains(value) {
         values.insert(value)
       }
       
-      self.row.value = values
+      self?.row.value = values
     }
     
-    listAdapter.cellAdapter.onDeselectCell = { value, _ in
-      var values: Set<U.T> = self.row.value ?? Set<U.T>()
+    listAdapter.cellAdapter.onDeselectCell = { [weak self] (value, _) in
+      var values: Set<U.T> = self?.row.value ?? Set<U.T>()
       if let value = value as? U.T, values.contains(value) {
         values.remove(value)
       }
       
-      self.row.value = values
+      self?.row.value = values
     }
     
     onDismissCallback = callback

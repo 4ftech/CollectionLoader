@@ -68,7 +68,7 @@ open class ListLoaderController<AdapterType: BaseListAdapter>: UIViewController,
   
   // Insets
   open var scrollTopInset: CGFloat {
-    var topInset: CGFloat = 0
+    var topInset: CGFloat = topBarInset
     
     if let searchBar = searchBar, allowSearch {
       topInset = topInset + searchBar.frame.size.height
@@ -164,7 +164,7 @@ open class ListLoaderController<AdapterType: BaseListAdapter>: UIViewController,
     loaderView = LoaderView.newInstance(content: emptyViewContent)
     view.fill(
       withView: loaderView,
-      edgeInsets: UIEdgeInsets(top: topBarInset + scrollTopInset, left: 0, bottom: 0, right: 0)
+      edgeInsets: UIEdgeInsets(top: scrollTopInset, left: 0, bottom: 0, right: 0)
     )
     
     // ScrollView
@@ -203,11 +203,6 @@ open class ListLoaderController<AdapterType: BaseListAdapter>: UIViewController,
     } else {
       loaderView.isHidden = true
     }
-    
-    if allowSearch {
-      NotificationCenter.default.addObserver(self, selector: #selector(searchKeyboardWillShow(_:)), name: Notification.Name.UIKeyboardWillShow, object: nil)
-      NotificationCenter.default.addObserver(self, selector: #selector(searchKeyboardWillHide(_:)), name: Notification.Name.UIKeyboardWillHide, object: nil)
-    }
   }
   
   override open func viewWillAppear(_ animated: Bool) {
@@ -218,9 +213,23 @@ open class ListLoaderController<AdapterType: BaseListAdapter>: UIViewController,
     } else if dataLoader.rowsLoaded && !dataLoader.rowsLoading && collectionInitialized && dataLoader.isEmpty {
       loadRows(loadType: .replace)
     }
+    
+    NotificationCenter.default.addObserver(self, selector: #selector(searchKeyboardWillShow(_:)), name: Notification.Name.UIKeyboardWillShow, object: nil)
+    NotificationCenter.default.addObserver(self, selector: #selector(searchKeyboardWillHide(_:)), name: Notification.Name.UIKeyboardWillHide, object: nil)
+  }
+  
+  override open func viewWillDisappear(_ animated: Bool) {
+    super.viewWillDisappear(animated)
+    
+    NotificationCenter.default.removeObserver(self, name: Notification.Name.UIKeyboardWillShow, object: nil)
+    NotificationCenter.default.removeObserver(self, name: Notification.Name.UIKeyboardWillHide, object: nil)
   }
   
   open func searchKeyboardWillShow(_ notification: Notification) {
+    if UIApplication.shared.applicationState != .active {
+      return
+    }
+    
     if let userInfo = notification.userInfo {
       let animationDuration: TimeInterval = (userInfo[UIKeyboardAnimationDurationUserInfoKey] as! NSNumber).doubleValue
       if let keyboardSize = (userInfo[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
@@ -240,6 +249,10 @@ open class ListLoaderController<AdapterType: BaseListAdapter>: UIViewController,
   }
   
   open func searchKeyboardWillHide(_ notification: Notification) {
+    if UIApplication.shared.applicationState != .active {
+      return
+    }
+
     if let userInfo = notification.userInfo {
       let animationDuration: TimeInterval = (userInfo[UIKeyboardAnimationDurationUserInfoKey] as! NSNumber).doubleValue
       UIView.animate(

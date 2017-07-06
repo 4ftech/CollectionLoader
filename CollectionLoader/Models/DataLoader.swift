@@ -71,8 +71,8 @@ public class DataLoader<EngineType: DataLoaderEngine>: NSObject {
     return "\(notificationNamePrefix)\(action.rawValue)"
   }
   
+  public var dataLoaderEngine: EngineType!
   var cancellationToken: Operation?
-  var dataLoaderEngine: EngineType!
   
   // MARK: - Initialize
   required override public init() {
@@ -87,6 +87,11 @@ public class DataLoader<EngineType: DataLoaderEngine>: NSObject {
     self.registerForCRUDNotificationsWithClassName(String(describing: T.self))
     
     self.mightHaveMore = dataLoaderEngine.paginate
+  }
+  
+  public func preSetRows(_ rows: [T]) {
+    self.rows = rows
+    self.rowsLoaded = true
   }
   
   // MARK: - CRUD
@@ -167,9 +172,10 @@ public class DataLoader<EngineType: DataLoaderEngine>: NSObject {
     cancellationToken?.cancel()
     let thisCancellationToken = Operation()
     cancellationToken = thisCancellationToken
-    
-    NSLog("Will execute: \(loadType); queryString: \(searchQueryString)")
+        
+    NSLog("Will execute: \(loadType); queryString: \(String(describing: searchQueryString))")
     return dataLoaderEngine.promise(forLoadType: loadType, queryString: searchQueryString, filters: filters).always {
+      NSLog("Got results for \(loadType); queryString: \(String(describing: self.searchQueryString))")
       if !thisCancellationToken.isCancelled {
         self.rowsLoading = false
         
@@ -188,13 +194,27 @@ public class DataLoader<EngineType: DataLoaderEngine>: NSObject {
       //        NSLog("\(result.objectId)")
       //      }
       
-      if let fn = self.dataLoaderEngine.filterFunction {
-        results = results.filter(fn)
+      return Promise<[T]>() { (fulfill, reject) in
+        // Sort/filter as necessary but do it in the background
+        DispatchQueue.global(qos: .background).async {
+          if let fn = self.dataLoaderEngine.filterFunction {
+            results = results.filter(fn)
+          }
+          
+          if let fn = self.dataLoaderEngine.sortFunction {
+            results = results.sorted(by: fn)
+          }
+          
+          fulfill(results)
+        }
+      }.then { (results: [T]) -> Promise<[T]> in
+        self.handleResults(results, loadType: loadType, updateTimes: updateTimes)
+        return Promise(value: results)
       }
+
       
-      self.handleResults(results, loadType: loadType, updateTimes: updateTimes)
       
-      return Promise(value: results)
+      //      return Promise(value: results)
     }
   }
 
@@ -205,11 +225,7 @@ public class DataLoader<EngineType: DataLoaderEngine>: NSObject {
     var newRows: [T]? = nil
   
     var results = queryResults
-    
-    // Sort/filter as necessary
-    if let fn = dataLoaderEngine.sortFunction {
-      results = results.sorted(by: fn)
-    }
+
 
     if !isEmpty && loadType == .newRows {
       // Adds/Updates

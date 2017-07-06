@@ -72,5 +72,8 @@ open class TableViewMapperAdapter<A: CellMapperAdapter, E: DataLoaderEngine>: Ta
     return cellAdapter.sectionHeaderHeight?(section) ?? 0
   }  
 
+  open override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    cellAdapter.onScrollViewDidScroll?(scrollView)
+  }
 }
 

@@ -21,14 +21,21 @@ public protocol CollectionSearchBarDelegate: class {
 open class CollectionSearchBar: UIView {
   @IBOutlet public var textField: UITextField!
   @IBOutlet public var container: UIView!
-  @IBOutlet public var clearButton: UIButton!
+  @IBOutlet public var clearButton: UIButton?
   @IBOutlet public var searchIcon: UIImageView!
   
   public var clearAlwaysVisible = false {
     didSet {
       if clearAlwaysVisible {
-        clearButton.isHidden = false
+        if let clearButton = clearButton {
+          clearButton.isHidden = false
+        } else {
+          textField.clearButtonMode = .always
+        }
+      } else if clearButton == nil {
+        textField.clearButtonMode = .whileEditing
       }
+      
     }
   }
   
@@ -66,11 +73,17 @@ open class CollectionSearchBar: UIView {
   open override func awakeFromNib() {
     super.awakeFromNib()
     
-    clearButton.addTarget(self, action: #selector(didTapClearButton(_:)), for: .touchUpInside)
+    clearButton?.addTarget(self, action: #selector(didTapClearButton(_:)), for: .touchUpInside)
     textField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
     
     if !clearAlwaysVisible {
-      clearButton.isHidden = true
+      if let clearButton = clearButton {
+        clearButton.isHidden = true
+      } else {
+        textField.clearButtonMode = .whileEditing
+      }
+    } else if clearButton == nil {
+      textField.clearButtonMode = .always
     }
   }
   
@@ -83,16 +96,16 @@ open class CollectionSearchBar: UIView {
         textFieldDidChange(self)
       }
       
-      clearButton.isHidden = true
+      clearButton?.isHidden = true
     }
   }
   
   func textFieldDidChange(_ sender: AnyObject) {
     if !clearAlwaysVisible {
       if let text = text , !text.isEmpty {
-        clearButton.isHidden = false
+        clearButton?.isHidden = false
       } else {
-        clearButton.isHidden = true
+        clearButton?.isHidden = true
       }
     }
     
@@ -108,5 +121,13 @@ extension CollectionSearchBar: UITextFieldDelegate {
   
   public func textFieldDidBeginEditing(_ textField: UITextField) {
     delegate?.searchBarTextDidBeginEditing(self)
+  }
+  
+  public func textFieldShouldClear(_ textField: UITextField) -> Bool {
+    delegate?.searchBarDidTapClearButton(self)
+    textField.text = nil
+    textFieldDidChange(self)
+    
+    return false
   }
 }

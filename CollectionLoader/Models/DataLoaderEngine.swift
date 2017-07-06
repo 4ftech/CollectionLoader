@@ -17,7 +17,9 @@ public enum QueryOrder {
 public protocol DataLoaderEngine {
   associatedtype T: BaseDataModel
   
-  var paginate: Bool { get }  
+  var paginate: Bool { get set }
+  var queryLimit: Int? { get set }
+  var skip: Int { get set }
   var firstRow: T? { get set }
   
   var searchKey: String? { get }
@@ -26,12 +28,9 @@ public protocol DataLoaderEngine {
   var orderByLastValue: Any? { get }
   var order: QueryOrder { get }
 
-  var filterFunction: ((T) -> Bool)? { get }
-  var sortFunction: ((T, T) -> Bool)? { get }
+  var filterFunction: ((T) -> Bool)? { get set }
+  var sortFunction: ((T, T) -> Bool)? { get set }
   
-  var queryLimit: Int? { get }
-  var skip: Int { get set }
-
   init()
   
   mutating func promise(forLoadType loadType: DataLoadType, queryString: String?, filters: [Filter]?) -> Promise<[T]>
@@ -41,7 +40,9 @@ public protocol DataLoaderEngine {
 open class BaseDataLoaderEngine<U: BaseDataModel>: NSObject, DataLoaderEngine {
   public typealias T = U
 
-  open var paginate: Bool { return false }
+  open var paginate: Bool = false
+  open var queryLimit: Int? = nil
+  public var skip: Int = 0
   public var firstRow: U?
   
   open var searchKey: String? { return nil }
@@ -50,11 +51,9 @@ open class BaseDataLoaderEngine<U: BaseDataModel>: NSObject, DataLoaderEngine {
   open var orderByLastValue: Any? { return nil }
   open var order: QueryOrder { return .ascending }
   
-  open var filterFunction: ((T) -> Bool)? { return nil }
-  open var sortFunction: ((T, T) -> Bool)? { return nil }
+  open var filterFunction: ((T) -> Bool)? = nil
+  open var sortFunction: ((T, T) -> Bool)? = nil
   
-  open var queryLimit: Int? { return nil }
-  public var skip: Int = 0
   
   public required override init() {
     super.init()
@@ -104,10 +103,14 @@ open class BaseDataLoaderEngine<U: BaseDataModel>: NSObject, DataLoaderEngine {
   
   open func promiseForFetch(forLoadType loadType: DataLoadType, queryString: String?, filters: [Filter]?) -> Promise<[T]> {
     let request: FetchRequest = self.request(forLoadType: loadType, queryString: queryString, filters: filters)
-    return request.fetch()
+    return self.promiseForRequest(fetchRequest: request)
   }
   
-  open func promise(forLoadType loadType: DataLoadType, queryString: String? = nil, filters: [Filter]?) -> Promise<[T]> {
+  open func promiseForRequest(fetchRequest: FetchRequest) -> Promise<[T]> {
+    return T.sharedDataSource.fetch(request: fetchRequest)
+  }
+  
+  open func promise(forLoadType loadType: DataLoadType = .initial, queryString: String? = nil, filters: [Filter]?  = nil) -> Promise<[T]> {
     if loadType == .newRows && orderByLastValue == nil {
       return Promise(value: [])
     }

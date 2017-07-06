@@ -75,7 +75,7 @@ open class TableListAdapter<E: DataLoaderEngine>: NSObject, BaseListAdapter, UIT
       let row = dataLoader.rowsToDisplay[indexPath.row]
       row.delete().then { success in
         NotificationCenter.default.postCRUDNotification(.delete, crudObject: row)
-        }.catch { error in
+      }.catch { error in
           
       }
     }
@@ -99,6 +99,10 @@ open class TableListAdapter<E: DataLoaderEngine>: NSObject, BaseListAdapter, UIT
   
   open func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
     return 0
+  }
+  
+  open func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    
   }
 }
 

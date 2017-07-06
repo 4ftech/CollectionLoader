@@ -60,5 +60,10 @@ open class CollectionViewMapperAdapter<A: CellMapperAdapter, E: DataLoaderEngine
     let row = dataLoader.rowsToDisplay[indexPath.row]
     return cellAdapter.size?(row as! A.T.T) ?? flowLayout.itemSize
   }
+  
+  open override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    cellAdapter.onScrollViewDidScroll?(scrollView)
+  }
+
 }
 

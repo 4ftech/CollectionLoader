@@ -87,5 +87,9 @@ open class CollectionListAdapter<E: DataLoaderEngine>: NSObject, BaseListAdapter
   open func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
     return UICollectionReusableView(frame: .zero)
   }
+  
+  open func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    
+  }  
 }
 

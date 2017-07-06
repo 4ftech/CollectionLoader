@@ -19,6 +19,6 @@ open class CollectionNibLoaderController<V: ViewMappable, E: DataLoaderEngine>: 
   }
   
   public init (nibName: String, dataLoader: DataLoader<E> = DataLoader<E>(dataLoaderEngine: E()), initializer: ((NibCellMapperAdapter<V>) -> Void)? = nil) {
-    super.init(cellAdapter: NibCellMapperAdapter(nibName: nibName, initializer: initializer), dataLoader: dataLoader)
+    super.init(cellAdapter: NibCellMapperAdapter(nib: UINib(nibName: nibName, bundle: nil), initializer: initializer), dataLoader: dataLoader)
   }
 }
