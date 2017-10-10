@@ -7,6 +7,9 @@
 //
 
 import Foundation
+
+import Changeset
+
 import ViewMapper
 
 open class CollectionListAdapter<E: DataLoaderEngine>: NSObject, BaseListAdapter, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
@@ -15,6 +18,10 @@ open class CollectionListAdapter<E: DataLoaderEngine>: NSObject, BaseListAdapter
   public var collectionView: UICollectionView!
   public var scrollView: UIScrollView {
     return collectionView
+  }
+  
+  public var flowLayout: UICollectionViewFlowLayout {
+    return self.collectionView.collectionViewLayout as! UICollectionViewFlowLayout
   }
   
   public var dataLoader: DataLoader<E>!
@@ -33,14 +40,17 @@ open class CollectionListAdapter<E: DataLoaderEngine>: NSObject, BaseListAdapter
     self.collectionView.dataSource = self
     self.collectionView.backgroundColor = UIColor.white
     
-    let flowLayout = self.collectionView.collectionViewLayout as! UICollectionViewFlowLayout
-    flowLayout.itemSize = CGSize(width: UIScreen.main.bounds.width, height: flowLayout.itemSize.height)
-    flowLayout.minimumInteritemSpacing = 0
-    flowLayout.minimumLineSpacing = 0
+    self.flowLayout.itemSize = CGSize(width: UIScreen.main.bounds.width, height: flowLayout.itemSize.height)
+    self.flowLayout.minimumInteritemSpacing = 0
+    self.flowLayout.minimumLineSpacing = 0
   }
   
   open func reloadData() {
     collectionView.reloadData()
+  }
+  
+  open func update(withEdits edits: [Edit<E.T>], completion: ((Bool) -> Void)? = nil) {
+    collectionView.update(with: edits, completion: completion)
   }
   
   open func registerCells() {
@@ -67,6 +77,10 @@ open class CollectionListAdapter<E: DataLoaderEngine>: NSObject, BaseListAdapter
 
   }
   
+  open func collectionView(_ collectionView: UICollectionView, shouldDeselectItemAt indexPath: IndexPath) -> Bool {
+    return true
+  }
+
   open func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
 
   }
@@ -90,6 +104,14 @@ open class CollectionListAdapter<E: DataLoaderEngine>: NSObject, BaseListAdapter
   
   open func scrollViewDidScroll(_ scrollView: UIScrollView) {
     
-  }  
+  }
+  
+  open func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+    
+  }
+  
+  open func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+    
+  }
 }
 

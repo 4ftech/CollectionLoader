@@ -23,6 +23,7 @@
 		705D30281E67725C005D3A5F /* Eureka.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 705D30271E67725C005D3A5F /* Eureka.framework */; };
 		705D30661E6776D5005D3A5F /* ParseTableLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705D30651E6776D5005D3A5F /* ParseTableLoader.swift */; };
 		705D307E1E678144005D3A5F /* DataLoaderEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705D307D1E678144005D3A5F /* DataLoaderEngine.swift */; };
+		707CA2C21F0EEDF60063CF5F /* Changeset.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 707CA2C11F0EEDF20063CF5F /* Changeset.framework */; };
 		707F8EAD1EE7140600DD0F64 /* CollectionNibLoaderController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 707F8EAC1EE7140600DD0F64 /* CollectionNibLoaderController.swift */; };
 		708239EB1EEEF92B00F88D02 /* TableListAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 708239EA1EEEF92A00F88D02 /* TableListAdapter.swift */; };
 		708239ED1EEEFAD500F88D02 /* CollectionListAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 708239EC1EEEFAD500F88D02 /* CollectionListAdapter.swift */; };
@@ -128,6 +129,7 @@
 		705D30271E67725C005D3A5F /* Eureka.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Eureka.framework; path = Carthage/Build/iOS/Eureka.framework; sourceTree = "<group>"; };
 		705D30651E6776D5005D3A5F /* ParseTableLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParseTableLoader.swift; sourceTree = "<group>"; };
 		705D307D1E678144005D3A5F /* DataLoaderEngine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataLoaderEngine.swift; sourceTree = "<group>"; };
+		707CA2C11F0EEDF20063CF5F /* Changeset.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Changeset.framework; path = Carthage/Build/iOS/Changeset.framework; sourceTree = "<group>"; };
 		707F8EAC1EE7140600DD0F64 /* CollectionNibLoaderController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionNibLoaderController.swift; sourceTree = "<group>"; };
 		708239EA1EEEF92A00F88D02 /* TableListAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableListAdapter.swift; sourceTree = "<group>"; };
 		708239EC1EEEFAD500F88D02 /* CollectionListAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionListAdapter.swift; sourceTree = "<group>"; };
@@ -184,6 +186,7 @@
 				705D2DBC1E5F3B37005D3A5F /* PromiseKit.framework in Frameworks */,
 				705D301C1E676EB1005D3A5F /* ViewMapper.framework in Frameworks */,
 				705D30281E67725C005D3A5F /* Eureka.framework in Frameworks */,
+				707CA2C21F0EEDF60063CF5F /* Changeset.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -316,6 +319,7 @@
 		70A884BF1E573AC300823C0F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				707CA2C11F0EEDF20063CF5F /* Changeset.framework */,
 				705D30271E67725C005D3A5F /* Eureka.framework */,
 				705D2DBB1E5F3B37005D3A5F /* PromiseKit.framework */,
 				70A886221E57EE8D00823C0F /* Parse.framework */,
@@ -453,7 +457,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0820;
-				LastUpgradeCheck = 0820;
+				LastUpgradeCheck = 0900;
 				ORGANIZATIONNAME = Oinkist;
 				TargetAttributes = {
 					70A884151E5736C400823C0F = {
@@ -632,7 +636,9 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
@@ -640,7 +646,11 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -664,7 +674,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -685,7 +695,9 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
@@ -693,7 +705,11 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -711,7 +727,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";

@@ -13,11 +13,14 @@ import DataSource
 import ParseDataSource
 
 open class ParseDataEngine<T>: BaseDataLoaderEngine<T> where T:ParseDataModel {
-  open override var paginate: Bool { return true }
+  public required init() {
+    super.init()
+    
+    self.searchKey = "name"
+    self.orderByKey = "createdAt"
+    self.order = .descending
+  }
   
-  open override var searchKey: String { return "name" }
-  open override var orderByKey: String? { return "createdAt" }
-  open override var order: QueryOrder { return .descending }
   open override var orderByLastValue: Any? {
     return firstRow?.createdAt
   }

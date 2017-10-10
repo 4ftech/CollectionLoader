@@ -9,7 +9,7 @@
 import Foundation
 import ViewMapper
 
-open class CollectionLoaderController<A, E>: ListLoaderController<A> where A:CollectionListAdapter<E>, E: DataLoaderEngine {
+open class CollectionLoaderController<A, E>: ListLoaderController<A> where A:CollectionListAdapter<E> {
   public var collectionView: UICollectionView {
     return listAdapter.collectionView
   }

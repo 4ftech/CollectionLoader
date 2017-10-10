@@ -9,6 +9,8 @@
 import Foundation
 import UIKit
 
+import Changeset
+
 open class TableListAdapter<E: DataLoaderEngine>: NSObject, BaseListAdapter, UITableViewDelegate, UITableViewDataSource {
   public typealias EngineType = E
   
@@ -36,6 +38,11 @@ open class TableListAdapter<E: DataLoaderEngine>: NSObject, BaseListAdapter, UIT
   
   open func reloadData() {
     tableView.reloadData()
+  }
+  
+  open func update(withEdits edits: [Edit<E.T>], completion: ((Bool) -> Void)? = nil) {
+    tableView.update(with: edits)
+    completion?(true)
   }
   
   open func registerCells() {
@@ -73,10 +80,16 @@ open class TableListAdapter<E: DataLoaderEngine>: NSObject, BaseListAdapter, UIT
   open func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
     if editingStyle == .delete {
       let row = dataLoader.rowsToDisplay[indexPath.row]
-      row.delete().then { success in
+      if row.isNew {
+        self.dataLoader.removeRowForObject(row)
         NotificationCenter.default.postCRUDNotification(.delete, crudObject: row)
-      }.catch { error in
-          
+      } else {
+        row.delete().then { (success: Bool) -> Void in
+          self.dataLoader.removeRowForObject(row)
+          NotificationCenter.default.postCRUDNotification(.delete, crudObject: row)
+        }.catch { error in
+            
+        }
       }
     }
   }
@@ -104,5 +117,14 @@ open class TableListAdapter<E: DataLoaderEngine>: NSObject, BaseListAdapter, UIT
   open func scrollViewDidScroll(_ scrollView: UIScrollView) {
     
   }
+  
+  open func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+    
+  }
+  
+  open func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+    
+  }
+  
 }
 

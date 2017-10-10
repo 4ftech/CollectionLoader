@@ -65,7 +65,7 @@ public enum ImageClearAction {
 
 //MARK: Row
 
-open class _ImageRow<Cell: CellType>: SelectorRow<Cell, ImagePickerController> where Cell: BaseCell, Cell: TypedCellType, Cell.Value == UIImage {
+open class _ImageRow<Cell>: SelectorRow<Cell, ImagePickerController> where Cell: BaseCell, Cell: CellType, Cell.Value == UIImage {
     
 
     open var sourceTypes: ImageRowSourceTypes
@@ -167,16 +167,21 @@ open class _ImageRow<Cell: CellType>: SelectorRow<Cell, ImagePickerController> w
     
     open override func customUpdateCell() {
         super.customUpdateCell()
+        
         cell.accessoryType = .none
+        cell.editingAccessoryView = .none
+        
         if let image = self.value {
             let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 44, height: 44))
             imageView.contentMode = .scaleAspectFill
             imageView.image = image
             imageView.clipsToBounds = true
+            
             cell.accessoryView = imageView
-        }
-        else{
+            cell.editingAccessoryView = imageView
+        } else {
             cell.accessoryView = nil
+            cell.editingAccessoryView = nil
         }
     }
     

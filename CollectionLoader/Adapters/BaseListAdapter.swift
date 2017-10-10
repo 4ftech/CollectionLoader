@@ -8,6 +8,8 @@
 
 import Foundation
 
+import Changeset
+
 public protocol BaseListAdapter {
   associatedtype EngineType: DataLoaderEngine
 
@@ -17,4 +19,5 @@ public protocol BaseListAdapter {
   
   func registerCells()
   func reloadData()
+  func update(withEdits edits: [Edit<EngineType.T>], completion: ((Bool) -> Void)?)
 }

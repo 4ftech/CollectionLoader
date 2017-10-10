@@ -41,7 +41,7 @@ open class CollectionSearchBar: UIView {
   
   let disposeBag = DisposeBag()
   
-  weak var delegate: CollectionSearchBarDelegate?
+  weak public var delegate: CollectionSearchBarDelegate?
   
   public var throttle: Double? {
     didSet {
@@ -58,11 +58,11 @@ open class CollectionSearchBar: UIView {
     }
   }
   
-  var text: String? {
+  public var text: String? {
     return textField.text
   }
   
-  func setText(_ text: String?) {
+  public func setText(_ text: String?) {
     textField.text = text
   }
   
@@ -72,6 +72,8 @@ open class CollectionSearchBar: UIView {
   
   open override func awakeFromNib() {
     super.awakeFromNib()
+    
+    textField.delegate = self
     
     clearButton?.addTarget(self, action: #selector(didTapClearButton(_:)), for: .touchUpInside)
     textField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
@@ -85,6 +87,10 @@ open class CollectionSearchBar: UIView {
     } else if clearButton == nil {
       textField.clearButtonMode = .always
     }
+  }
+  
+  open func clear() {
+    self.didTapClearButton(self)
   }
   
   func didTapClearButton(_ sender: AnyObject) {

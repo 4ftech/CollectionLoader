@@ -9,7 +9,7 @@
 import Foundation
 import ViewMapper
 
-open class AbstractTableViewMapperController<A, C, E>: TableLoaderController<A, E> where A:TableViewMapperAdapter<C, E>, C:CellMapperAdapter, E:DataLoaderEngine {
+open class AbstractTableViewMapperController<A, C, E>: TableLoaderController<A, E> where A:TableViewMapperAdapter<C, E> {
   public var cellAdapter: C {
     return listAdapter.cellAdapter
   }

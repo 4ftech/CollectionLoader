@@ -35,8 +35,8 @@ open class TableViewMapperAdapter<A: CellMapperAdapter, E: DataLoaderEngine>: Ta
     let identifier = cellAdapter.cellIdentifier(forRow: row as! A.T.T)
     
     let mappableCell = tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath) as! A.T
-    mappableCell.map(object: row as! A.T.T)
     cellAdapter.onDequeueCell?(mappableCell, indexPath)
+    mappableCell.map(object: row as! A.T.T)
     
     let cell = mappableCell as! UITableViewCell
     
@@ -74,6 +74,14 @@ open class TableViewMapperAdapter<A: CellMapperAdapter, E: DataLoaderEngine>: Ta
 
   open override func scrollViewDidScroll(_ scrollView: UIScrollView) {
     cellAdapter.onScrollViewDidScroll?(scrollView)
+  }
+  
+  open override func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+    cellAdapter.onScrollViewDidEndDecelerating?(scrollView)
+  }
+  
+  open override func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+    cellAdapter.onScrollViewDidEndDragging?(scrollView, decelerate)
   }
 }
 

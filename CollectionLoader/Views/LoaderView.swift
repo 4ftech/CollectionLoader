@@ -9,19 +9,27 @@
 import Foundation
 
 public class LoaderView: UIView {
-  @IBOutlet weak var emptyContainer: UIView!
-  @IBOutlet weak var imageView: UIImageView!
-  @IBOutlet weak var label: UILabel!
-  @IBOutlet weak var subtitleLabel: UILabel!
-  @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
-  @IBOutlet weak var button: UIButton!
-  @IBOutlet weak var imageHeightConstraint: NSLayoutConstraint!
+  @IBOutlet weak public var emptyContainer: UIView!
+  @IBOutlet weak public var imageView: UIImageView!
+  @IBOutlet weak public var label: UILabel!
+  @IBOutlet weak public var subtitleLabel: UILabel!
+  @IBOutlet weak public var activityIndicator: UIActivityIndicatorView!
+  @IBOutlet weak public var button: UIButton!
+  @IBOutlet weak public var imageHeightConstraint: NSLayoutConstraint!
   
   let imageHeight: CGFloat = 128
   var buttonAction: (() -> Void)?
   
-  public class func newInstance(_ owner: AnyObject? = nil, content: EmptyViewContent? = nil) -> LoaderView {
-    let loaderView = Bundle(for: self).loadNibNamed("LoaderView", owner: owner, options: nil)!.first as! LoaderView
+  public class func newInstance(owner: AnyObject? = nil, content: EmptyViewContent? = nil) -> LoaderView {
+    var nibContents: [Any]!
+    
+    if let _ = Bundle.main.path(forResource: "LoaderView", ofType: "nib") {
+      nibContents = Bundle.main.loadNibNamed("LoaderView", owner: nil, options: nil)!
+    } else {
+      nibContents = Bundle(for: self).loadNibNamed("LoaderView", owner: owner, options: nil)!
+    }
+    
+    let loaderView = nibContents.first as! LoaderView
     loaderView.loadContent(content)
     
     return loaderView
@@ -33,12 +41,12 @@ public class LoaderView: UIView {
     isHidden = true
   }
   
-  func loadContent(_ emptyViewContent: EmptyViewContent?) {
+  public func loadContent(_ emptyViewContent: EmptyViewContent?) {
     label.text = emptyViewContent?.message
     subtitleLabel.text = emptyViewContent?.subtitle
     
-    if let imageName = emptyViewContent?.imageName {
-      imageView.image = UIImage(named: imageName)
+    if let image = emptyViewContent?.image {
+      imageView.image = image
       imageHeightConstraint.constant = imageHeight
     } else {
       imageView.image = nil
@@ -82,19 +90,24 @@ public class LoaderView: UIView {
     hideSpinner()
     emptyContainer.isHidden = false
   }
+  
+  public func showContent(_ emptyViewContent: EmptyViewContent?) {
+    self.loadContent(emptyViewContent)
+    self.showEmptyView()
+  }
 }
 
 public class EmptyViewContent: NSObject {
-  var imageName: String?
-  var message: String?
-  var subtitle: String?
-  var buttonText: String?
-  var buttonAction: (() -> Void)?
+  public var image: UIImage?
+  public var message: String?
+  public var subtitle: String?
+  public var buttonText: String?
+  public var buttonAction: (() -> Void)?
   
-  public init(imageName: String? = nil, message: String? = nil, subtitle: String? = nil, buttonText: String? = nil, buttonAction: (() -> Void)? = nil) {
-    self.imageName = imageName
+  public init(image: UIImage? = nil, message: String? = nil, subtitle: String? = nil, buttonText: String? = nil, buttonAction: (() -> Void)? = nil) {
+    self.image = image
     self.message = message
-    self.subtitle = subtitle?.uppercased()
+    self.subtitle = subtitle
     self.buttonText = buttonText
     self.buttonAction = buttonAction
   }

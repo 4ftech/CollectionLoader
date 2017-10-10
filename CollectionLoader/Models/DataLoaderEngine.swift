@@ -45,11 +45,11 @@ open class BaseDataLoaderEngine<U: BaseDataModel>: NSObject, DataLoaderEngine {
   public var skip: Int = 0
   public var firstRow: U?
   
-  open var searchKey: String? { return nil }
+  open var searchKey: String?
+  open var orderByKey: String?
+  open var order: QueryOrder = .ascending
   
-  open var orderByKey: String? { return nil }
   open var orderByLastValue: Any? { return nil }
-  open var order: QueryOrder { return .ascending }
   
   open var filterFunction: ((T) -> Bool)? = nil
   open var sortFunction: ((T, T) -> Bool)? = nil
@@ -59,11 +59,15 @@ open class BaseDataLoaderEngine<U: BaseDataModel>: NSObject, DataLoaderEngine {
     super.init()
   }
   
+  open func add(queryString: String, searchKey: String, toRequest request: inout FetchRequest) {
+    request.whereKey(searchKey, matchesRegex: queryString, modifiers: "i")
+  }
+  
   open func request(forLoadType loadType: DataLoadType, queryString: String?, filters: [Filter]?) -> FetchRequest {
-    let request: FetchRequest = T.fetchRequest()
+    var request: FetchRequest = T.fetchRequest()
     
     if let queryString = queryString, let searchKey = searchKey {
-      request.whereKey(searchKey, matchesRegex: queryString, modifiers: "i")
+      add(queryString: queryString, searchKey: searchKey, toRequest: &request)
     }
     
     request.limit = queryLimit
@@ -101,17 +105,17 @@ open class BaseDataLoaderEngine<U: BaseDataModel>: NSObject, DataLoaderEngine {
     return request.apply(filters: filters)
   }
   
+  open func promiseForRequest(fetchRequest: FetchRequest) -> Promise<[T]> {
+    return T.sharedDataSource.fetch(request: fetchRequest)
+  }
+  
   open func promiseForFetch(forLoadType loadType: DataLoadType, queryString: String?, filters: [Filter]?) -> Promise<[T]> {
     let request: FetchRequest = self.request(forLoadType: loadType, queryString: queryString, filters: filters)
     return self.promiseForRequest(fetchRequest: request)
   }
   
-  open func promiseForRequest(fetchRequest: FetchRequest) -> Promise<[T]> {
-    return T.sharedDataSource.fetch(request: fetchRequest)
-  }
-  
   open func promise(forLoadType loadType: DataLoadType = .initial, queryString: String? = nil, filters: [Filter]?  = nil) -> Promise<[T]> {
-    if loadType == .newRows && orderByLastValue == nil {
+    if loadType == .newRows && orderByKey != nil && orderByLastValue == nil {
       return Promise(value: [])
     }
     
@@ -151,8 +155,7 @@ open class NestedDataLoaderEngine<T: BaseDataModel, U: BaseDataModel>: BaseDataL
     super.init()
   }
   
-  open override func promiseForFetch(forLoadType loadType: DataLoadType, queryString: String?, filters: [Filter]?) -> Promise<[T]> {
-    let request: FetchRequest = self.request(forLoadType: loadType, queryString: queryString, filters: filters)
-    return T.sharedDataSource.fetch(request: request, forParentObject: parentObject)
+  open override func promiseForRequest(fetchRequest: FetchRequest) -> Promise<[T]> {
+    return T.sharedDataSource.fetch(request: fetchRequest, forParentObject: parentObject)
   }
 }

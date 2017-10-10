@@ -19,7 +19,9 @@ open class ParseTableLoader<T: ParseDataModel, U: ViewMappable>: ListLoaderContr
   public init(nib: UINib, initializer: ((NibCellMapperAdapter<U>) -> Void)? = nil) {
     let cellAdapter = NibCellMapperAdapter<U>(nib: nib)
     let dataEngine = ParseDataEngine<T>()
-    super.init(collectionAdapter: TableViewMapperAdapter(cellAdapter: cellAdapter, dataLoaderEngine: dataEngine))
+    dataEngine.paginate = true
+    dataEngine.queryLimit = 100
+    super.init(listAdapter: TableViewMapperAdapter(cellAdapter: cellAdapter, dataLoader: DataLoader(dataLoaderEngine: dataEngine)))
     
     initializer?(cellAdapter)
   }

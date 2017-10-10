@@ -9,7 +9,7 @@
 import Foundation
 
 extension UITableView {
-  func performBatchUpdates(_ updates: () -> Void, completion: ((Bool) -> Void)?) {
+  func performBatchTableUpdates(_ updates: () -> Void, completion: ((Bool) -> Void)?) {
     CATransaction.begin()
     CATransaction.setCompletionBlock() {
       completion?(true)

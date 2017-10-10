@@ -8,60 +8,70 @@
 
 
 import Foundation
+
+import Changeset
 import RxSwift
 import UIScrollView_InfiniteScroll
 import PromiseKit
+
 import DataSource
 
 enum DataLoaderAction: String {
   case ResultsReceived = "ResultsReceived", FinishedLoading = "FinishedLoading", CRUD = "CRUD"
 }
 
-enum NewRowsPosition {
+public enum NewRowsPosition {
   case beginning, end
 }
 
-protocol DataLoaderDelegate: class {
-  func didInsertRowAtIndex(_ index: Int)
-  func didUpdateRowAtIndex(_ index: Int)
-  func didRemoveRowAtIndex(_ index: Int)
-  func didClearRows()
-  func didStartLoadingRows(loadType: DataLoadType)
+public protocol DataLoaderDelegate: class {
+  func dataLoader<E>(_ dataLoader: DataLoader<E>, didInsertRowAtIndex index: Int)
+  func dataLoader<E>(_ dataLoader: DataLoader<E>, didUpdateRowAtIndex index: Int)
+  func dataLoader<E>(_ dataLoader: DataLoader<E>, didRemoveRowAtIndex index: Int)
+  func dataLoader<E>(_ dataLoader: DataLoader<E>, didStartLoadingRowsWithLoadType loadType: DataLoadType)
+  func dataLoader<E>(_ dataLoader: DataLoader<E>, didCatchLoadingError error: Error)
+  func dataLoaderDidClearRows<E>(_ dataLoader: DataLoader<E>)
 }
 
-public class DataLoader<EngineType: DataLoaderEngine>: NSObject {
+open class DataLoader<EngineType: DataLoaderEngine>: NSObject {
   public typealias T = EngineType.T
   
   deinit {
     NSLog("deinit: \(type(of: self))")
   }
   
-  weak var delegate: DataLoaderDelegate?
+  public weak var delegate: DataLoaderDelegate?
 
   let disposeBag = DisposeBag()
   var disposable: Disposable? = nil
   
   var error: Error? = nil
   
-  var rowsLoading = false
-  var rowsLoaded = false
-  var mightHaveMore = true
-  var newRowsPosition: NewRowsPosition = .beginning
+  private(set) public var rowsLoading = false
+  private(set) public var rowsLoaded = false  
+  private(set) public var mightHaveMore = true
   
   var filters: [Filter] = []
   
   fileprivate var rows: [T] = []
   public var isEmpty: Bool { return rows.count == 0 }
+  public var newRowsPosition: NewRowsPosition = .beginning
+  public var searchFilter: ((T) -> Bool)? = nil
+  public var totalRows: Int { return rows.count }
   
-  public var searchQueryString: String? = nil
-
-  public var rowsToDisplay: [T] {
-    return rows
+  open var rowsToDisplay: [T] {
+    if let isIncluded = searchFilter {
+      return rows.filter(isIncluded)
+    } else {
+      return rows
+    }
   }
 
+  public var searchQueryString: String? = nil
+  public var searchLoadType: DataLoadType = .clearAndReplace
+  
   let notificationLoadTypeKey = "loadType"
-  let notificationResultsKey = "results"
-  var notificationSenderObject: AnyObject? = nil
+  let notificationEditsKey = "edits"
 
   var notificationNamePrefix: String {
     return "co.bukapp.CollectionLoader.\(type(of: self))"
@@ -75,17 +85,10 @@ public class DataLoader<EngineType: DataLoaderEngine>: NSObject {
   var cancellationToken: Operation?
   
   // MARK: - Initialize
-  required override public init() {
+  required public init(dataLoaderEngine: EngineType) {
     super.init()
     
-  }
-  
-  convenience public init(dataLoaderEngine: EngineType) {
-    self.init()
-    
     self.dataLoaderEngine = dataLoaderEngine
-    self.registerForCRUDNotificationsWithClassName(String(describing: T.self))
-    
     self.mightHaveMore = dataLoaderEngine.paginate
   }
   
@@ -95,9 +98,9 @@ public class DataLoader<EngineType: DataLoaderEngine>: NSObject {
   }
   
   // MARK: - CRUD
-  func registerForCRUDNotificationsWithClassName(_ className: String, senderObject: T? = nil) {
+  open func registerForCRUDNotificationsWithClassName(_ className: String, senderObject: AnyObject? = nil) {
     disposable?.dispose()
-    disposable = NotificationCenter.default.registerForCRUDNotification(className, senderObject: senderObject as AnyObject?)
+    disposable = NotificationCenter.default.registerForCRUDNotification(className, senderObject: senderObject)
       .takeUntil(self.rx.deallocated)
       .subscribe(onNext: { [weak self] notification in
         Utils.performOnMainThread() {
@@ -106,26 +109,18 @@ public class DataLoader<EngineType: DataLoaderEngine>: NSObject {
       })
   }
   
-  func handleCRUDNotification(_ notification: Notification) {
-    let object = notification.crudObject as! T
+  open func handleCRUDNotification(_ notification: Notification) {
+    if let object = notification.crudObject as? T {
     
-    NSLog("dataLoader received notification: \(notification.crudNotificationType) \(object)")
-    
-    switch notification.crudNotificationType {
-    case .create:
-      switch newRowsPosition {
-      case .beginning:
-        insertRow(object, atIndex: 0)
-      case .end:
-        appendRow(object)
-      }
-    case .update:
-      if let index = rows.index(of: object) {
-        updateRowAtIndex(index, withObject: object)
-      }
-    case .delete:
-      if let index = rows.index(of: object) {
-        removeRowAtIndex(index)
+      NSLog("dataLoader received notification: \(notification.crudNotificationType) \(object)")
+      
+      switch notification.crudNotificationType {
+      case .create:
+        self.addNewRow(object)
+      case .update:
+        self.updateRowForObject(object)
+      case .delete:
+        self.removeRowForObject(object)
       }
     }
   }
@@ -133,18 +128,18 @@ public class DataLoader<EngineType: DataLoaderEngine>: NSObject {
   // MARK: - Get Data
   public func searchByString(_ string: String?) {
     searchQueryString = string
-    loadRows(loadType: .clearAndReplace)
+    loadRows(loadType: searchLoadType)
   }
   
   fileprivate func clear() {
     rows = []
     rowsLoaded = false
     mightHaveMore = dataLoaderEngine.paginate
-    delegate?.didClearRows()
+    delegate?.dataLoaderDidClearRows(self)
   }
   
   @discardableResult
-  func loadRows(loadType: DataLoadType) -> Promise<[T]>? {
+  public func loadRows(loadType: DataLoadType) -> Promise<[T]>? {
     if rowsLoading && loadType != .clearAndReplace {
       return nil
     }
@@ -156,7 +151,7 @@ public class DataLoader<EngineType: DataLoaderEngine>: NSObject {
     error = nil
     rowsLoading = true
     
-    delegate?.didStartLoadingRows(loadType: loadType)
+    delegate?.dataLoader(self, didStartLoadingRowsWithLoadType: loadType)
     
     return fetchData(forLoadType: loadType)
   }
@@ -175,20 +170,21 @@ public class DataLoader<EngineType: DataLoaderEngine>: NSObject {
         
     NSLog("Will execute: \(loadType); queryString: \(String(describing: searchQueryString))")
     return dataLoaderEngine.promise(forLoadType: loadType, queryString: searchQueryString, filters: filters).always {
-      NSLog("Got results for \(loadType); queryString: \(String(describing: self.searchQueryString))")
       if !thisCancellationToken.isCancelled {
+        NSLog("Got results for \(loadType); queryString: \(String(describing: self.searchQueryString))")
+
         self.rowsLoading = false
         
         NotificationCenter.default.post(
           name: Notification.Name(rawValue: self.notificationNameForAction(.ResultsReceived)),
-          object: self.notificationSenderObject,
+          object: self,
           userInfo: self.userInfo(loadType: loadType))
       }
     }.then { results in
       if thisCancellationToken.isCancelled {
         return Promise(error: NSError.cancelledError())
       }
-      
+
       var results = results
       //      for result in results {
       //        NSLog("\(result.objectId)")
@@ -211,10 +207,9 @@ public class DataLoader<EngineType: DataLoaderEngine>: NSObject {
         self.handleResults(results, loadType: loadType, updateTimes: updateTimes)
         return Promise(value: results)
       }
-
-      
-      
-      //      return Promise(value: results)
+    }.catch { error in
+      self.delegate?.dataLoader(self, didCatchLoadingError: error)
+      NSLog("error: \(error)")
     }
   }
 
@@ -222,10 +217,10 @@ public class DataLoader<EngineType: DataLoaderEngine>: NSObject {
     // Process the results
     let totalResults = queryResults.count
     
-    var newRows: [T]? = nil
-  
     var results = queryResults
 
+    var edits: [Edit<T>] = []
+    let originalRows: [T] = rowsToDisplay
 
     if !isEmpty && loadType == .newRows {
       // Adds/Updates
@@ -241,52 +236,48 @@ public class DataLoader<EngineType: DataLoaderEngine>: NSObject {
           }
         } else {
           if updateTimes[result] != result.updatedAt {
-            updateRowForObject(result)
+            if let index = rows.index(of: result) {
+              updateRowAtIndex(index, withObject: result)
+              edits.append(Edit(.substitution, value: result, destination: index))
+            }
           }
         }
       }
-      
-      newRows = results
     } else {
       if loadType == .more {
-        rows = rows + results
-        newRows = results
-      } else if !isEmpty && loadType == .replace {
-        let existingRows = rows
-        for existingRow in existingRows {
-          if !results.contains(existingRow) {
-            removeRowForObject(existingRow)
+        for result in results {
+          if !rows.contains(result) {
+            rows.append(result)
+          }
+        }
+      } else {
+        if !isEmpty && loadType == .replace {
+          for i in 0..<results.count {
+            let newRow = results[i]
+            if let existingIndex = rows.index(of: newRow) {
+              if existingIndex == i {
+                if updateTimes[newRow] != newRow.updatedAt {
+                  edits.append(Edit(.substitution, value: newRow, destination: i))
+                }
+              }
+            }
           }
         }
         
-        for i in 0..<results.count {
-          let newRow = results[i]
-          if let existingIndex = rows.index(of: newRow) {
-            if existingIndex == i {
-              if updateTimes[newRow] != newRow.updatedAt {
-                updateRowForObject(newRow)
-              }
-              
-              // Already exists in the row and is in the same position
-              continue
-            } else {
-              removeRowAtIndex(existingIndex)
-            }
-          }
-            
-          insertRow(newRow, atIndex: i)
-        }
-      } else {
         rows = results
-        newRows = results
       }
       
-      mightHaveMore = totalResults == dataLoaderEngine.queryLimit && dataLoaderEngine.paginate
+      if let queryLimit = dataLoaderEngine.queryLimit, totalResults >= queryLimit && dataLoaderEngine.paginate {
+        mightHaveMore = true
+      } else {
+        mightHaveMore = false
+      }
     }
-
+    
     // Optional post-processing
     rowsLoaded = true
-    updateUIForNewRows(newRows, loadType: loadType)
+    edits = edits + Changeset.edits(from: originalRows, to: rowsToDisplay)
+    updateUI(forEdits: edits, loadType: loadType)
   }
 
   func sortRows(_ isOrderedBefore: (T, T) -> Bool) {
@@ -296,18 +287,28 @@ public class DataLoader<EngineType: DataLoaderEngine>: NSObject {
   
   // MARK: - Manipulating data
   func replaceRows(_ rows: [T]) {
+    let edits: [Edit<T>] = Changeset.edits(from: self.rows, to: rows)
     self.rows = rows
 
     rowsLoaded = true
     
-    updateUIForNewRows(rows, loadType: .replace)
+    updateUI(forEdits: edits, loadType: .replace)
+  }
+  
+  public func addNewRow(_ object: T) {
+    switch newRowsPosition {
+    case .beginning:
+      insertRow(object, atIndex: 0)
+    case .end:
+      appendRow(object)
+    }    
   }
   
   func insertRow(_ object: T, atIndex index: Int) {
     if !rows.contains(object) {
       rows.insert(object, at: index)
       
-      delegate?.didInsertRowAtIndex(index)
+      delegate?.dataLoader(self, didInsertRowAtIndex: index)
     }
   }
   
@@ -315,21 +316,21 @@ public class DataLoader<EngineType: DataLoaderEngine>: NSObject {
     insertRow(object, atIndex: rows.count)
   }
   
-  @discardableResult
-  func removeRowAtIndex(_ index: Int) -> T? {
-    let object = rows.remove(at: index)
-    delegate?.didRemoveRowAtIndex(index)
-    
-    return object
-  }
-  
-  func removeRowForObject(_ object: T) {
+  public func removeRowForObject(_ object: T) {
     if let index = rows.index(of: object) {
       removeRowAtIndex(index)
     }
   }
+
+  @discardableResult
+  func removeRowAtIndex(_ index: Int) -> T? {
+    let object = rows.remove(at: index)
+    delegate?.dataLoader(self, didRemoveRowAtIndex: index)
+    
+    return object
+  }
   
-  func updateRowForObject(_ object: T) {
+  public func updateRowForObject(_ object: T) {
     if let index = rows.index(of: object) {
       updateRowAtIndex(index, withObject: object)
     }
@@ -338,38 +339,38 @@ public class DataLoader<EngineType: DataLoaderEngine>: NSObject {
   func updateRowAtIndex(_ index: Int, withObject object: T) {
     rows[index] = object
     
-    delegate?.didUpdateRowAtIndex(index)
+    delegate?.dataLoader(self, didUpdateRowAtIndex: index)
   }
   
   
   // MARK: - Notifications
-  func userInfo(results: [T]? = nil, loadType: DataLoadType) -> [AnyHashable: Any] {
+  func userInfo(edits: [Edit<T>]? = nil, loadType: DataLoadType) -> [AnyHashable: Any] {
     var userInfo: [AnyHashable: Any] = [
       notificationLoadTypeKey: loadType.rawValue,
     ]
     
-    if let results = results {
-      userInfo[notificationResultsKey] = results
+    if let edits = edits {
+      userInfo[notificationEditsKey] = edits
     }
     
     return userInfo
   }
   
-  func postDidFinishLoadingNotificationForResults(_ results: [T]?, loadType: DataLoadType) {
+  func postDidFinishLoadingNotification(forEdits edits: [Edit<T>]?, loadType: DataLoadType) {
     NotificationCenter.default.post(
       name: Notification.Name(rawValue: notificationNameForAction(.FinishedLoading)),
-      object: notificationSenderObject,
-      userInfo: userInfo(results: results, loadType: loadType))
+      object: self,
+      userInfo: userInfo(edits: edits, loadType: loadType))
   }
   
   func observerForAction(_ action: DataLoaderAction) -> Observable<Notification> {
-    let observer = NotificationCenter.default.rx.notification(Notification.Name(rawValue: notificationNameForAction(action)), object: notificationSenderObject)
+    let observer = NotificationCenter.default.rx.notification(Notification.Name(rawValue: notificationNameForAction(action)), object: self)
     
     if action == .FinishedLoading && rowsLoaded {
       let notification = Notification(
         name: Notification.Name(rawValue: notificationNameForAction(.FinishedLoading)),
-        object: notificationSenderObject,
-        userInfo: userInfo(results: rows, loadType: .initial))
+        object: self,
+        userInfo: userInfo(edits: Changeset.edits(from: [], to: rows), loadType: .initial))
 
       return observer.startWith(notification)
     } else {
@@ -377,17 +378,17 @@ public class DataLoader<EngineType: DataLoaderEngine>: NSObject {
     }
   }
   
-  func resultsFromNotification(_ notification: Notification) -> [T]? {
-    return notification.userInfo?[notificationResultsKey] as? [T]
+  public func editsFromNotification(_ notification: Notification) -> [Edit<T>]? {
+    return notification.userInfo?[notificationEditsKey] as? [Edit<T>]
   }
   
-  func loadTypeFromNotification(_ notification: Notification) -> DataLoadType {
+  public func loadTypeFromNotification(_ notification: Notification) -> DataLoadType {
     return DataLoadType(rawValue: notification.userInfo![notificationLoadTypeKey] as! Int)!
   }
 
   
   // MARK: - UI Stuff
-  func updateUIForNewRows(_ newRows: [T]?, loadType: DataLoadType) {
-    postDidFinishLoadingNotificationForResults(newRows, loadType: loadType)
+  open func updateUI(forEdits edits: [Edit<T>]?, loadType: DataLoadType) {
+    postDidFinishLoadingNotification(forEdits: edits, loadType: loadType)
   }
 }

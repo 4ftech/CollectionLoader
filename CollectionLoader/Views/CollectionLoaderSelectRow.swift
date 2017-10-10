@@ -10,8 +10,10 @@ import Foundation
 import DataSource
 import ViewMapper
 import Eureka
+import Parse
 
 public final class CollectionLoaderSelectRow<T: CellMapperAdapter, U: DataLoaderEngine>: SelectorRow<PushSelectorCell<U.T>, CollectionLoaderSelectController<T, U>>, RowType {
+  public var listAdapter: TableViewMapperAdapter<T, U>!
   
   public required init(tag: String?) {
     super.init(tag: tag)
@@ -19,6 +21,8 @@ public final class CollectionLoaderSelectRow<T: CellMapperAdapter, U: DataLoader
   
   public init(listAdapter: TableViewMapperAdapter<T, U>, tag: String? = nil, initializer: ((CollectionLoaderSelectRow) -> Void)? = nil) {
     super.init(tag: tag)
+    
+    self.listAdapter = listAdapter
     
     presentationMode = .show(
       controllerProvider: ControllerProvider.callback {
@@ -51,6 +55,9 @@ public class CollectionLoaderSelectController<T: CellMapperAdapter, U: DataLoade
   required public init(listAdapter: TableViewMapperAdapter<T, U>, callback: ((UIViewController) -> ())? = nil) {
     super.init(listAdapter: listAdapter)
     
+    self.allowSearch = true
+    
+    
     listAdapter.cellAdapter.onSelectCell = { [weak self] (value, _) in
       if let value = value as? U.T {
         if self?.row.value == value {
@@ -66,10 +73,6 @@ public class CollectionLoaderSelectController<T: CellMapperAdapter, U: DataLoade
     }
     
     onDismissCallback = callback
-  }
-  
-  public required override init(listAdapter: TableViewMapperAdapter<T, U>) {
-    super.init(listAdapter: listAdapter)
   }
   
   public override func viewDidLoad() {
@@ -89,6 +92,7 @@ public class CollectionLoaderSelectController<T: CellMapperAdapter, U: DataLoade
 
 
 public final class CollectionLoaderSelectMultipleRow<T: CellMapperAdapter, U: DataLoaderEngine>: SelectorRow<PushSelectorCell<Set<U.T>>, CollectionLoaderSelectMultipleController<T, U>>, RowType {
+  public var listAdapter: TableViewMapperAdapter<T, U>!
   
   public required init(tag: String?) {
     super.init(tag: tag)
@@ -96,6 +100,8 @@ public final class CollectionLoaderSelectMultipleRow<T: CellMapperAdapter, U: Da
   
   public init(listAdapter: TableViewMapperAdapter<T, U>, tag: String? = nil, initializer: ((CollectionLoaderSelectMultipleRow) -> Void)? = nil) {
     super.init(tag: tag)
+    
+    self.listAdapter = listAdapter
     
     presentationMode = .show(
       controllerProvider: ControllerProvider.callback {
@@ -111,7 +117,7 @@ public final class CollectionLoaderSelectMultipleRow<T: CellMapperAdapter, U: Da
     displayValueFor = {
       guard let object = $0 else { return "" }
       if object.count == 0 {
-        return "None"
+        return ""
       } else if object.count == 1 {
         return object.first?.objectId
       } else {
@@ -129,10 +135,13 @@ public class CollectionLoaderSelectMultipleController<T: CellMapperAdapter, U: D
   
   required public init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
+    
   }
   
   public init(listAdapter: TableViewMapperAdapter<T, U>, callback: ((UIViewController) -> ())? = nil) {
     super.init(listAdapter: listAdapter)
+    
+    self.allowSearch = true
     
     listAdapter.tableView.allowsMultipleSelection = true
     
@@ -155,10 +164,6 @@ public class CollectionLoaderSelectMultipleController<T: CellMapperAdapter, U: D
     }
     
     onDismissCallback = callback
-  }
-  
-  public required override init(listAdapter: TableViewMapperAdapter<T, U>) {
-    super.init(listAdapter: listAdapter)
   }
   
   override open func refreshScrollView() {

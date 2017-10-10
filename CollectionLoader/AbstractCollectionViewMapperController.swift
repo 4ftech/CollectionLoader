@@ -9,7 +9,7 @@
 import Foundation
 import ViewMapper
 
-open class AbstractCollectionViewMapperController<A, C, E>: CollectionLoaderController<A, E> where A:CollectionViewMapperAdapter<C, E>, C:CellMapperAdapter, E:DataLoaderEngine {
+open class AbstractCollectionViewMapperController<A, C, E>: CollectionLoaderController<A, E> where A:CollectionViewMapperAdapter<C, E> {
   public var cellAdapter: C {
     return listAdapter.cellAdapter
   }
@@ -20,5 +20,9 @@ open class AbstractCollectionViewMapperController<A, C, E>: CollectionLoaderCont
   
   public init(cellAdapter: C, dataLoader: DataLoader<E> = DataLoader<E>(dataLoaderEngine: E())) {
     super.init(listAdapter: A(cellAdapter: cellAdapter, dataLoader: dataLoader))
+  }
+  
+  public override init(listAdapter: A) {
+    super.init(listAdapter: listAdapter)
   }
 }

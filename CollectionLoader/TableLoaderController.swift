@@ -9,7 +9,7 @@
 import Foundation
 import ViewMapper
 
-open class TableLoaderController<A, E>: ListLoaderController<A> where A:TableListAdapter<E>, E:DataLoaderEngine {
+open class TableLoaderController<A, E>: ListLoaderController<A> where A:TableListAdapter<E> {
   public var tableView: UITableView {
     return listAdapter.tableView
   }
@@ -24,5 +24,11 @@ open class TableLoaderController<A, E>: ListLoaderController<A> where A:TableLis
   
   public override init(listAdapter: A) {
     super.init(listAdapter: listAdapter)
+  }
+  
+  open override func viewDidLoad() {
+    super.viewDidLoad()
+    
+    tableView.tableFooterView = UIView(frame: .zero)
   }
 }
