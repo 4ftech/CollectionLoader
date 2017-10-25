@@ -156,7 +156,7 @@ open class DataLoader<EngineType: DataLoaderEngine>: NSObject {
     return fetchData(forLoadType: loadType)
   }
   
-  func fetchData(forLoadType loadType: DataLoadType) -> Promise<[T]> {
+  open func fetchData(forLoadType loadType: DataLoadType) -> Promise<[T]> {
     var updateTimes: [T:Date] = [:]
     for row in rows {
       if let updatedAt = row.updatedAt {
@@ -190,6 +190,13 @@ open class DataLoader<EngineType: DataLoaderEngine>: NSObject {
       //        NSLog("\(result.objectId)")
       //      }
       
+      let totalResults = results.count
+      if let queryLimit = self.dataLoaderEngine.queryLimit, totalResults >= queryLimit && self.dataLoaderEngine.paginate {
+        self.mightHaveMore = true
+      } else {
+        self.mightHaveMore = false
+      }
+      
       return Promise<[T]>() { (fulfill, reject) in
         // Sort/filter as necessary but do it in the background
         DispatchQueue.global(qos: .background).async {
@@ -215,8 +222,6 @@ open class DataLoader<EngineType: DataLoaderEngine>: NSObject {
 
   fileprivate func handleResults(_ queryResults: [T], loadType: DataLoadType, updateTimes: [T:Date]) {
     // Process the results
-    let totalResults = queryResults.count
-    
     var results = queryResults
 
     var edits: [Edit<T>] = []
@@ -265,12 +270,6 @@ open class DataLoader<EngineType: DataLoaderEngine>: NSObject {
         }
         
         rows = results
-      }
-      
-      if let queryLimit = dataLoaderEngine.queryLimit, totalResults >= queryLimit && dataLoaderEngine.paginate {
-        mightHaveMore = true
-      } else {
-        mightHaveMore = false
       }
     }
     

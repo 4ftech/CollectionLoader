@@ -88,6 +88,7 @@ open class ListLoaderController<AdapterType: BaseListAdapter>: UIViewController,
     var topInset: CGFloat = 0
     
     if let navController = navigationController, !navController.isNavigationBarHidden && ((extendedLayoutIncludesOpaqueBars && edgesForExtendedLayout.contains(.top)) || navController.navigationBar.isTranslucent) {
+      
       topInset = topInset + Const.topBarHeight
     }
     
@@ -142,6 +143,10 @@ open class ListLoaderController<AdapterType: BaseListAdapter>: UIViewController,
     super.viewDidLoad()
 
     self.automaticallyAdjustsScrollViewInsets = false
+
+    if #available(iOS 11.0, *) {
+      scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentBehavior.never
+    }
     
     // Don't set delegate until view is loaded
     self.dataLoader.delegate = self
@@ -557,7 +562,7 @@ open class ListLoaderController<AdapterType: BaseListAdapter>: UIViewController,
   }
   
   open func searchBarDidTapClearButton(_ searchBar: CollectionSearchBar) {
-    dataLoader.searchByString(nil)
+    dataLoader.searchByString("")
   }
   
   open func searchBarTextDidBeginEditing(_ searchBar: CollectionSearchBar) {

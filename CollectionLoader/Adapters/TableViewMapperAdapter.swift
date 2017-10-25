@@ -63,6 +63,15 @@ open class TableViewMapperAdapter<A: CellMapperAdapter, E: DataLoaderEngine>: Ta
     let row = dataLoader.rowsToDisplay[indexPath.row]
     return cellAdapter.size?(row as! A.T.T).height ?? tableView.rowHeight
   }
+
+  open override func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+    if indexPath.row < dataLoader.rowsToDisplay.count {
+      let row = dataLoader.rowsToDisplay[indexPath.row]
+      return cellAdapter.size?(row as! A.T.T).height ?? tableView.rowHeight
+    } else {
+      return tableView.rowHeight
+    }
+  }
   
   open override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
     return cellAdapter.sectionHeader?(section)

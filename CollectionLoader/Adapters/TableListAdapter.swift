@@ -98,6 +98,10 @@ open class TableListAdapter<E: DataLoaderEngine>: NSObject, BaseListAdapter, UIT
     return tableView.rowHeight
   }
   
+  open func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+    return UITableViewAutomaticDimension
+  }
+  
   open func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
     return nil
   }

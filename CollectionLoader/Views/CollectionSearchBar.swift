@@ -73,6 +73,7 @@ open class CollectionSearchBar: UIView {
   open override func awakeFromNib() {
     super.awakeFromNib()
     
+    searchIcon.tintColor = UIColor.black
     textField.delegate = self
     
     clearButton?.addTarget(self, action: #selector(didTapClearButton(_:)), for: .touchUpInside)
