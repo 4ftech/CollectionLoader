@@ -1,5 +1,5 @@
-github "mxcl/PromiseKit" ~> 4.0
-github "ReactiveX/RxSwift" ~> 3.0
+github "mxcl/PromiseKit" ~> 4.4
+github "ReactiveX/RxSwift" ~> 3.6.1
 
 
 github "pronebird/UIScrollView-InfiniteScroll"

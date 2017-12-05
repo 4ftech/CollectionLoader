@@ -38,7 +38,9 @@ open class ListLoaderController<AdapterType: BaseListAdapter>: UIViewController,
   public var errorViewContent: (() -> EmptyViewContent)?
   public var scrollView: UIScrollView {
     return listAdapter.scrollView
-  }  
+  }
+  
+  open var loaderCell: UIView? { return nil }
   
   // Filters
   public var filters: [Filter] {
@@ -179,7 +181,7 @@ open class ListLoaderController<AdapterType: BaseListAdapter>: UIViewController,
     
     // Loader
     if loaderView == nil {
-      loaderView = LoaderView.newInstance(content: emptyViewContent)
+      initializeLoaderView()
     }
     
     view.fill(
@@ -227,12 +229,26 @@ open class ListLoaderController<AdapterType: BaseListAdapter>: UIViewController,
       loadRows(loadType: .initial)
     } else if dataLoader.rowsLoaded {
       loaderView.hideSpinner()
-      didUpdateRowDataUI()
     } else if dataLoader.rowsLoading {
       loaderView.showSpinner()
     } else {
       loaderView.isHidden = true
     }
+  }
+  
+  open func initializeLoaderView() {
+    loaderView = LoaderView.newInstance(content: emptyViewContent)
+    
+    if let loaderCell = self.loaderCell {
+      let count: Int = Int(ceil(UIScreen.main.bounds.height / loaderCell.bounds.height))
+      
+      var cells: [UIView] = [loaderCell]
+      for _ in 0..<count-1 {
+        cells.append(self.loaderCell!)
+      }
+      
+      loaderView.loaderContainer.addViews(cells, withHeightConstraints: true)
+    }    
   }
   
   override open func viewWillAppear(_ animated: Bool) {
@@ -248,8 +264,7 @@ open class ListLoaderController<AdapterType: BaseListAdapter>: UIViewController,
   open override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
     
-    NotificationCenter.default.addObserver(self, selector: #selector(searchKeyboardWillShow(_:)), name: Notification.Name.UIKeyboardWillShow, object: nil)
-    NotificationCenter.default.addObserver(self, selector: #selector(searchKeyboardWillHide(_:)), name: Notification.Name.UIKeyboardWillHide, object: nil)
+    self.registerForSearchKeyboardNotifications()
   }
   
   override open func viewWillDisappear(_ animated: Bool) {
@@ -263,11 +278,19 @@ open class ListLoaderController<AdapterType: BaseListAdapter>: UIViewController,
     super.viewDidDisappear(animated)
     
     self.refreshControl?.endRefreshing()
-    
+    self.deregisterForSearchKeyboardNotifications()
+  }
+  
+  open func registerForSearchKeyboardNotifications() {
+    NotificationCenter.default.addObserver(self, selector: #selector(searchKeyboardWillShow(_:)), name: Notification.Name.UIKeyboardWillShow, object: nil)
+    NotificationCenter.default.addObserver(self, selector: #selector(searchKeyboardWillHide(_:)), name: Notification.Name.UIKeyboardWillHide, object: nil)
+  }
+
+  open func deregisterForSearchKeyboardNotifications() {
     NotificationCenter.default.removeObserver(self, name: Notification.Name.UIKeyboardWillShow, object: nil)
     NotificationCenter.default.removeObserver(self, name: Notification.Name.UIKeyboardWillHide, object: nil)
   }
-  
+
   open func searchKeyboardWillShow(_ notification: Notification) {
     if UIApplication.shared.applicationState != .active {
       return
@@ -275,7 +298,7 @@ open class ListLoaderController<AdapterType: BaseListAdapter>: UIViewController,
     
     if let userInfo = notification.userInfo {
       let animationDuration: TimeInterval = (userInfo[UIKeyboardAnimationDurationUserInfoKey] as! NSNumber).doubleValue
-      if let keyboardSize = (userInfo[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
+      if let keyboardSize = (userInfo[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
         UIView.animate(
           withDuration: animationDuration,
           delay: 0,
@@ -378,12 +401,13 @@ open class ListLoaderController<AdapterType: BaseListAdapter>: UIViewController,
     }
     
     if !collectionInitialized || loadType == .clearAndReplace || loadType == .initial {
+      //      scrollView.setContentOffset(CGPoint(x: 0, y: -scrollView.contentInset.top), animated: false)
       refreshScrollView()
       completion(true)
     } else if let edits = dataLoader.editsFromNotification(notification), edits.count > 0 {
-      if loadType == .replace && scrollView.contentOffset.y > -scrollView.contentInset.top {
-        scrollView.setContentOffset(CGPoint(x: 0, y: -scrollView.contentInset.top), animated: false)
-      }
+      //      if loadType == .replace && scrollView.contentOffset.y > -scrollView.contentInset.top {
+      //        scrollView.setContentOffset(CGPoint(x: 0, y: -scrollView.contentInset.top), animated: false)
+      //      }
       
       updateScrollView(withEdits: edits, completion: completion)
     } else {
@@ -542,7 +566,21 @@ open class ListLoaderController<AdapterType: BaseListAdapter>: UIViewController,
       loaderView.showContent(self.emptyViewContent)
     } else {
       scrollView.isHidden = false
-      loaderView.isHidden = true
+      
+      UIView.animate(
+        withDuration: Const.fadeDuration,
+        delay: 0,
+        options: [.allowUserInteraction, .beginFromCurrentState],
+        animations: {
+          self.loaderView.alpha = 0.0
+          
+        },
+        completion: { complete in
+          if complete {
+            self.loaderView.isHidden = true
+          }
+        }
+      )
     }
   }
   

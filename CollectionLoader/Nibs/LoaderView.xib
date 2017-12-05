@@ -1,13 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12121" systemVersion="16G29" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13527"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
+    <customFonts key="customFonts">
+        <array key="Avenir.ttc">
+            <string>Avenir-Black</string>
+            <string>Avenir-Book</string>
+            <string>Avenir-Medium</string>
+        </array>
+    </customFonts>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
@@ -15,6 +22,10 @@
             <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
+                <view contentMode="scaleToFill" placeholderIntrinsicWidth="375" placeholderIntrinsicHeight="667" translatesAutoresizingMaskIntoConstraints="NO" id="0cb-gD-Q8g">
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uPd-Zf-OYG" userLabel="Empty Container">
                     <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                     <subviews>
@@ -91,11 +102,14 @@
                 <constraint firstItem="uPd-Zf-OYG" firstAttribute="centerY" secondItem="6c9-84-ffU" secondAttribute="centerY" id="5LM-0f-zPz"/>
                 <constraint firstItem="pf2-vt-2mL" firstAttribute="centerX" secondItem="6c9-84-ffU" secondAttribute="centerX" id="6ox-i3-TJz"/>
                 <constraint firstItem="pf2-vt-2mL" firstAttribute="top" secondItem="fzU-fg-03M" secondAttribute="top" id="7PB-OO-TpC"/>
+                <constraint firstAttribute="trailing" secondItem="0cb-gD-Q8g" secondAttribute="trailing" id="7mB-iA-bSM"/>
                 <constraint firstItem="uPd-Zf-OYG" firstAttribute="width" secondItem="6c9-84-ffU" secondAttribute="width" id="BDy-ik-4gP"/>
                 <constraint firstItem="uPd-Zf-OYG" firstAttribute="height" secondItem="6c9-84-ffU" secondAttribute="height" id="KhI-d4-dJU"/>
                 <constraint firstItem="uPd-Zf-OYG" firstAttribute="centerX" secondItem="6c9-84-ffU" secondAttribute="centerX" id="TBj-nP-mck"/>
+                <constraint firstItem="0cb-gD-Q8g" firstAttribute="top" secondItem="6c9-84-ffU" secondAttribute="top" id="TRI-oX-alW"/>
                 <constraint firstItem="pf2-vt-2mL" firstAttribute="centerY" secondItem="6c9-84-ffU" secondAttribute="centerY" id="Xmq-MZ-UcX"/>
                 <constraint firstItem="pf2-vt-2mL" firstAttribute="centerY" secondItem="h3L-eg-VkY" secondAttribute="centerY" id="wfY-AP-UGB"/>
+                <constraint firstItem="0cb-gD-Q8g" firstAttribute="leading" secondItem="6c9-84-ffU" secondAttribute="leading" id="x7k-KG-Bck"/>
             </constraints>
             <nil key="simulatedStatusBarMetrics"/>
             <variation key="default">
@@ -112,6 +126,7 @@
                 <outlet property="imageHeightConstraint" destination="ZM7-uw-c3u" id="eoX-g0-Wpl"/>
                 <outlet property="imageView" destination="h3L-eg-VkY" id="n7T-ny-sbO"/>
                 <outlet property="label" destination="fzU-fg-03M" id="ls5-lh-cf0"/>
+                <outlet property="loaderContainer" destination="0cb-gD-Q8g" id="FzT-Ib-YLz"/>
                 <outlet property="subtitleLabel" destination="h9h-lZ-hxP" id="lH9-rg-x4p"/>
             </connections>
         </view>

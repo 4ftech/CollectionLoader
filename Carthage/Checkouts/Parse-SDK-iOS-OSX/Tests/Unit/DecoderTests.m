@@ -11,6 +11,7 @@
 #import "PFFieldOperation.h"
 #import "PFFile.h"
 #import "PFGeoPoint.h"
+#import "PFPolygon.h"
 #import "PFObjectPrivate.h"
 #import "PFRelationPrivate.h"
 #import "PFTestCase.h"
@@ -43,6 +44,17 @@
     XCTAssertNotNil(operation);
     PFAssertIsKindOfClass(operation, [PFIncrementOperation class]);
     XCTAssertEqualObjects(operation.amount, @100500);
+}
+
+- (void)testDecodingDeleteOperation {
+    PFDecoder *decoder = [[PFDecoder alloc] init];
+
+    NSDictionary *decoded = [decoder decodeObject:@{ @"key" : @{@"__op" : @"Delete"} }];
+    XCTAssertNotNil(decoded);
+
+    id operation = decoded[@"key"];
+    XCTAssertNotNil(operation);
+    PFAssertIsKindOfClass(operation, [PFDeleteOperation class]);
 }
 
 - (void)testDecodingDates {
@@ -86,6 +98,20 @@
     PFAssertIsKindOfClass(geoPoint, [PFGeoPoint class]);
 
     XCTAssertEqualObjects(geoPoint, [PFGeoPoint geoPointWithLatitude:10.0 longitude:20.0]);
+}
+
+- (void)testDecodingPolygons {
+    PFDecoder *decoder = [[PFDecoder alloc] init];
+
+    NSArray *coordinates = @[@[@0,@0],@[@0,@1],@[@1,@1],@[@1,@0]];
+    NSDictionary *decoded = [decoder decodeObject:@{ @"polygon" : @{@"__type" : @"Polygon",
+                                                                    @"coordinates" : coordinates }}];
+    XCTAssertNotNil(decoded);
+
+    PFPolygon *polygon = decoded[@"polygon"];
+    XCTAssertNotNil(polygon);
+    PFAssertIsKindOfClass(polygon, [PFPolygon class]);
+    XCTAssertEqualObjects(polygon, [PFPolygon polygonWithCoordinates:coordinates]);
 }
 
 - (void)testDecodingRelations {

@@ -23,6 +23,9 @@
 		705D30281E67725C005D3A5F /* Eureka.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 705D30271E67725C005D3A5F /* Eureka.framework */; };
 		705D30661E6776D5005D3A5F /* ParseTableLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705D30651E6776D5005D3A5F /* ParseTableLoader.swift */; };
 		705D307E1E678144005D3A5F /* DataLoaderEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705D307D1E678144005D3A5F /* DataLoaderEngine.swift */; };
+		706C972A1FACAE5200F73ED9 /* LoaderGradientLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 706C97201FACAE4F00F73ED9 /* LoaderGradientLayer.swift */; };
+		706C972B1FACAE5200F73ED9 /* LoaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 706C97281FACAE5000F73ED9 /* LoaderCell.swift */; };
+		706C972C1FACAE5200F73ED9 /* CutoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 706C97291FACAE5200F73ED9 /* CutoutView.swift */; };
 		707CA2C21F0EEDF60063CF5F /* Changeset.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 707CA2C11F0EEDF20063CF5F /* Changeset.framework */; };
 		707F8EAD1EE7140600DD0F64 /* CollectionNibLoaderController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 707F8EAC1EE7140600DD0F64 /* CollectionNibLoaderController.swift */; };
 		708239EB1EEEF92B00F88D02 /* TableListAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 708239EA1EEEF92A00F88D02 /* TableListAdapter.swift */; };
@@ -59,6 +62,7 @@
 		70C407BC1E68DDCD00A14EB7 /* ParseViewMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70C407BB1E68DDCD00A14EB7 /* ParseViewMapper.swift */; };
 		70C407CC1E69F37800A14EB7 /* DataLoadType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70C407CB1E69F37800A14EB7 /* DataLoadType.swift */; };
 		70C408C01E6AFF1F00A14EB7 /* ParseEurekaViewMapper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 705D301A1E676E96005D3A5F /* ParseEurekaViewMapper.framework */; };
+		70F712141FD60D40005D139B /* DataSourceNotificationCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 70F712131FD60D40005D139B /* DataSourceNotificationCenter.framework */; };
 		70FBAA7C1EB9115600ECC20E /* Const.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70FBAA7B1EB9115600ECC20E /* Const.swift */; };
 /* End PBXBuildFile section */
 
@@ -112,6 +116,13 @@
 			remoteGlobalIDString = 705D2F751E668705005D3A5F;
 			remoteInfo = ParseEurekaViewMapper;
 		};
+		70F712121FD60D40005D139B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 705D2E2D1E6005E8005D3A5F /* DataSource.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 70731A891FD1B9D000C7CF45;
+			remoteInfo = DataSourceNotificationCenter;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -129,6 +140,9 @@
 		705D30271E67725C005D3A5F /* Eureka.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Eureka.framework; path = Carthage/Build/iOS/Eureka.framework; sourceTree = "<group>"; };
 		705D30651E6776D5005D3A5F /* ParseTableLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParseTableLoader.swift; sourceTree = "<group>"; };
 		705D307D1E678144005D3A5F /* DataLoaderEngine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataLoaderEngine.swift; sourceTree = "<group>"; };
+		706C97201FACAE4F00F73ED9 /* LoaderGradientLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoaderGradientLayer.swift; sourceTree = "<group>"; };
+		706C97281FACAE5000F73ED9 /* LoaderCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoaderCell.swift; sourceTree = "<group>"; };
+		706C97291FACAE5200F73ED9 /* CutoutView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CutoutView.swift; sourceTree = "<group>"; };
 		707CA2C11F0EEDF20063CF5F /* Changeset.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Changeset.framework; path = Carthage/Build/iOS/Changeset.framework; sourceTree = "<group>"; };
 		707F8EAC1EE7140600DD0F64 /* CollectionNibLoaderController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionNibLoaderController.swift; sourceTree = "<group>"; };
 		708239EA1EEEF92A00F88D02 /* TableListAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableListAdapter.swift; sourceTree = "<group>"; };
@@ -187,6 +201,7 @@
 				705D301C1E676EB1005D3A5F /* ViewMapper.framework in Frameworks */,
 				705D30281E67725C005D3A5F /* Eureka.framework in Frameworks */,
 				707CA2C21F0EEDF60063CF5F /* Changeset.framework in Frameworks */,
+				70F712141FD60D40005D139B /* DataSourceNotificationCenter.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -237,6 +252,7 @@
 				705D2E341E6005E8005D3A5F /* DataSource.framework */,
 				705D2E361E6005E8005D3A5F /* ParseDataSource.framework */,
 				705D2E381E6005E8005D3A5F /* ObjectMapperDataSource.framework */,
+				70F712131FD60D40005D139B /* DataSourceNotificationCenter.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -349,6 +365,9 @@
 				70A884D01E57404B00823C0F /* LoaderView.swift */,
 				705D2E601E609591005D3A5F /* CollectionViewType.swift */,
 				705D301F1E676FBA005D3A5F /* NotifiableViewMappable.swift */,
+				706C97281FACAE5000F73ED9 /* LoaderCell.swift */,
+				706C97201FACAE4F00F73ED9 /* LoaderGradientLayer.swift */,
+				706C97291FACAE5200F73ED9 /* CutoutView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -553,6 +572,13 @@
 			remoteRef = 705D30191E676E96005D3A5F /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		70F712131FD60D40005D139B /* DataSourceNotificationCenter.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = DataSourceNotificationCenter.framework;
+			remoteRef = 70F712121FD60D40005D139B /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 /* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
@@ -583,6 +609,7 @@
 			files = (
 				70A886291E5822B700823C0F /* UIView.swift in Sources */,
 				705D2E5F1E609584005D3A5F /* BaseListAdapter.swift in Sources */,
+				706C972B1FACAE5200F73ED9 /* LoaderCell.swift in Sources */,
 				705D30261E67720F005D3A5F /* DataSourceFormController.swift in Sources */,
 				708239ED1EEEFAD500F88D02 /* CollectionListAdapter.swift in Sources */,
 				705D30221E676FEC005D3A5F /* CollectionLoaderSelectRow.swift in Sources */,
@@ -594,6 +621,7 @@
 				708239F11EEEFE7E00F88D02 /* CollectionViewMapperController.swift in Sources */,
 				705D2E5B1E60955A005D3A5F /* TableViewMapperAdapter.swift in Sources */,
 				705D307E1E678144005D3A5F /* DataLoaderEngine.swift in Sources */,
+				706C972A1FACAE5200F73ED9 /* LoaderGradientLayer.swift in Sources */,
 				70A884CF1E57403A00823C0F /* CollectionSearchBar.swift in Sources */,
 				70C407CC1E69F37800A14EB7 /* DataLoadType.swift in Sources */,
 				70A884DD1E5762F000823C0F /* UITableView.swift in Sources */,
@@ -608,6 +636,7 @@
 				705D30201E676FBA005D3A5F /* NotifiableViewMappable.swift in Sources */,
 				707F8EAD1EE7140600DD0F64 /* CollectionNibLoaderController.swift in Sources */,
 				70A884DB1E575FED00823C0F /* Utils.swift in Sources */,
+				706C972C1FACAE5200F73ED9 /* CutoutView.swift in Sources */,
 				708239F51EEF0E8400F88D02 /* CollectionLoaderController.swift in Sources */,
 				70FBAA7C1EB9115600ECC20E /* Const.swift in Sources */,
 				708239F31EEF01FE00F88D02 /* TableViewMapperController.swift in Sources */,

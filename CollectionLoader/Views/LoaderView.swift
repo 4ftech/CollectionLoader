@@ -8,8 +8,9 @@
 
 import Foundation
 
-public class LoaderView: UIView {
+open class LoaderView: UIView {
   @IBOutlet weak public var emptyContainer: UIView!
+  @IBOutlet weak public var loaderContainer: UIView!
   @IBOutlet weak public var imageView: UIImageView!
   @IBOutlet weak public var label: UILabel!
   @IBOutlet weak public var subtitleLabel: UILabel!
@@ -35,7 +36,7 @@ public class LoaderView: UIView {
     return loaderView
   }
   
-  override public func awakeFromNib() {
+  open override func awakeFromNib() {
     super.awakeFromNib()
     
     isHidden = true
@@ -68,25 +69,52 @@ public class LoaderView: UIView {
     buttonAction?()
   }
   
-  public func showSpinner() {
+  open func showSpinner() {
     isHidden = false
+    alpha = 1.0
+    
     hideEmptyView()
-    activityIndicator.isHidden = false
-    activityIndicator.startAnimating()
+    
+    if loaderContainer.subviews.count > 0 {
+      activityIndicator.isHidden = true
+      
+      loaderContainer.isHidden = false
+      loaderContainer.alpha = 1.0
+    } else {
+      loaderContainer.isHidden = true
+      activityIndicator.isHidden = false
+      activityIndicator.startAnimating()
+    }
   }
   
-  public func hideSpinner() {
+  open func hideSpinner() {
+    UIView.animate(
+      withDuration: Const.fadeDuration,
+      delay: 0,
+      options: [.allowUserInteraction, .beginFromCurrentState],
+      animations: {
+        self.loaderContainer.alpha = 0.0
+      },
+      completion: { complete in
+        if complete {
+          self.loaderContainer.isHidden = true
+        }
+      }
+    )
+ 
     activityIndicator.isHidden = true
     activityIndicator.stopAnimating()
   }
   
   
-  public func hideEmptyView() {
+  open func hideEmptyView() {
     emptyContainer.isHidden = true
   }
   
-  public func showEmptyView() {
+  open func showEmptyView() {
     isHidden = false
+    alpha = 1.0
+    
     hideSpinner()
     emptyContainer.isHidden = false
   }

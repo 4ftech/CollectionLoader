@@ -364,7 +364,7 @@ open class DataLoader<EngineType: DataLoaderEngine>: NSObject {
   
   func observerForAction(_ action: DataLoaderAction) -> Observable<Notification> {
     let observer = NotificationCenter.default.rx.notification(Notification.Name(rawValue: notificationNameForAction(action)), object: self)
-    
+
     if action == .FinishedLoading && rowsLoaded {
       let notification = Notification(
         name: Notification.Name(rawValue: notificationNameForAction(.FinishedLoading)),

@@ -1,14 +1,4 @@
 //
-//  DataSourceViewController.swift
-//  CollectionLoader
-//
-//  Created by Nick Kuyakanon on 3/1/17.
-//  Copyright © 2017 4f Tech. All rights reserved.
-//
-
-import Foundation
-
-//
 //  DataSourceFormController.swift
 //  DataSourceFormController
 //
@@ -19,6 +9,7 @@ import Foundation
 import Foundation
 
 import DataSource
+import DataSourceNotificationCenter
 import PromiseKit
 
 import ViewMapper
@@ -73,7 +64,11 @@ open class DataSourceFormController<T: BaseDataModel>: FormViewController, ViewM
   open func handleSuccess(crudType: CRUDType, crudObject: T) {
     NSLog("DataSourceFormController: Success")
     NotificationCenter.default.postCRUDNotification(crudType, crudObject: crudObject)
-    _ = self.navigationController?.popViewController(animated: true)
+    if self.navigationController?.viewControllers.first == self {
+      self.navigationController?.dismiss(animated: true, completion: nil)
+    } else {
+      _ = self.navigationController?.popViewController(animated: true)
+    }
   }
   
   open func handleError(error: Error) {

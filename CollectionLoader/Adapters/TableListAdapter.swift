@@ -84,7 +84,7 @@ open class TableListAdapter<E: DataLoaderEngine>: NSObject, BaseListAdapter, UIT
         self.dataLoader.removeRowForObject(row)
         NotificationCenter.default.postCRUDNotification(.delete, crudObject: row)
       } else {
-        row.delete().then { (success: Bool) -> Void in
+        row.delete().then { () -> Void in
           self.dataLoader.removeRowForObject(row)
           NotificationCenter.default.postCRUDNotification(.delete, crudObject: row)
         }.catch { error in

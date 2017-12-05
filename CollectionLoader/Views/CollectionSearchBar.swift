@@ -40,6 +40,7 @@ open class CollectionSearchBar: UIView {
   }
   
   let disposeBag = DisposeBag()
+  var throttledText: String = ""
   
   weak public var delegate: CollectionSearchBarDelegate?
   
@@ -48,10 +49,14 @@ open class CollectionSearchBar: UIView {
       if let time = throttle {
         textField.rx.text
           .throttle(time, scheduler: MainScheduler.instance)
-          .distinctUntilChanged({ $0 }, comparer: { $0 == $1 })
+          .distinctUntilChanged({ ($0 ?? "") == ($1 ?? "") })
           .takeUntil(self.rx.deallocated)
           .subscribe(onNext: { [weak self] text in
-            self?.delegate?.searchBarTextDidChangeAfterThrottle(self!)
+            let string: String = text ?? ""
+            if self?.throttledText != string {
+              self?.throttledText = string
+              self?.delegate?.searchBarTextDidChangeAfterThrottle(self!)
+            }
           })
           .addDisposableTo(disposeBag)
       }
