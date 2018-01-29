@@ -14,10 +14,6 @@ open class CollectionNibLoaderController<V: ViewMappable, E: DataLoaderEngine>: 
     super.init(coder: aDecoder)
   }
   
-  public override init(listAdapter: CollectionViewMapperAdapter<NibCellMapperAdapter<V>, E>) {
-    super.init(listAdapter: listAdapter)
-  }
-  
   public init(nib: UINib, dataLoader: DataLoader<E> = DataLoader<E>(dataLoaderEngine: E()), initializer: ((NibCellMapperAdapter<V>) -> Void)? = nil) {
     super.init(cellAdapter: NibCellMapperAdapter(nib: nib, initializer: initializer), dataLoader: dataLoader)
   }
@@ -28,5 +24,9 @@ open class CollectionNibLoaderController<V: ViewMappable, E: DataLoaderEngine>: 
   
   public override init(cellAdapter: NibCellMapperAdapter<V>, dataLoader: DataLoader<E> = DataLoader<E>(dataLoaderEngine: E())) {
     super.init(cellAdapter: cellAdapter, dataLoader: dataLoader)
+  }
+  
+  public override init(listAdapter: CollectionViewMapperAdapter<NibCellMapperAdapter<V>, E>) {
+    super.init(listAdapter: listAdapter)
   }
 }

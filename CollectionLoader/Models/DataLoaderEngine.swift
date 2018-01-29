@@ -37,13 +37,11 @@ public protocol DataLoaderEngine {
 }
 
 
-open class BaseDataLoaderEngine<U: BaseDataModel>: NSObject, DataLoaderEngine {
-  public typealias T = U
-
+open class BaseDataLoaderEngine<T: BaseDataModel>: NSObject, DataLoaderEngine {
   open var paginate: Bool = false
   open var queryLimit: Int? = nil
   public var skip: Int = 0
-  public var firstRow: U?
+  public var firstRow: T?
   
   open var searchKey: String?
   open var orderByKey: String?

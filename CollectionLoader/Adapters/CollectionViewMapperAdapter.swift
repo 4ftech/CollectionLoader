@@ -10,8 +10,7 @@ import Foundation
 import ViewMapper
 
 open class CollectionViewMapperAdapter<A: CellMapperAdapter, E: DataLoaderEngine>: CollectionListAdapter<E> {
-  public typealias CellAdapterType = A
-  
+  public typealias CellAdapterType = A  
   public var cellAdapter: A!
   
   let headerIdentifier: String = "SectionHeader"
