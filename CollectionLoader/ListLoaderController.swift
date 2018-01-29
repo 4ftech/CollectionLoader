@@ -176,7 +176,6 @@ open class ListLoaderController<AdapterType: BaseListAdapter>: UIViewController,
     
     listAdapter.registerCells()
     scrollView.frame = container.frame
-    scrollView.keyboardDismissMode = .interactive
     container.fill(withView: scrollView)
     
     // Loader
@@ -264,6 +263,7 @@ open class ListLoaderController<AdapterType: BaseListAdapter>: UIViewController,
   open override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
     
+    self.deregisterForSearchKeyboardNotifications()
     self.registerForSearchKeyboardNotifications()
   }
   
@@ -299,17 +299,21 @@ open class ListLoaderController<AdapterType: BaseListAdapter>: UIViewController,
     if let userInfo = notification.userInfo {
       let animationDuration: TimeInterval = (userInfo[UIKeyboardAnimationDurationUserInfoKey] as! NSNumber).doubleValue
       if let keyboardSize = (userInfo[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
-        UIView.animate(
-          withDuration: animationDuration,
-          delay: 0,
-          options: [.beginFromCurrentState, .allowUserInteraction],
-          animations: {
-            self.scrollView.contentInset.bottom = keyboardSize.height + (self.scrollBottomInset ?? 0)
-          },
-          completion: nil
-        )
+        self.searchKeyboardWillShow(height: keyboardSize.height, animationDuration: animationDuration)
       }
     }
+  }
+
+  open func searchKeyboardWillShow(height: CGFloat, animationDuration: TimeInterval) {
+    UIView.animate(
+      withDuration: animationDuration,
+      delay: 0,
+      options: [.beginFromCurrentState, .allowUserInteraction],
+      animations: {
+        self.scrollView.contentInset.bottom = height + (self.scrollBottomInset ?? 0)
+      },
+      completion: nil
+    )
   }
   
   open func searchKeyboardWillHide(_ notification: Notification) {
