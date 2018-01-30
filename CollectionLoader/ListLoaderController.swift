@@ -37,6 +37,10 @@ open class ListLoaderController<T:BaseDataModel>: UIViewController, CollectionSe
   public var collectionView: UICollectionView? {
     return scrollView as? UICollectionView
   }
+  
+  public var flowLayout: UICollectionViewFlowLayout? {
+    return collectionView?.collectionViewLayout as? UICollectionViewFlowLayout
+  }
 
   public var loaderView: LoaderView!
   open var loaderCell: UIView? { return nil }

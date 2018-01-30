@@ -40,8 +40,8 @@ public enum QueryOrder {
 open class DataLoaderEngine<T: BaseDataModel>: NSObject {
   open var paginate: Bool = false
   open var queryLimit: Int? = nil
-  public var skip: Int = 0
-  public var firstRow: T?
+  open var skip: Int = 0
+  open var firstRow: T?
   
   open var searchKey: String?
   open var orderByKey: String?
@@ -51,8 +51,7 @@ open class DataLoaderEngine<T: BaseDataModel>: NSObject {
   
   open var filterFunction: ((T) -> Bool)? = nil
   open var sortFunction: ((T, T) -> Bool)? = nil
-  
-  
+    
   public required override init() {
     super.init()
   }

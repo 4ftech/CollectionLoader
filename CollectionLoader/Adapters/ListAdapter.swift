@@ -14,7 +14,7 @@ import DataSource
 open class ListAdapter<T: BaseDataModel>: NSObject, UIScrollViewDelegate, UITableViewDataSource, UITableViewDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
   
   public var dataLoader: DataLoader<T>!  
-  init(dataLoader: DataLoader<T>) {
+  public init(dataLoader: DataLoader<T>) {
     super.init()
     
     self.dataLoader = dataLoader
