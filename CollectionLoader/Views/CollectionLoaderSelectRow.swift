@@ -12,7 +12,8 @@ import ViewMapper
 import Eureka
 import Parse
 
-public final class CollectionLoaderSelectRow<C: CellMapperAdapter>: SelectorRow<PushSelectorCell<C.T.T>, CollectionLoaderSelectController<C>>, RowType where C.T.T: BaseDataModel {
+public final class CollectionLoaderSelectRow<C: CellMapperAdapter, E>: SelectorRow<PushSelectorCell<C.T.T>, CollectionLoaderSelectController<C, E>>, RowType where E: DataLoaderEngine<C.T.T> {
+  
   public typealias T = C.T.T
   public var dataLoader: DataLoader<T>!
   
@@ -20,7 +21,10 @@ public final class CollectionLoaderSelectRow<C: CellMapperAdapter>: SelectorRow<
     super.init(tag: tag)
   }
   
-  public init(listAdapter: ListCellMapperAdapter<C>, tag: String? = nil, initializer: ((CollectionLoaderSelectRow) -> Void)? = nil) {
+  public init(listAdapter: ListCellMapperAdapter<C, E>,
+              tag: String? = nil,
+              initializer: ((CollectionLoaderSelectRow) -> Void)? = nil) {
+    
     super.init(tag: tag)
     
     self.dataLoader = listAdapter.dataLoader
@@ -49,7 +53,8 @@ public final class CollectionLoaderSelectRow<C: CellMapperAdapter>: SelectorRow<
   }
 }
 
-public class CollectionLoaderSelectController<C: CellMapperAdapter>: ListCellMapperController<C>, TypedRowControllerType where C.T.T: BaseDataModel {
+public class CollectionLoaderSelectController<C: CellMapperAdapter, E>: ListCellMapperController<UITableView, C, E>, TypedRowControllerType where E: DataLoaderEngine<C.T.T> {
+  
   public typealias T = C.T.T
   public var row: RowOf<T>!
   public var onDismissCallback: ((UIViewController) -> ())?
@@ -58,15 +63,17 @@ public class CollectionLoaderSelectController<C: CellMapperAdapter>: ListCellMap
     super.init(coder: aDecoder)
   }
   
-  required public init(listAdapter: ListCellMapperAdapter<C>, callback: ((UIViewController) -> ())? = nil) {
-    super.init(listType: .table, listAdapter: listAdapter)
+  required public init(listAdapter: ListCellMapperAdapter<C, E>,
+                       callback: ((UIViewController) -> ())? = nil) {
+    
+    super.init(listAdapter: listAdapter, viewHandler: ListViewHandler<UITableView>())
 
-    self.cellAdapter.onSelectCell = { [weak self] (_, value, _) in
+    self.cellAdapter.onSelectCell = { [weak self] (value, _) in
       if self?.row.value == value {
         self?.row.value = nil
         
         if let index = self?.dataLoader.rowsToDisplay.index(of: value) {
-          self?.tableView?.deselectRow(at: IndexPath(row: index, section: 0), animated: true)
+          self?.tableView.deselectRow(at: IndexPath(row: index, section: 0), animated: true)
         }
       } else {
         self?.row.value = value
@@ -85,14 +92,15 @@ public class CollectionLoaderSelectController<C: CellMapperAdapter>: ListCellMap
   override open func refreshScrollView() {
     super.refreshScrollView()
 
-    if let selectedObject = row.value, let index = dataLoader.rowsToDisplay.index(of: selectedObject), let tableView = scrollView as? UITableView {
-      tableView.selectRow(at: IndexPath(row: index, section: 0), animated: true, scrollPosition: .none)
+    if let selectedObject = row.value, let index = dataLoader.rowsToDisplay.index(of: selectedObject) {
+      self.tableView.selectRow(at: IndexPath(row: index, section: 0), animated: true, scrollPosition: .none)
     }
   }
 }
 
 
-public final class CollectionLoaderSelectMultipleRow<C: CellMapperAdapter>: SelectorRow<PushSelectorCell<Set<C.T.T>>, CollectionLoaderSelectMultipleController<C>>, RowType where C.T.T: BaseDataModel {
+public final class CollectionLoaderSelectMultipleRow<C: CellMapperAdapter, E>: SelectorRow<PushSelectorCell<Set<C.T.T>>, CollectionLoaderSelectMultipleController<C, E>>, RowType where E: DataLoaderEngine<C.T.T> {
+  
   public typealias T = C.T.T
   public var dataLoader: DataLoader<T>!
 
@@ -100,7 +108,10 @@ public final class CollectionLoaderSelectMultipleRow<C: CellMapperAdapter>: Sele
     super.init(tag: tag)
   }
 
-  public init(listAdapter: ListCellMapperAdapter<C>, tag: String? = nil, initializer: ((CollectionLoaderSelectMultipleRow) -> Void)? = nil) {
+  public init(listAdapter: ListCellMapperAdapter<C, E>,
+              tag: String? = nil,
+              initializer: ((CollectionLoaderSelectMultipleRow) -> Void)? = nil) {
+    
     super.init(tag: tag)
     
     self.dataLoader = listAdapter.dataLoader
@@ -135,7 +146,8 @@ public final class CollectionLoaderSelectMultipleRow<C: CellMapperAdapter>: Sele
   }
 }
 
-public class CollectionLoaderSelectMultipleController<C: CellMapperAdapter>: ListCellMapperController<C>, TypedRowControllerType where C.T.T: BaseDataModel {
+public class CollectionLoaderSelectMultipleController<C: CellMapperAdapter, E>: ListCellMapperController<UITableView, C, E>, TypedRowControllerType where E: DataLoaderEngine<C.T.T> {
+  
   public typealias T = C.T.T
 
   public var row: RowOf<Set<T>>!
@@ -146,13 +158,13 @@ public class CollectionLoaderSelectMultipleController<C: CellMapperAdapter>: Lis
 
   }
 
-  public init(listAdapter: ListCellMapperAdapter<C>, callback: ((UIViewController) -> ())? = nil) {
-    super.init(listType: .table, listAdapter: listAdapter)
+  public init(listAdapter: ListCellMapperAdapter<C, E>, callback: ((UIViewController) -> ())? = nil) {
+    super.init(listAdapter: listAdapter, viewHandler: ListViewHandler<UITableView>())
     
     self.allowSearch = true
 
-    self.tableView?.allowsMultipleSelection = true
-    self.cellAdapter.onSelectCell = { [weak self] (_, value, _) in
+    self.tableView.allowsMultipleSelection = true
+    self.cellAdapter.onSelectCell = { [weak self] (value, _) in
       var values: Set<T> = self?.row.value ?? Set<T>()
       if !values.contains(value) {
         values.insert(value)
@@ -161,7 +173,7 @@ public class CollectionLoaderSelectMultipleController<C: CellMapperAdapter>: Lis
       self?.row.value = values
     }
 
-    self.cellAdapter.onDeselectCell = { [weak self] (_, value, _) in
+    self.cellAdapter.onDeselectCell = { [weak self] (value, _) in
       var values: Set<T> = self?.row.value ?? Set<T>()
       if values.contains(value) {
         values.remove(value)
@@ -176,10 +188,10 @@ public class CollectionLoaderSelectMultipleController<C: CellMapperAdapter>: Lis
   override open func refreshScrollView() {
     super.refreshScrollView()
 
-    if let rows = row.value, let tableView = scrollView as? UITableView, rows.count > 0 {
+    if let rows = row.value, rows.count > 0 {
       for row in rows {
         if let index = dataLoader.rowsToDisplay.index(of: row) {
-          tableView.selectRow(at: IndexPath(row: index, section: 0), animated: true, scrollPosition: .none)
+          self.tableView.selectRow(at: IndexPath(row: index, section: 0), animated: true, scrollPosition: .none)
         }
       }
     }

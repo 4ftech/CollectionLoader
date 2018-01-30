@@ -12,7 +12,7 @@ import CollectionLoader
 import DataSource
 import ParseDataSource
 
-open class ParseDataEngine<T>: BaseDataLoaderEngine<T> where T:ParseDataModel {
+open class ParseDataEngine<T>: DataLoaderEngine<T> where T:ParseDataModel {
   public required init() {
     super.init()
     

@@ -16,7 +16,7 @@ import ParseEurekaViewMapper
 
 infix operator <~
 
-public func <~ <C> (left: CollectionLoaderSelectRow<C>, right: (PFObject, String)) -> CollectionLoaderSelectRow<C> {
+public func <~ <C, E> (left: CollectionLoaderSelectRow<C, E>, right: (PFObject, String)) -> CollectionLoaderSelectRow<C, E> {
   let (object, key) = right
   
   left.onChange { row in
@@ -38,7 +38,7 @@ public func <~ <C> (left: CollectionLoaderSelectRow<C>, right: (PFObject, String
 }
 
 
-public func <~ <C> (left: CollectionLoaderSelectMultipleRow<C>, right: (PFObject, String)) -> CollectionLoaderSelectMultipleRow<C> {
+public func <~ <C, E> (left: CollectionLoaderSelectMultipleRow<C, E>, right: (PFObject, String)) -> CollectionLoaderSelectMultipleRow<C, E> {
   let (object, key) = right
   
   left.onChange { row in

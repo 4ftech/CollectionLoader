@@ -11,38 +11,62 @@ import Foundation
 import ViewMapper
 import DataSource
 
-open class ListCellMapperController<C: CellMapperAdapter>: ListLoaderController<C.T.T> where C.T.T:BaseDataModel {
+open class ListCellMapperController<L: UIScrollView, C: CellMapperAdapter, E>: ListLoaderAdapterController<L, C.T.T, E, ListCellMapperAdapter<C, E>> where E:DataLoaderEngine<C.T.T> {
   public typealias T = C.T.T
   public var cellAdapter: C!
+  
+  let AdapterType = ListCellMapperAdapter<C, E>.self
   
   required public init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
   }
   
-  open static func listAdapter(listType: ListType, cellAdapter: C, dataLoader: DataLoader<T>, initialize: ((C) -> Void)? = nil) -> ListCellMapperAdapter<C> {
+  open static func listAdapter(cellAdapter: C,
+                               dataLoader: DataLoader<T>,
+                               initialize: ((C) -> Void)? = nil) -> ListCellMapperAdapter<C, E> {
+    
     return ListCellMapperAdapter(cellAdapter: cellAdapter, dataLoader: dataLoader, initialize: initialize)
   }
   
-  public init(listType: ListType, cellAdapter: C, dataLoader: DataLoader<T> = DataLoader(dataLoaderEngine: DataLoaderEngine<T>()), initialize: ((C) -> Void)? = nil) {
-    super.init(listType: listType, listAdapter: ListCellMapperController.listAdapter(listType: listType, cellAdapter: cellAdapter, dataLoader: dataLoader, initialize: initialize))
+  public init(cellAdapter: C,
+              dataLoader: DataLoader<T> = DataLoader(dataLoaderEngine: DataLoaderEngine<T>()),
+              viewHandler: ListViewHandler<L> = ListViewHandler<L>(),
+              initialize: ((C) -> Void)? = nil) {
+    
+    let listAdapter = type(of: self).listAdapter(cellAdapter: cellAdapter,
+                                                 dataLoader: dataLoader,
+                                                 initialize: initialize)
+    
+    super.init(listAdapter: listAdapter, viewHandler: viewHandler)
     
     self.initialize(cellAdapter: cellAdapter)
   }
   
-  public init(listType: ListType, cellAdapter: C, dataLoaderEngine: DataLoaderEngine<T>, initialize: ((C) -> Void)? = nil) {
-    super.init(listType: listType, listAdapter: ListCellMapperController.listAdapter(listType: listType, cellAdapter: cellAdapter, dataLoader: DataLoader(dataLoaderEngine: dataLoaderEngine), initialize: initialize))
+  public init(cellAdapter: C,
+              dataLoaderEngine: DataLoaderEngine<T>,
+              viewHandler: ListViewHandler<L> = ListViewHandler<L>(),
+              initialize: ((C) -> Void)? = nil) {
+    
+    let listAdapter = type(of: self).listAdapter(cellAdapter: cellAdapter,
+                                                 dataLoader: DataLoader(dataLoaderEngine: dataLoaderEngine),
+                                                 initialize: initialize)
+    
+    super.init(listAdapter: listAdapter, viewHandler: viewHandler)
 
     self.initialize(cellAdapter: cellAdapter)
   }
   
-  public init(listType: ListType, listAdapter: ListCellMapperAdapter<C>) {
-    super.init(listType: listType, listAdapter: listAdapter)
+  public override init(listAdapter: ListCellMapperAdapter<C, E>,
+                       viewHandler: ListViewHandler<L> = ListViewHandler<L>()) {
+    
+    super.init(listAdapter: listAdapter,
+               viewHandler: viewHandler)
+    
+    self.initialize(cellAdapter: listAdapter.cellAdapter)
   }
   
   open func initialize(cellAdapter: C) {
     self.cellAdapter = cellAdapter
-    
-    let listAdapter = self.listAdapter as! ListCellMapperAdapter<C>
-    listAdapter.viewController = self
+    self.listAdapter.viewController = self
   }
 }

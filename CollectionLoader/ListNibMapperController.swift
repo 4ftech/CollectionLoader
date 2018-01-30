@@ -11,25 +11,88 @@ import Foundation
 import ViewMapper
 import DataSource
 
-open class ListNibMapperController<V: ViewMappable>: ListCellMapperController<NibCellMapperAdapter<V>> where V.T: BaseDataModel {
-  static func cellAdapter(nib: UINib?) -> NibCellMapperAdapter<V> {
-    return NibCellMapperAdapter<V>(nib: nib)
+open class ListNibMapperController<L: UIScrollView, V: ViewMappable, E>: ListCellMapperController<L, NibCellMapperAdapter<V>, E> where E: DataLoaderEngine<V.T> {
+  
+  // MARK: CellMapper
+  public init(cellMapper: CellMapper<V> = CellMapper<V>(),
+              dataLoader: DataLoader<T> = DataLoader(dataLoaderEngine: DataLoaderEngine<T>()),
+              viewHandler: ListViewHandler<L> = ListViewHandler<L>(),
+              initialize: ((NibCellMapperAdapter<V>) -> Void)? = nil) {
+    
+    super.init(cellAdapter: NibCellMapperAdapter(cellMapper: cellMapper),
+               dataLoader: dataLoader,
+               viewHandler: viewHandler,
+               initialize: initialize)
   }
   
-  public init(listType: ListType, nib: UINib? = nil, dataLoader: DataLoader<T> = DataLoader(dataLoaderEngine: DataLoaderEngine<T>()), initialize: ((NibCellMapperAdapter<V>) -> Void)? = nil) {
-    super.init(listType: listType, cellAdapter: ListNibMapperController.cellAdapter(nib: nib), dataLoader: dataLoader, initialize: initialize)
+  public init(cellMapper: CellMapper<V> = CellMapper<V>(),
+              dataLoaderEngine: DataLoaderEngine<T>,
+              viewHandler: ListViewHandler<L> = ListViewHandler<L>(),
+              initialize: ((NibCellMapperAdapter<V>) -> Void)? = nil) {
+    
+    super.init(cellAdapter: NibCellMapperAdapter(cellMapper: cellMapper),
+               dataLoader: DataLoader(dataLoaderEngine: dataLoaderEngine),
+               viewHandler: viewHandler,
+               initialize: initialize)
   }
   
-  public init(listType: ListType, nib: UINib? = nil, dataLoaderEngine: DataLoaderEngine<T>, initialize: ((NibCellMapperAdapter<V>) -> Void)? = nil) {
-    super.init(listType: listType, cellAdapter: ListNibMapperController.cellAdapter(nib: nib), dataLoader: DataLoader(dataLoaderEngine: dataLoaderEngine), initialize: initialize)
+  // MARK: UINib
+  public init(nib: UINib,
+              dataLoader: DataLoader<T> = DataLoader(dataLoaderEngine: DataLoaderEngine<T>()),
+              viewHandler: ListViewHandler<L> = ListViewHandler<L>(),
+              initialize: ((NibCellMapperAdapter<V>) -> Void)? = nil) {
+    
+    super.init(cellAdapter: NibCellMapperAdapter(nib: nib),
+               dataLoader: dataLoader,
+               viewHandler: viewHandler,
+               initialize: initialize)
   }
   
-  public override init(listType: ListType, listAdapter: ListCellMapperAdapter<NibCellMapperAdapter<V>>) {
-    super.init(listType: listType, listAdapter: listAdapter)
+  public init(nib: UINib,
+              dataLoaderEngine: DataLoaderEngine<T>,
+              viewHandler: ListViewHandler<L> = ListViewHandler<L>(),
+              initialize: ((NibCellMapperAdapter<V>) -> Void)? = nil) {
+    
+    super.init(cellAdapter: NibCellMapperAdapter(nib: nib),
+               dataLoader: DataLoader(dataLoaderEngine: dataLoaderEngine),
+               viewHandler: viewHandler,
+               initialize: initialize)
   }
   
-  public init(listType: ListType, listAdapter: ListNibMapperAdapter<V>) {
-    super.init(listType: listType, listAdapter: listAdapter)
+  // MARK: nibName
+  public init(nibName: String,
+              dataLoader: DataLoader<T> = DataLoader(dataLoaderEngine: DataLoaderEngine<T>()),
+              viewHandler: ListViewHandler<L> = ListViewHandler<L>(),
+              initialize: ((NibCellMapperAdapter<V>) -> Void)? = nil) {
+    
+    super.init(cellAdapter: NibCellMapperAdapter(nibName: nibName),
+               dataLoader: dataLoader,
+               viewHandler: viewHandler,
+               initialize: initialize)
+  }
+  
+  public init(nibName: String,
+              dataLoaderEngine: DataLoaderEngine<T>,
+              viewHandler: ListViewHandler<L> = ListViewHandler<L>(),
+              initialize: ((NibCellMapperAdapter<V>) -> Void)? = nil) {
+    
+    super.init(cellAdapter: NibCellMapperAdapter(nibName: nibName),
+               dataLoader: DataLoader(dataLoaderEngine: dataLoaderEngine),
+               viewHandler: viewHandler,
+               initialize: initialize)
+  }
+  
+  // MARK: listAdapter
+  public override init(listAdapter: ListCellMapperAdapter<NibCellMapperAdapter<V>, E>,
+                       viewHandler: ListViewHandler<L> = ListViewHandler<L>()) {
+    
+    super.init(listAdapter: listAdapter, viewHandler: viewHandler)
+  }
+  
+  public init(listAdapter: ListNibMapperAdapter<V, E>,
+              viewHandler: ListViewHandler<L> = ListViewHandler<L>()) {
+    
+    super.init(listAdapter: listAdapter, viewHandler: viewHandler)
   }
   
   required public init?(coder aDecoder: NSCoder) {

@@ -11,13 +11,23 @@ import UIKit
 
 import DataSource
 
-open class ListAdapter<T: BaseDataModel>: NSObject, UIScrollViewDelegate, UITableViewDataSource, UITableViewDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+open class ListAdapter<T, E>: NSObject, UIScrollViewDelegate, UITableViewDataSource, UITableViewDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout where E:DataLoaderEngine<T> {
   
-  public var dataLoader: DataLoader<T>!  
+  public var dataLoader: DataLoader<T>!
+  public var dataLoaderEngine: E {
+    return dataLoader.dataLoaderEngine as! E
+  }
+  
   public init(dataLoader: DataLoader<T>) {
     super.init()
     
     self.dataLoader = dataLoader
+  }
+  
+  public init(dataLoaderEngine: E) {
+    super.init()
+    
+    self.dataLoader = DataLoader(dataLoaderEngine: dataLoaderEngine)
   }
   
   open func registerCells(scrollView: UIScrollView) {
