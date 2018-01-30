@@ -16,7 +16,7 @@ import ParseEurekaViewMapper
 
 infix operator <~
 
-public func <~ <T, U> (left: CollectionLoaderSelectRow<T, U>, right: (PFObject, String)) -> CollectionLoaderSelectRow<T, U> {
+public func <~ <C> (left: CollectionLoaderSelectRow<C>, right: (PFObject, String)) -> CollectionLoaderSelectRow<C> {
   let (object, key) = right
   
   left.onChange { row in
@@ -28,7 +28,7 @@ public func <~ <T, U> (left: CollectionLoaderSelectRow<T, U>, right: (PFObject, 
   }
   
   if let id = object[key] as? String {
-    let dataRow = U.T()
+    let dataRow = C.T.T()
     dataRow.objectId = id
     
     left.value = dataRow
@@ -38,7 +38,7 @@ public func <~ <T, U> (left: CollectionLoaderSelectRow<T, U>, right: (PFObject, 
 }
 
 
-public func <~ <T, U> (left: CollectionLoaderSelectMultipleRow<T, U>, right: (PFObject, String)) -> CollectionLoaderSelectMultipleRow<T, U> {
+public func <~ <C> (left: CollectionLoaderSelectMultipleRow<C>, right: (PFObject, String)) -> CollectionLoaderSelectMultipleRow<C> {
   let (object, key) = right
   
   left.onChange { row in
@@ -51,14 +51,14 @@ public func <~ <T, U> (left: CollectionLoaderSelectMultipleRow<T, U>, right: (PF
   }
   
   if let ids = object[key] as? [String] {
-    let dataRows = ids.map { id -> U.T in
-      let row = U.T()
+    let dataRows = ids.map { id -> C.T.T in
+      let row = C.T.T()
       row.objectId = id
       
       return row
     }
     
-    left.value = Set<U.T>(dataRows)
+    left.value = Set<C.T.T>(dataRows)
   }
   
   return left

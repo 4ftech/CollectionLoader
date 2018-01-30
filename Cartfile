@@ -12,3 +12,5 @@ github "ParsePlatform/Parse-SDK-iOS-OSX"
 github "xmartlabs/Eureka" "feature/Xcode9-Swift3_2"
 
 github "osteslag/Changeset"
+
+github "texturegroup/texture"

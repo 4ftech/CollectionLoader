@@ -15,32 +15,39 @@ import Changeset
 
 import DataSource
 
-open class ListLoaderController<AdapterType: BaseListAdapter>: UIViewController, CollectionSearchBarDelegate, DataLoaderDelegate {
+open class ListLoaderController<T:BaseDataModel>: UIViewController, CollectionSearchBarDelegate, DataLoaderDelegate, UIScrollViewDelegate, UITableViewDataSource, UITableViewDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+  
+  public enum ListType {
+    case table, collection, asyncTable, asyncCollection
+  }
+  
+
   deinit {
     NSLog("deinit: \(type(of: self))")
   }
-
-  let singleLineTableCellIdentifier = "singleLineIconCell"
-  let twoLineTableCellIdentifier = "twoLineIconCell"
-  let threeLineTableCellIdentifier = "threeLineIconCell"
-
-  typealias m = LoaderView
   
+  public var listType: ListType!
+  public var listAdapter: ListAdapter<T>?
+  
+  public var scrollView: UIScrollView!
+  public var tableView: UITableView? {
+    return scrollView as? UITableView
+  }
+  
+  public var collectionView: UICollectionView? {
+    return scrollView as? UICollectionView
+  }
+
   public var loaderView: LoaderView!
-  public var listAdapter: AdapterType!
+  open var loaderCell: UIView? { return nil }
+  
+  public var container: UIView!
+  public var emptyViewContent: EmptyViewContent?
+  public var errorViewContent: (() -> EmptyViewContent)?
   
   public var scrollsToInsertedRow: Bool = false
   public var pullToRefresh: Bool = false
   var refreshControl: UIRefreshControl?
-
-  public var container: UIView!
-  public var emptyViewContent: EmptyViewContent?
-  public var errorViewContent: (() -> EmptyViewContent)?
-  public var scrollView: UIScrollView {
-    return listAdapter.scrollView
-  }
-  
-  open var loaderCell: UIView? { return nil }
   
   // Filters
   public var filters: [Filter] {
@@ -100,11 +107,8 @@ open class ListLoaderController<AdapterType: BaseListAdapter>: UIViewController,
   open var scrollBottomInset: CGFloat?
   
   // DATA
-  public var dataLoader: DataLoader<AdapterType.EngineType> {
-    return listAdapter.dataLoader
-  }
-  
-  public var dataLoaderEngine: AdapterType.EngineType {
+  public var dataLoader: DataLoader<T>!
+  public var dataLoaderEngine: DataLoaderEngine<T> {
     return dataLoader.dataLoaderEngine
   }
   
@@ -112,16 +116,34 @@ open class ListLoaderController<AdapterType: BaseListAdapter>: UIViewController,
   public var refreshOnAppear: DataLoadType? = nil
   public var rowsLoading: Bool { return dataLoader.rowsLoading }
   public var rowsLoaded: Bool { return dataLoader.rowsLoaded }
-  public var rows: [AdapterType.EngineType.T] { return dataLoader.rowsToDisplay }
+  public var rows: [T] { return dataLoader.rowsToDisplay }
   
   public var disposeBag: DisposeBag = DisposeBag()
   
   // MARK: - Initialize
-  public init(listAdapter: AdapterType) {
+  public init(listType: ListType, dataLoader: DataLoader<T> = DataLoader(dataLoaderEngine: DataLoaderEngine<T>())) {
+    super.init(nibName: nil, bundle: nil)
+    
+    self.setup(listType: listType, dataLoader: dataLoader)
+  }
+  
+  public init(listType: ListType, dataLoaderEngine: DataLoaderEngine<T>) {
+    super.init(nibName: nil, bundle: nil)
+    
+    self.setup(listType: listType, dataLoader: DataLoader(dataLoaderEngine: dataLoaderEngine))
+  }
+  
+  public init(listType: ListType, listAdapter: ListAdapter<T>) {
     super.init(nibName: nil, bundle: nil)
     
     self.listAdapter = listAdapter
-    self.listAdapter.viewController = self
+    self.setup(listType: listType, dataLoader: listAdapter.dataLoader)
+  }
+  
+  open func setup(listType: ListType, dataLoader: DataLoader<T>) {
+    self.listType = listType
+    self.dataLoader = dataLoader
+    self.initializeScrollView()
     
     self.emptyViewContent = EmptyViewContent(message: "No results")
     self.errorViewContent = { [weak self] in
@@ -174,7 +196,7 @@ open class ListLoaderController<AdapterType: BaseListAdapter>: UIViewController,
     container.alpha = 0
     view.fill(withView: container)
     
-    listAdapter.registerCells()
+    registerCells()
     scrollView.frame = container.frame
     container.fill(withView: scrollView)
     
@@ -233,6 +255,35 @@ open class ListLoaderController<AdapterType: BaseListAdapter>: UIViewController,
     } else {
       loaderView.isHidden = true
     }
+  }
+  
+  open func initializeScrollView() {
+    switch self.listType! {
+    case .table:
+      let tableView = UITableView()
+      tableView.delegate = self
+      tableView.dataSource = self
+      tableView.tableFooterView = UIView(frame: .zero)
+      
+      self.scrollView = tableView
+    case .collection:
+      let flowLayout = UICollectionViewFlowLayout()
+      flowLayout.itemSize = CGSize(width: UIScreen.main.bounds.width, height: flowLayout.itemSize.height)
+      flowLayout.minimumInteritemSpacing = 0
+      flowLayout.minimumLineSpacing = 0
+
+      let collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
+      collectionView.delegate = self
+      collectionView.dataSource = self
+      collectionView.backgroundColor = UIColor.white
+      
+      self.scrollView = collectionView
+    case .asyncTable, .asyncCollection: break
+    }
+  }
+  
+  open func registerCells() {
+    listAdapter?.registerCells(scrollView: self.scrollView)
   }
   
   open func initializeLoaderView() {
@@ -589,11 +640,20 @@ open class ListLoaderController<AdapterType: BaseListAdapter>: UIViewController,
   }
   
   open func refreshScrollView() {
-    listAdapter.reloadData()
+    if let collectionView = scrollView as? UICollectionView {
+      collectionView.reloadData()
+    } else if let tableView = scrollView as? UITableView {
+      tableView.reloadData()
+    }
   }
   
-  open func updateScrollView(withEdits edits: [Edit<AdapterType.EngineType.T>], completion: ((Bool) -> Void)? = nil) {
-    listAdapter.update(withEdits: edits, completion: completion)
+  open func updateScrollView(withEdits edits: [Edit<T>], completion: ((Bool) -> Void)? = nil) {
+    if let collectionView = scrollView as? UICollectionView {
+      collectionView.update(with: edits, completion: completion)
+    } else if let tableView = scrollView as? UITableView {
+      tableView.update(with: edits)
+      completion?(true)
+    }
   }
   
   // MARK: - CollectionSearchBarDelegate
@@ -620,5 +680,140 @@ open class ListLoaderController<AdapterType: BaseListAdapter>: UIViewController,
     for filter in filters {
       filter.clearFilter()
     }
+  }
+
+  // MARK: - UIScrollViewDelegate
+  open func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    listAdapter?.scrollViewDidScroll(scrollView)
+  }
+  
+  open func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+    listAdapter?.scrollViewDidEndDecelerating(scrollView)
+  }
+  
+  open func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+    listAdapter?.scrollViewDidEndDragging(scrollView, willDecelerate: decelerate)
+  }
+
+  // MARK: - UITableViewDelegates
+  open func numberOfSections(in tableView: UITableView) -> Int {
+    return listAdapter?.numberOfSections(in: tableView) ?? 1
+  }
+  
+  open func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    return listAdapter?.tableView(tableView, numberOfRowsInSection: section) ?? dataLoader.rowsToDisplay.count
+  }
+  
+  open func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    return listAdapter?.tableView(tableView, cellForRowAt: indexPath) ?? UITableViewCell()
+  }
+  
+  open func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    listAdapter?.tableView(tableView, didSelectRowAt: indexPath)
+  }
+  
+  open func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+    listAdapter?.tableView(tableView, didDeselectRowAt: indexPath)
+  }
+  
+  open func tableView(_ tableView: UITableView, accessoryButtonTappedForRowWith indexPath: IndexPath) {
+    listAdapter?.tableView(tableView, accessoryButtonTappedForRowWith: indexPath)
+  }
+  
+  open func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+    return listAdapter?.tableView(tableView, canEditRowAt: indexPath) ?? false
+  }
+  
+  open func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+    if editingStyle == .delete {
+      let row = dataLoader.rowsToDisplay[indexPath.row]
+      if row.isNew {
+        self.dataLoader.removeRowForObject(row)
+        NotificationCenter.default.postCRUDNotification(.delete, crudObject: row)
+      } else {
+        row.delete().then { () -> Void in
+          self.dataLoader.removeRowForObject(row)
+          NotificationCenter.default.postCRUDNotification(.delete, crudObject: row)
+        }.catch { error in
+            
+        }
+      }
+    }
+    
+    listAdapter?.tableView(tableView, commit: editingStyle, forRowAt: indexPath)
+  }
+  
+  open func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    return listAdapter?.tableView(tableView, heightForRowAt: indexPath) ?? tableView.rowHeight
+  }
+  
+  open func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+    return listAdapter?.tableView(tableView, estimatedHeightForRowAt: indexPath) ?? UITableViewAutomaticDimension
+  }
+  
+  open func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+    return listAdapter?.tableView(tableView, viewForHeaderInSection: section)
+  }
+  
+  open func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+    return listAdapter?.tableView(tableView, heightForHeaderInSection: section) ?? 0
+  }
+  
+  open func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+    return listAdapter?.tableView(tableView, viewForFooterInSection: section)
+  }
+  
+  open func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+    return listAdapter?.tableView(tableView, heightForFooterInSection: section) ?? 0
+  }
+
+  // MARK: - UICollectionViewDelegates
+  open func numberOfSections(in collectionView: UICollectionView) -> Int {
+    return listAdapter?.numberOfSections(in: collectionView) ?? 1
+  }
+  
+  open func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    return listAdapter?.collectionView(collectionView, numberOfItemsInSection: section) ?? dataLoader.rowsToDisplay.count
+  }
+  
+  open func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    return listAdapter?.collectionView(collectionView, cellForItemAt: indexPath) ?? UICollectionViewCell()
+  }
+  
+  open func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
+    return listAdapter?.collectionView(collectionView, shouldSelectItemAt: indexPath) ?? true
+  }
+  
+  open func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    listAdapter?.collectionView(collectionView, didSelectItemAt: indexPath)
+  }
+  
+  open func collectionView(_ collectionView: UICollectionView, shouldDeselectItemAt indexPath: IndexPath) -> Bool {
+    return listAdapter?.collectionView(collectionView, shouldDeselectItemAt: indexPath) ?? true
+  }
+  
+  open func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+    listAdapter?.collectionView(collectionView, didDeselectItemAt: indexPath)
+  }
+  
+  open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+    if let listAdapter = listAdapter {
+      return listAdapter.collectionView(collectionView, layout: collectionViewLayout, sizeForItemAt: indexPath)
+    } else {
+      let flowLayout = collectionViewLayout as! UICollectionViewFlowLayout
+      return flowLayout.itemSize
+    }
+  }
+  
+  open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+    return listAdapter?.collectionView(collectionView, layout: collectionViewLayout, referenceSizeForHeaderInSection: section) ?? .zero
+  }
+  
+  open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
+    return listAdapter?.collectionView(collectionView, layout: collectionViewLayout, referenceSizeForFooterInSection: section) ?? .zero
+  }
+  
+  open func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+    return listAdapter?.collectionView(collectionView, viewForSupplementaryElementOfKind: kind, at: indexPath) ?? UICollectionReusableView(frame: .zero)
   }
 }

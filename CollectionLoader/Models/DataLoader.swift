@@ -33,9 +33,7 @@ public protocol DataLoaderDelegate: class {
   func dataLoaderDidClearRows<E>(_ dataLoader: DataLoader<E>)
 }
 
-open class DataLoader<EngineType: DataLoaderEngine>: NSObject {
-  public typealias T = EngineType.T
-  
+open class DataLoader<T: BaseDataModel>: NSObject {
   deinit {
     NSLog("deinit: \(type(of: self))")
   }
@@ -81,11 +79,11 @@ open class DataLoader<EngineType: DataLoaderEngine>: NSObject {
     return "\(notificationNamePrefix)\(action.rawValue)"
   }
   
-  public var dataLoaderEngine: EngineType!
+  public var dataLoaderEngine: DataLoaderEngine<T>!
   var cancellationToken: Operation?
   
   // MARK: - Initialize
-  required public init(dataLoaderEngine: EngineType) {
+  required public init(dataLoaderEngine: DataLoaderEngine<T>) {
     super.init()
     
     self.dataLoaderEngine = dataLoaderEngine

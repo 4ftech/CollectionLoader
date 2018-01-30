@@ -12,17 +12,18 @@ import ViewMapper
 import Eureka
 import Parse
 
-public final class CollectionLoaderSelectRow<T: CellMapperAdapter, U: DataLoaderEngine>: SelectorRow<PushSelectorCell<U.T>, CollectionLoaderSelectController<T, U>>, RowType {
-  public var listAdapter: TableViewMapperAdapter<T, U>!
+public final class CollectionLoaderSelectRow<C: CellMapperAdapter>: SelectorRow<PushSelectorCell<C.T.T>, CollectionLoaderSelectController<C>>, RowType where C.T.T: BaseDataModel {
+  public typealias T = C.T.T
+  public var dataLoader: DataLoader<T>!
   
   public required init(tag: String?) {
     super.init(tag: tag)
   }
   
-  public init(listAdapter: TableViewMapperAdapter<T, U>, tag: String? = nil, initializer: ((CollectionLoaderSelectRow) -> Void)? = nil) {
+  public init(listAdapter: ListCellMapperAdapter<C>, tag: String? = nil, initializer: ((CollectionLoaderSelectRow) -> Void)? = nil) {
     super.init(tag: tag)
     
-    self.listAdapter = listAdapter
+    self.dataLoader = listAdapter.dataLoader
     
     presentationMode = .show(
       controllerProvider: ControllerProvider.callback {
@@ -35,6 +36,10 @@ public final class CollectionLoaderSelectRow<T: CellMapperAdapter, U: DataLoader
       }
     )
     
+    self.setup(initializer: initializer)
+  }
+  
+  public func setup(initializer: ((CollectionLoaderSelectRow) -> Void)? = nil) {
     displayValueFor = {
       guard let value = $0 else { return "" }
       return  value.objectId
@@ -44,35 +49,32 @@ public final class CollectionLoaderSelectRow<T: CellMapperAdapter, U: DataLoader
   }
 }
 
-public class CollectionLoaderSelectController<T: CellMapperAdapter, U: DataLoaderEngine>: ListLoaderController<TableViewMapperAdapter<T, U>>, TypedRowControllerType {
-  public var row: RowOf<U.T>!
+public class CollectionLoaderSelectController<C: CellMapperAdapter>: ListCellMapperController<C>, TypedRowControllerType where C.T.T: BaseDataModel {
+  public typealias T = C.T.T
+  public var row: RowOf<T>!
   public var onDismissCallback: ((UIViewController) -> ())?
   
   required public init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
   }
   
-  required public init(listAdapter: TableViewMapperAdapter<T, U>, callback: ((UIViewController) -> ())? = nil) {
-    super.init(listAdapter: listAdapter)
-    
-    self.allowSearch = true
-    
-    
-    listAdapter.cellAdapter.onSelectCell = { [weak self] (value, _) in
-      if let value = value as? U.T {
-        if self?.row.value == value {
-          self?.row.value = nil
-          
-          if let index = self?.dataLoader.rowsToDisplay.index(of: value) {
-            self?.listAdapter.tableView.deselectRow(at: IndexPath(row: index, section: 0), animated: true)
-          }
-        } else {
-          self?.row.value = value
+  required public init(listAdapter: ListCellMapperAdapter<C>, callback: ((UIViewController) -> ())? = nil) {
+    super.init(listType: .table, listAdapter: listAdapter)
+
+    self.cellAdapter.onSelectCell = { [weak self] (_, value, _) in
+      if self?.row.value == value {
+        self?.row.value = nil
+        
+        if let index = self?.dataLoader.rowsToDisplay.index(of: value) {
+          self?.tableView?.deselectRow(at: IndexPath(row: index, section: 0), animated: true)
         }
+      } else {
+        self?.row.value = value
       }
     }
-    
-    onDismissCallback = callback
+
+    self.allowSearch = true
+    self.onDismissCallback = callback
   }
   
   public override func viewDidLoad() {
@@ -90,18 +92,18 @@ public class CollectionLoaderSelectController<T: CellMapperAdapter, U: DataLoade
 }
 
 
+public final class CollectionLoaderSelectMultipleRow<C: CellMapperAdapter>: SelectorRow<PushSelectorCell<Set<C.T.T>>, CollectionLoaderSelectMultipleController<C>>, RowType where C.T.T: BaseDataModel {
+  public typealias T = C.T.T
+  public var dataLoader: DataLoader<T>!
 
-public final class CollectionLoaderSelectMultipleRow<T: CellMapperAdapter, U: DataLoaderEngine>: SelectorRow<PushSelectorCell<Set<U.T>>, CollectionLoaderSelectMultipleController<T, U>>, RowType {
-  public var listAdapter: TableViewMapperAdapter<T, U>!
-  
   public required init(tag: String?) {
     super.init(tag: tag)
   }
-  
-  public init(listAdapter: TableViewMapperAdapter<T, U>, tag: String? = nil, initializer: ((CollectionLoaderSelectMultipleRow) -> Void)? = nil) {
+
+  public init(listAdapter: ListCellMapperAdapter<C>, tag: String? = nil, initializer: ((CollectionLoaderSelectMultipleRow) -> Void)? = nil) {
     super.init(tag: tag)
     
-    self.listAdapter = listAdapter
+    self.dataLoader = listAdapter.dataLoader
     
     presentationMode = .show(
       controllerProvider: ControllerProvider.callback {
@@ -114,6 +116,10 @@ public final class CollectionLoaderSelectMultipleRow<T: CellMapperAdapter, U: Da
       }
     )
     
+    self.setup(initializer: initializer)
+  }
+
+  public func setup(initializer: ((CollectionLoaderSelectMultipleRow) -> Void)? = nil) {
     displayValueFor = {
       guard let object = $0 else { return "" }
       if object.count == 0 {
@@ -129,46 +135,47 @@ public final class CollectionLoaderSelectMultipleRow<T: CellMapperAdapter, U: Da
   }
 }
 
-public class CollectionLoaderSelectMultipleController<T: CellMapperAdapter, U: DataLoaderEngine>: ListLoaderController<TableViewMapperAdapter<T, U>>, TypedRowControllerType {
-  public var row: RowOf<Set<U.T>>!
+public class CollectionLoaderSelectMultipleController<C: CellMapperAdapter>: ListCellMapperController<C>, TypedRowControllerType where C.T.T: BaseDataModel {
+  public typealias T = C.T.T
+
+  public var row: RowOf<Set<T>>!
   public var onDismissCallback: ((UIViewController) -> ())?
-  
+
   required public init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
-    
+
   }
-  
-  public init(listAdapter: TableViewMapperAdapter<T, U>, callback: ((UIViewController) -> ())? = nil) {
-    super.init(listAdapter: listAdapter)
+
+  public init(listAdapter: ListCellMapperAdapter<C>, callback: ((UIViewController) -> ())? = nil) {
+    super.init(listType: .table, listAdapter: listAdapter)
     
     self.allowSearch = true
-    
-    listAdapter.tableView.allowsMultipleSelection = true
-    
-    listAdapter.cellAdapter.onSelectCell = { [weak self] (value, _) in
-      var values: Set<U.T> = self?.row.value ?? Set<U.T>()
-      if let value = value as? U.T, !values.contains(value) {
+
+    self.tableView?.allowsMultipleSelection = true
+    self.cellAdapter.onSelectCell = { [weak self] (_, value, _) in
+      var values: Set<T> = self?.row.value ?? Set<T>()
+      if !values.contains(value) {
         values.insert(value)
       }
-      
+
       self?.row.value = values
     }
-    
-    listAdapter.cellAdapter.onDeselectCell = { [weak self] (value, _) in
-      var values: Set<U.T> = self?.row.value ?? Set<U.T>()
-      if let value = value as? U.T, values.contains(value) {
+
+    self.cellAdapter.onDeselectCell = { [weak self] (_, value, _) in
+      var values: Set<T> = self?.row.value ?? Set<T>()
+      if values.contains(value) {
         values.remove(value)
       }
-      
+
       self?.row.value = values
     }
-    
+
     onDismissCallback = callback
   }
   
   override open func refreshScrollView() {
     super.refreshScrollView()
-    
+
     if let rows = row.value, let tableView = scrollView as? UITableView, rows.count > 0 {
       for row in rows {
         if let index = dataLoader.rowsToDisplay.index(of: row) {
@@ -178,3 +185,4 @@ public class CollectionLoaderSelectMultipleController<T: CellMapperAdapter, U: D
     }
   }
 }
+

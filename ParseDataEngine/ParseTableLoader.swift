@@ -9,20 +9,20 @@
 import Foundation
 import CollectionLoader
 import ParseDataSource
+import DataSource
 import ViewMapper
 
-open class ParseTableLoader<T: ParseDataModel, U: ViewMappable>: ListLoaderController<TableViewMapperAdapter<NibCellMapperAdapter<U>, ParseDataEngine<T>>> {
+open class ParseTableLoader<V: ViewMappable>: ListNibMapperController<V> where V.T: ParseDataModel {
   required public init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
   }
   
-  public init(nib: UINib, initializer: ((NibCellMapperAdapter<U>) -> Void)? = nil) {
-    let cellAdapter = NibCellMapperAdapter<U>(nib: nib)
-    let dataEngine = ParseDataEngine<T>()
+  public init(nib: UINib? = nil, initialize: ((NibCellMapperAdapter<V>) -> Void)? = nil) {
+    let dataEngine = ParseDataEngine<V.T>()
     dataEngine.paginate = true
     dataEngine.queryLimit = 100
-    super.init(listAdapter: TableViewMapperAdapter(cellAdapter: cellAdapter, dataLoader: DataLoader(dataLoaderEngine: dataEngine)))
     
-    initializer?(cellAdapter)
+    super.init(listType: .table, nib: nib, dataLoaderEngine: dataEngine)
+    initialize?(self.cellAdapter)
   }
 }

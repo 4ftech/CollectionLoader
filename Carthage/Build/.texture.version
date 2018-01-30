@@ -1,0 +1,9 @@
+{
+  "commitish" : "2.6",
+  "iOS" : [
+    {
+      "name" : "AsyncDisplayKit",
+      "hash" : "d253e6be3fcd9f3a230596f55babc2fbea7e710c9e69305b0b991fac596d68f2"
+    }
+  ]
+}

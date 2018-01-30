@@ -14,30 +14,30 @@ public enum QueryOrder {
   case ascending, descending
 }
 
-public protocol DataLoaderEngine {
-  associatedtype T: BaseDataModel
-  
-  var paginate: Bool { get set }
-  var queryLimit: Int? { get set }
-  var skip: Int { get set }
-  var firstRow: T? { get set }
-  
-  var searchKey: String? { get }
-  
-  var orderByKey: String? { get }
-  var orderByLastValue: Any? { get }
-  var order: QueryOrder { get }
+//public protocol DataLoaderEngine {
+//  associatedtype T: BaseDataModel
+//
+//  var paginate: Bool { get set }
+//  var queryLimit: Int? { get set }
+//  var skip: Int { get set }
+//  var firstRow: T? { get set }
+//
+//  var searchKey: String? { get }
+//
+//  var orderByKey: String? { get }
+//  var orderByLastValue: Any? { get }
+//  var order: QueryOrder { get }
+//
+//  var filterFunction: ((T) -> Bool)? { get set }
+//  var sortFunction: ((T, T) -> Bool)? { get set }
+//
+//  init()
+//
+//  mutating func promise(forLoadType loadType: DataLoadType, queryString: String?, filters: [Filter]?) -> Promise<[T]>
+//}
 
-  var filterFunction: ((T) -> Bool)? { get set }
-  var sortFunction: ((T, T) -> Bool)? { get set }
-  
-  init()
-  
-  mutating func promise(forLoadType loadType: DataLoadType, queryString: String?, filters: [Filter]?) -> Promise<[T]>
-}
 
-
-open class BaseDataLoaderEngine<T: BaseDataModel>: NSObject, DataLoaderEngine {
+open class DataLoaderEngine<T: BaseDataModel>: NSObject {
   open var paginate: Bool = false
   open var queryLimit: Int? = nil
   public var skip: Int = 0
@@ -139,6 +139,9 @@ open class BaseDataLoaderEngine<T: BaseDataModel>: NSObject, DataLoaderEngine {
   }
 }
 
+open class BaseDataLoaderEngine<T: BaseDataModel>: DataLoaderEngine<T> {
+  
+}
 
 open class NestedDataLoaderEngine<T: BaseDataModel, U: BaseDataModel>: BaseDataLoaderEngine<T> {
   public var parentObject: U!
