@@ -15,72 +15,6 @@ import Changeset
 
 import DataSource
 
-//class A: BaseDataModel {
-//  static var sharedDataSource: DataSource
-//
-//  var objectId: String?
-//
-//  var createdAt: Date?
-//
-//  var updatedAt: Date?
-//
-//  var name: String?
-//
-//  static func ==(lhs: A, rhs: A) -> Bool {
-//    return true
-//  }
-//
-//
-//}
-//
-//class Foo {
-//  func bar() {
-//    let a = ListLoaderController(dataLoaderEngine: DataLoaderEngine<A>(), viewHandler: ListViewHandler<UITableView>())
-//  }
-//}
-
-open class ListViewHandler<L>: NSObject where L:UIScrollView {
-  var scrollView: L!
-  
-  open func initializeScrollView(delegate: ListLoaderDelegate) -> L {
-    if L.self == UITableView.self {
-      let tableView = UITableView()
-      tableView.dataSource = delegate
-      tableView.delegate = delegate
-      tableView.tableFooterView = UIView(frame: .zero)
-
-      self.scrollView = tableView as! L
-    } else if L.self == UICollectionView.self {
-      let flowLayout = UICollectionViewFlowLayout()
-      flowLayout.itemSize = CGSize(width: UIScreen.main.bounds.width, height: flowLayout.itemSize.height)
-      flowLayout.minimumInteritemSpacing = 0
-      flowLayout.minimumLineSpacing = 0
-      
-      let collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
-      collectionView.dataSource = delegate
-      collectionView.delegate = delegate
-      collectionView.backgroundColor = UIColor.white
-      
-      self.scrollView = collectionView as! L
-    } else {
-      self.scrollView = UIScrollView() as! L
-    }
-    
-    // Common behavior
-    if #available(iOS 11.0, *) {
-      self.scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentBehavior.never
-    }
-    
-    // ScrollView
-    self.scrollView.alwaysBounceVertical = true
-    self.scrollView.showsVerticalScrollIndicator = false
-    self.scrollView.showsHorizontalScrollIndicator = false
-    self.scrollView.keyboardDismissMode = .interactive
-    
-    return self.scrollView
-  }
-}
-
 public protocol ListLoaderDelegate: UITableViewDataSource, UITableViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
   
 }
@@ -210,7 +144,8 @@ open class ListLoaderController<L: UIScrollView, T, E>: UIViewController, Collec
   open func setup(dataLoader: DataLoader<T, E>, viewHandler: ListViewHandler<L>) {
     self.dataLoader = dataLoader
     self.viewHandler = viewHandler
-    
+    self.initializeScrollView()
+
     self.emptyViewContent = EmptyViewContent(message: "No results")
     self.errorViewContent = { [weak self] in
       return EmptyViewContent(
@@ -237,7 +172,7 @@ open class ListLoaderController<L: UIScrollView, T, E>: UIViewController, Collec
     super.viewDidLoad()
 
     self.automaticallyAdjustsScrollViewInsets = false
-    self.initializeScrollView()
+    self.viewHandler.viewDidLoad()
 
     // Don't set delegate until view is loaded
     self.dataLoader.delegate = self
@@ -311,6 +246,8 @@ open class ListLoaderController<L: UIScrollView, T, E>: UIViewController, Collec
       loadRows(loadType: .initial)
     } else if dataLoader.rowsLoaded {
       loaderView.hideSpinner()
+      
+      scrollView.contentOffset.y = -scrollView.contentInset.top
     } else if dataLoader.rowsLoading {
       loaderView.showSpinner()
     } else {

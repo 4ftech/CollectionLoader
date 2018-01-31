@@ -67,7 +67,7 @@ public class CollectionLoaderSelectController<C: CellMapperAdapter, E>: ListCell
                        callback: ((UIViewController) -> ())? = nil) {
     
     super.init(listAdapter: listAdapter, viewHandler: ListViewHandler<UITableView>())
-
+    
     self.cellAdapter.onSelectCell = { [weak self] (value, _) in
       if self?.row.value == value {
         self?.row.value = nil

@@ -50,6 +50,7 @@
 		70A886231E57EE8D00823C0F /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 70A886221E57EE8D00823C0F /* Parse.framework */; };
 		70A886291E5822B700823C0F /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70A886281E5822B700823C0F /* UIView.swift */; };
 		70A8862C1E58A63300823C0F /* CollectionLoader.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 70A884161E5736C400823C0F /* CollectionLoader.framework */; };
+		70BC7A582021615E0091D4E9 /* ListViewHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70BC7A572021615E0091D4E9 /* ListViewHandler.swift */; };
 		70C407BC1E68DDCD00A14EB7 /* ParseViewMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70C407BB1E68DDCD00A14EB7 /* ParseViewMapper.swift */; };
 		70C407CC1E69F37800A14EB7 /* DataLoadType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70C407CB1E69F37800A14EB7 /* DataLoadType.swift */; };
 		70C408C01E6AFF1F00A14EB7 /* ParseEurekaViewMapper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 705D301A1E676E96005D3A5F /* ParseEurekaViewMapper.framework */; };
@@ -164,6 +165,7 @@
 		70A886101E57E93000823C0F /* ParseDataEngine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParseDataEngine.swift; sourceTree = "<group>"; };
 		70A886221E57EE8D00823C0F /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Parse.framework; path = Carthage/Build/iOS/Parse.framework; sourceTree = "<group>"; };
 		70A886281E5822B700823C0F /* UIView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIView.swift; sourceTree = "<group>"; };
+		70BC7A572021615E0091D4E9 /* ListViewHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListViewHandler.swift; sourceTree = "<group>"; };
 		70C407BB1E68DDCD00A14EB7 /* ParseViewMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParseViewMapper.swift; sourceTree = "<group>"; };
 		70C407CB1E69F37800A14EB7 /* DataLoadType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataLoadType.swift; sourceTree = "<group>"; };
 		70FBAA7B1EB9115600ECC20E /* Const.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Const.swift; sourceTree = "<group>"; };
@@ -211,6 +213,7 @@
 				705AE9D1201F908900725573 /* ListNibMapperController.swift */,
 				705D30251E67720F005D3A5F /* DataSourceFormController.swift */,
 				70961C0B1EA82468007CD33E /* FilterListViewController.swift */,
+				70BC7A572021615E0091D4E9 /* ListViewHandler.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -591,6 +594,7 @@
 				70A884311E57373800823C0F /* ListLoaderController.swift in Sources */,
 				705D307E1E678144005D3A5F /* DataLoaderEngine.swift in Sources */,
 				706C972A1FACAE5200F73ED9 /* LoaderGradientLayer.swift in Sources */,
+				70BC7A582021615E0091D4E9 /* ListViewHandler.swift in Sources */,
 				70A884CF1E57403A00823C0F /* CollectionSearchBar.swift in Sources */,
 				70C407CC1E69F37800A14EB7 /* DataLoadType.swift in Sources */,
 				70A884DD1E5762F000823C0F /* UITableView.swift in Sources */,
