@@ -15,7 +15,7 @@ open class ListNibMapperController<L: UIScrollView, V: ViewMappable, E>: ListCel
   
   // MARK: CellMapper
   public init(cellMapper: CellMapper<V> = CellMapper<V>(),
-              dataLoader: DataLoader<T> = DataLoader(dataLoaderEngine: DataLoaderEngine<T>()),
+              dataLoader: DataLoader<T, E> = DataLoader(dataLoaderEngine: E()),
               viewHandler: ListViewHandler<L> = ListViewHandler<L>(),
               initialize: ((NibCellMapperAdapter<V>) -> Void)? = nil) {
     
@@ -26,7 +26,7 @@ open class ListNibMapperController<L: UIScrollView, V: ViewMappable, E>: ListCel
   }
   
   public init(cellMapper: CellMapper<V> = CellMapper<V>(),
-              dataLoaderEngine: DataLoaderEngine<T>,
+              dataLoaderEngine: E,
               viewHandler: ListViewHandler<L> = ListViewHandler<L>(),
               initialize: ((NibCellMapperAdapter<V>) -> Void)? = nil) {
     
@@ -38,7 +38,7 @@ open class ListNibMapperController<L: UIScrollView, V: ViewMappable, E>: ListCel
   
   // MARK: UINib
   public init(nib: UINib,
-              dataLoader: DataLoader<T> = DataLoader(dataLoaderEngine: DataLoaderEngine<T>()),
+              dataLoader: DataLoader<T, E> = DataLoader(dataLoaderEngine: E()),
               viewHandler: ListViewHandler<L> = ListViewHandler<L>(),
               initialize: ((NibCellMapperAdapter<V>) -> Void)? = nil) {
     
@@ -49,7 +49,7 @@ open class ListNibMapperController<L: UIScrollView, V: ViewMappable, E>: ListCel
   }
   
   public init(nib: UINib,
-              dataLoaderEngine: DataLoaderEngine<T>,
+              dataLoaderEngine: E,
               viewHandler: ListViewHandler<L> = ListViewHandler<L>(),
               initialize: ((NibCellMapperAdapter<V>) -> Void)? = nil) {
     
@@ -61,7 +61,7 @@ open class ListNibMapperController<L: UIScrollView, V: ViewMappable, E>: ListCel
   
   // MARK: nibName
   public init(nibName: String,
-              dataLoader: DataLoader<T> = DataLoader(dataLoaderEngine: DataLoaderEngine<T>()),
+              dataLoader: DataLoader<T, E> = DataLoader(dataLoaderEngine: E()),
               viewHandler: ListViewHandler<L> = ListViewHandler<L>(),
               initialize: ((NibCellMapperAdapter<V>) -> Void)? = nil) {
     
@@ -72,7 +72,7 @@ open class ListNibMapperController<L: UIScrollView, V: ViewMappable, E>: ListCel
   }
   
   public init(nibName: String,
-              dataLoaderEngine: DataLoaderEngine<T>,
+              dataLoaderEngine: E,
               viewHandler: ListViewHandler<L> = ListViewHandler<L>(),
               initialize: ((NibCellMapperAdapter<V>) -> Void)? = nil) {
     

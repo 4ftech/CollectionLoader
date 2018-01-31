@@ -13,7 +13,8 @@ open class ListLoaderAdapterController<L: UIScrollView, T, E, A>: ListLoaderCont
 
   public init(listAdapter: A,
               viewHandler: ListViewHandler<L> = ListViewHandler<L>()) {
-    super.init(dataLoader: listAdapter.dataLoader, viewHander: viewHandler)
+    
+    super.init(dataLoader: listAdapter.dataLoader, viewHandler: viewHandler)
     
     self.listAdapter = listAdapter
   }

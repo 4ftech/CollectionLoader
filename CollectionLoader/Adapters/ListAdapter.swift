@@ -13,12 +13,12 @@ import DataSource
 
 open class ListAdapter<T, E>: NSObject, UIScrollViewDelegate, UITableViewDataSource, UITableViewDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout where E:DataLoaderEngine<T> {
   
-  public var dataLoader: DataLoader<T>!
+  public var dataLoader: DataLoader<T, E>!
   public var dataLoaderEngine: E {
-    return dataLoader.dataLoaderEngine as! E
+    return dataLoader.dataLoaderEngine
   }
   
-  public init(dataLoader: DataLoader<T>) {
+  public init(dataLoader: DataLoader<T, E>) {
     super.init()
     
     self.dataLoader = dataLoader

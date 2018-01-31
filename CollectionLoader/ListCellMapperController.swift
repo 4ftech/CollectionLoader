@@ -22,14 +22,14 @@ open class ListCellMapperController<L: UIScrollView, C: CellMapperAdapter, E>: L
   }
   
   open static func listAdapter(cellAdapter: C,
-                               dataLoader: DataLoader<T>,
+                               dataLoader: DataLoader<T, E>,
                                initialize: ((C) -> Void)? = nil) -> ListCellMapperAdapter<C, E> {
     
     return ListCellMapperAdapter(cellAdapter: cellAdapter, dataLoader: dataLoader, initialize: initialize)
   }
   
   public init(cellAdapter: C,
-              dataLoader: DataLoader<T> = DataLoader(dataLoaderEngine: DataLoaderEngine<T>()),
+              dataLoader: DataLoader<T, E> = DataLoader(dataLoaderEngine: E()),
               viewHandler: ListViewHandler<L> = ListViewHandler<L>(),
               initialize: ((C) -> Void)? = nil) {
     
@@ -43,7 +43,7 @@ open class ListCellMapperController<L: UIScrollView, C: CellMapperAdapter, E>: L
   }
   
   public init(cellAdapter: C,
-              dataLoaderEngine: DataLoaderEngine<T>,
+              dataLoaderEngine: E,
               viewHandler: ListViewHandler<L> = ListViewHandler<L>(),
               initialize: ((C) -> Void)? = nil) {
     

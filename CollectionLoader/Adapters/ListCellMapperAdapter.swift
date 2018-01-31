@@ -18,7 +18,7 @@ open class ListCellMapperAdapter<C: CellMapperAdapter, E>: ListAdapter<C.T.T, E>
   public weak var viewController: UIViewController?
   
   public init(cellAdapter: C,
-              dataLoader: DataLoader<T> = DataLoader(dataLoaderEngine: E()),
+              dataLoader: DataLoader<T, E> = DataLoader(dataLoaderEngine: E()),
               viewController: UIViewController? = nil,
               initialize: ((C) -> Void)? = nil) {
     

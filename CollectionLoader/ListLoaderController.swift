@@ -48,7 +48,7 @@ open class ListViewHandler<L>: NSObject where L:UIScrollView {
       tableView.dataSource = delegate
       tableView.delegate = delegate
       tableView.tableFooterView = UIView(frame: .zero)
-      
+
       self.scrollView = tableView as! L
     } else if L.self == UICollectionView.self {
       let flowLayout = UICollectionViewFlowLayout()
@@ -175,9 +175,9 @@ open class ListLoaderController<L: UIScrollView, T, E>: UIViewController, Collec
   open var scrollBottomInset: CGFloat?
   
   // DATA
-  public var dataLoader: DataLoader<T>!
+  public var dataLoader: DataLoader<T, E>!
   public var dataLoaderEngine: E {
-    return dataLoader.dataLoaderEngine as! E
+    return dataLoader.dataLoaderEngine
   }
   
   public var collectionInitialized = false
@@ -189,11 +189,11 @@ open class ListLoaderController<L: UIScrollView, T, E>: UIViewController, Collec
   public var disposeBag: DisposeBag = DisposeBag()
   
   // MARK: - Initialize
-  public init(dataLoader: DataLoader<T> = DataLoader(dataLoaderEngine: E()),
-              viewHander: ListViewHandler<L> = ListViewHandler<L>()) {
+  public init(dataLoader: DataLoader<T, E> = DataLoader(dataLoaderEngine: E()),
+              viewHandler: ListViewHandler<L> = ListViewHandler<L>()) {
     
     super.init(nibName: nil, bundle: nil)
-    
+
     self.setup(dataLoader: dataLoader,
                viewHandler: viewHandler)
   }
@@ -207,10 +207,9 @@ open class ListLoaderController<L: UIScrollView, T, E>: UIViewController, Collec
                viewHandler: viewHandler)
   }
   
-  open func setup(dataLoader: DataLoader<T>, viewHandler: ListViewHandler<L>) {
+  open func setup(dataLoader: DataLoader<T, E>, viewHandler: ListViewHandler<L>) {
     self.dataLoader = dataLoader
     self.viewHandler = viewHandler
-    self.initializeScrollView()
     
     self.emptyViewContent = EmptyViewContent(message: "No results")
     self.errorViewContent = { [weak self] in
@@ -238,6 +237,7 @@ open class ListLoaderController<L: UIScrollView, T, E>: UIViewController, Collec
     super.viewDidLoad()
 
     self.automaticallyAdjustsScrollViewInsets = false
+    self.initializeScrollView()
 
     // Don't set delegate until view is loaded
     self.dataLoader.delegate = self
@@ -541,7 +541,7 @@ open class ListLoaderController<L: UIScrollView, T, E>: UIViewController, Collec
   }
   
   // MARK: - DataLoaderDelegate
-  open func dataLoader<E>(_ dataLoader: DataLoader<E>, didInsertRowAtIndex index: Int) {
+  open func dataLoader<T, E>(_ dataLoader: DataLoader<T, E>, didInsertRowAtIndex index: Int) {
     if dataLoader == self.dataLoader {
       if let collectionView = scrollView as? UICollectionView {
         let indexPath: IndexPath = IndexPath(item: index, section: 0)
@@ -584,7 +584,7 @@ open class ListLoaderController<L: UIScrollView, T, E>: UIViewController, Collec
     }
   }
   
-  open func dataLoader<E>(_ dataLoader: DataLoader<E>, didUpdateRowAtIndex index: Int) {
+  open func dataLoader<T, E>(_ dataLoader: DataLoader<T, E>, didUpdateRowAtIndex index: Int) {
     if dataLoader == self.dataLoader {
       if let collectionView = scrollView as? UICollectionView {
         collectionView.performBatchUpdates({
@@ -598,7 +598,7 @@ open class ListLoaderController<L: UIScrollView, T, E>: UIViewController, Collec
     }
   }
 
-  open func dataLoader<E>(_ dataLoader: DataLoader<E>, didRemoveRowAtIndex index: Int) {
+  open func dataLoader<T, E>(_ dataLoader: DataLoader<T, E>, didRemoveRowAtIndex index: Int) {
     if dataLoader == self.dataLoader {
       if let collectionView = scrollView as? UICollectionView {
         collectionView.performBatchUpdates({
@@ -612,7 +612,7 @@ open class ListLoaderController<L: UIScrollView, T, E>: UIViewController, Collec
     }
   }
   
-  open func dataLoader<E>(_ dataLoader: DataLoader<E>, didStartLoadingRowsWithLoadType loadType: DataLoadType) {
+  open func dataLoader<T, E>(_ dataLoader: DataLoader<T, E>, didStartLoadingRowsWithLoadType loadType: DataLoadType) {
     if dataLoader == self.dataLoader {
       switch loadType {
       case .more, .newRows:
@@ -629,14 +629,14 @@ open class ListLoaderController<L: UIScrollView, T, E>: UIViewController, Collec
     }
   }
   
-  open func dataLoaderDidClearRows<E>(_ dataLoader: DataLoader<E>) {
+  open func dataLoaderDidClearRows<T, E>(_ dataLoader: DataLoader<T, E>) {
     if dataLoader == self.dataLoader {
       refreshScrollView()
       loaderView.showSpinner()
     }
   }
   
-  open func dataLoader<E>(_ dataLoader: DataLoader<E>, didCatchLoadingError error: Error) {
+  open func dataLoader<T, E>(_ dataLoader: DataLoader<T, E>, didCatchLoadingError error: Error) {
     
   }
   

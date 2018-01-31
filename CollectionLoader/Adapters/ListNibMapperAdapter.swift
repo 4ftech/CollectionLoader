@@ -15,7 +15,7 @@ open class ListNibMapperAdapter<V: ViewMappable, E>: ListCellMapperAdapter<NibCe
   
   // MARK: CellMapper
   public init(cellMapper: CellMapper<V> = CellMapper<V>(),
-              dataLoader: DataLoader<T> = DataLoader(dataLoaderEngine: E()),
+              dataLoader: DataLoader<T, E> = DataLoader(dataLoaderEngine: E()),
               initialize: ((NibCellMapperAdapter<V>) -> Void)? = nil) {
     
     super.init(cellAdapter: NibCellMapperAdapter(cellMapper: cellMapper),
@@ -34,7 +34,7 @@ open class ListNibMapperAdapter<V: ViewMappable, E>: ListCellMapperAdapter<NibCe
 
   // MARK: UINib
   public init(nib: UINib,
-              dataLoader: DataLoader<T> = DataLoader(dataLoaderEngine: E()),
+              dataLoader: DataLoader<T, E> = DataLoader(dataLoaderEngine: E()),
               initialize: ((NibCellMapperAdapter<V>) -> Void)? = nil) {
     
     super.init(cellAdapter: NibCellMapperAdapter(nib: nib),
@@ -53,7 +53,7 @@ open class ListNibMapperAdapter<V: ViewMappable, E>: ListCellMapperAdapter<NibCe
   
   // MARK: nibName
   public init(nibName: String,
-              dataLoader: DataLoader<T> = DataLoader(dataLoaderEngine: E()),
+              dataLoader: DataLoader<T, E> = DataLoader(dataLoaderEngine: E()),
               initialize: ((NibCellMapperAdapter<V>) -> Void)? = nil) {
     
     super.init(cellAdapter: NibCellMapperAdapter(nibName: nibName),

@@ -15,7 +15,7 @@ import Parse
 public final class CollectionLoaderSelectRow<C: CellMapperAdapter, E>: SelectorRow<PushSelectorCell<C.T.T>, CollectionLoaderSelectController<C, E>>, RowType where E: DataLoaderEngine<C.T.T> {
   
   public typealias T = C.T.T
-  public var dataLoader: DataLoader<T>!
+  public var dataLoader: DataLoader<T, E>!
   
   public required init(tag: String?) {
     super.init(tag: tag)
@@ -102,7 +102,7 @@ public class CollectionLoaderSelectController<C: CellMapperAdapter, E>: ListCell
 public final class CollectionLoaderSelectMultipleRow<C: CellMapperAdapter, E>: SelectorRow<PushSelectorCell<Set<C.T.T>>, CollectionLoaderSelectMultipleController<C, E>>, RowType where E: DataLoaderEngine<C.T.T> {
   
   public typealias T = C.T.T
-  public var dataLoader: DataLoader<T>!
+  public var dataLoader: DataLoader<T, E>!
 
   public required init(tag: String?) {
     super.init(tag: tag)

@@ -12,17 +12,18 @@ import ParseDataSource
 import DataSource
 import ViewMapper
 
-open class ParseTableLoader<V: ViewMappable, E>: ListNibMapperController<UITableView, V, E> where E: ParseDataEngine<V.T> {
+open class ParseTableLoader<V: ViewMappable, E>: ListNibMapperController<UITableView, V, E> where E:ParseDataEngine<V.T> {
   required public init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
   }
   
   public init(cellMapper: CellMapper<V> = CellMapper<V>(), initialize: ((NibCellMapperAdapter<V>) -> Void)? = nil) {
-    let dataEngine = ParseDataEngine<V.T>()
-    dataEngine.paginate = true
-    dataEngine.queryLimit = 100
+    let dataLoaderEngine = E()
+    dataLoaderEngine.paginate = true
+    dataLoaderEngine.queryLimit = 100
     
-    super.init(cellMapper: cellMapper, dataLoaderEngine: dataEngine, viewHandler: ListViewHandler<UITableView>())
-    initialize?(self.cellAdapter)
+    super.init(cellMapper: cellMapper,
+               dataLoaderEngine: dataLoaderEngine,
+               initialize: initialize)
   }
 }

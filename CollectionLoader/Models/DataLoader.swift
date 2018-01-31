@@ -25,15 +25,15 @@ public enum NewRowsPosition {
 }
 
 public protocol DataLoaderDelegate: class {
-  func dataLoader<E>(_ dataLoader: DataLoader<E>, didInsertRowAtIndex index: Int)
-  func dataLoader<E>(_ dataLoader: DataLoader<E>, didUpdateRowAtIndex index: Int)
-  func dataLoader<E>(_ dataLoader: DataLoader<E>, didRemoveRowAtIndex index: Int)
-  func dataLoader<E>(_ dataLoader: DataLoader<E>, didStartLoadingRowsWithLoadType loadType: DataLoadType)
-  func dataLoader<E>(_ dataLoader: DataLoader<E>, didCatchLoadingError error: Error)
-  func dataLoaderDidClearRows<E>(_ dataLoader: DataLoader<E>)
+  func dataLoader<T, E>(_ dataLoader: DataLoader<T, E>, didInsertRowAtIndex index: Int)
+  func dataLoader<T, E>(_ dataLoader: DataLoader<T, E>, didUpdateRowAtIndex index: Int)
+  func dataLoader<T, E>(_ dataLoader: DataLoader<T, E>, didRemoveRowAtIndex index: Int)
+  func dataLoader<T, E>(_ dataLoader: DataLoader<T, E>, didStartLoadingRowsWithLoadType loadType: DataLoadType)
+  func dataLoader<T, E>(_ dataLoader: DataLoader<T, E>, didCatchLoadingError error: Error)
+  func dataLoaderDidClearRows<T, E>(_ dataLoader: DataLoader<T, E>)
 }
 
-open class DataLoader<T: BaseDataModel>: NSObject {
+open class DataLoader<T, E>: NSObject where E: DataLoaderEngine<T> {
   deinit {
     NSLog("deinit: \(type(of: self))")
   }
@@ -79,11 +79,11 @@ open class DataLoader<T: BaseDataModel>: NSObject {
     return "\(notificationNamePrefix)\(action.rawValue)"
   }
   
-  public var dataLoaderEngine: DataLoaderEngine<T>!
+  public var dataLoaderEngine: E!
   var cancellationToken: Operation?
   
   // MARK: - Initialize
-  required public init(dataLoaderEngine: DataLoaderEngine<T>) {
+  required public init(dataLoaderEngine: E) {
     super.init()
     
     self.dataLoaderEngine = dataLoaderEngine
