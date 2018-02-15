@@ -109,7 +109,15 @@ open class ListLoaderController<L: UIScrollView, T, E>: UIViewController, Collec
   open var scrollBottomInset: CGFloat?
   
   // DATA
-  public var dataLoader: DataLoader<T, E>!
+  fileprivate var _dataLoader: DataLoader<T, E>!
+  public var dataLoader: DataLoader<T, E>! {
+    get {
+      return _dataLoader
+    }    
+    set {
+      _dataLoader = newValue
+    }
+  }
   public var dataLoaderEngine: E {
     return dataLoader.dataLoaderEngine
   }

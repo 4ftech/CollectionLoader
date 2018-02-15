@@ -112,6 +112,7 @@ open class LoaderView: UIView {
   }
   
   open func showEmptyView() {
+    isUserInteractionEnabled = true
     isHidden = false
     alpha = 1.0
     

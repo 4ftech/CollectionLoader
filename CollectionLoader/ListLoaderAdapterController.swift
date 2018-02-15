@@ -10,6 +10,15 @@ import Foundation
 
 open class ListLoaderAdapterController<L: UIScrollView, T, E, A>: ListLoaderController<L, T, E> where A:ListAdapter<T, E> {
   public var listAdapter: A!
+  public override var dataLoader: DataLoader<T, E>! {
+    get {
+      return listAdapter.dataLoader
+    }
+    
+    set {
+      listAdapter?.dataLoader = newValue
+    }
+  }
 
   public init(listAdapter: A,
               viewHandler: ListViewHandler<L> = ListViewHandler<L>()) {
