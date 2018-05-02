@@ -50,7 +50,7 @@ open class DataSourceFormController<T: BaseDataModel>: FormViewController, ViewM
     
   }
   
-  open func save() {
+  @objc open func save() {
     let isNew: Bool = object.objectId == nil
     
     let promise: Promise<T> = object.save()

@@ -23,14 +23,14 @@ open class ListNibMapperAdapter<V: ViewMappable, E>: ListCellMapperAdapter<NibCe
                initialize: initialize)
   }
   
-  public init(cellMapper: CellMapper<V> = CellMapper<V>(),
-              dataLoaderEngine: E,
-              initialize: ((NibCellMapperAdapter<V>) -> Void)? = nil) {
-    
-    super.init(cellAdapter: NibCellMapperAdapter(cellMapper: cellMapper),
-               dataLoader: DataLoader(dataLoaderEngine: dataLoaderEngine),
-               initialize: initialize)
-  }
+  //  public init(cellMapper: CellMapper<V> = CellMapper<V>(),
+  //              dataLoaderEngine: E,
+  //              initialize: ((NibCellMapperAdapter<V>) -> Void)? = nil) {
+  //
+  //    super.init(cellAdapter: NibCellMapperAdapter(cellMapper: cellMapper),
+  //               dataLoader: DataLoader(dataLoaderEngine: dataLoaderEngine),
+  //               initialize: initialize)
+  //  }
 
   // MARK: UINib
   public init(nib: UINib,
@@ -42,14 +42,14 @@ open class ListNibMapperAdapter<V: ViewMappable, E>: ListCellMapperAdapter<NibCe
                initialize: initialize)
   }
   
-  public init(nib: UINib,
-              dataLoaderEngine: E,
-              initialize: ((NibCellMapperAdapter<V>) -> Void)? = nil) {
-    
-    super.init(cellAdapter: NibCellMapperAdapter(nib: nib),
-               dataLoader: DataLoader(dataLoaderEngine: dataLoaderEngine),
-               initialize: initialize)
-  }
+  //  public init(nib: UINib,
+  //              dataLoaderEngine: E,
+  //              initialize: ((NibCellMapperAdapter<V>) -> Void)? = nil) {
+  //
+  //    super.init(cellAdapter: NibCellMapperAdapter(nib: nib),
+  //               dataLoader: DataLoader(dataLoaderEngine: dataLoaderEngine),
+  //               initialize: initialize)
+  //  }
   
   // MARK: nibName
   public init(nibName: String,
@@ -61,12 +61,12 @@ open class ListNibMapperAdapter<V: ViewMappable, E>: ListCellMapperAdapter<NibCe
                initialize: initialize)
   }
   
-  public init(nibName: String,
-              dataLoaderEngine: E,
-              initialize: ((NibCellMapperAdapter<V>) -> Void)? = nil) {
-    
-    super.init(cellAdapter: NibCellMapperAdapter(nibName: nibName),
-               dataLoader: DataLoader(dataLoaderEngine: dataLoaderEngine),
-               initialize: initialize)
-  }
+  //  public init(nibName: String,
+  //              dataLoaderEngine: E,
+  //              initialize: ((NibCellMapperAdapter<V>) -> Void)? = nil) {
+  //    
+  //    super.init(cellAdapter: NibCellMapperAdapter(nibName: nibName),
+  //               dataLoader: DataLoader(dataLoaderEngine: dataLoaderEngine),
+  //               initialize: initialize)
+  //  }
 }

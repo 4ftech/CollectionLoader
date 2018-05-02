@@ -43,24 +43,24 @@ open class FilterListViewController: FormViewController {
       if filter.optionsLoaded {
         row.options = filter.filterOptions
       } else {
-        row.presentationMode = .show(
-          controllerProvider: ControllerProvider.callback {
-            let controller = SelectorViewController<SelectFilterOption> { controller in
-              
-            }
-            
-            filter.loadOptions().then { (options) -> Void in
-              row.options = options
-              controller.setupForm()
-            }.catch { error in
-              
-            }
-          
-            return controller
-          }, onDismiss: { vc in
-            let _ = vc.navigationController?.popViewController(animated: true)
-          }
-        )
+//        row.presentationMode = .show(
+//          controllerProvider: ControllerProvider.callback {
+//            let controller = SelectorViewController<SelectFilterOption> { controller in
+//              
+//            }
+//            
+//            filter.loadOptions().then { (options) -> Void in
+//              row.options = options
+//              controller.setupForm()
+//            }.catch { error in
+//              
+//            }
+//          
+//            return controller
+//          }, onDismiss: { vc in
+//            let _ = vc.navigationController?.popViewController(animated: true)
+//          }
+//        )
       }
       
     }.onChange { row in
@@ -79,24 +79,24 @@ open class FilterListViewController: FormViewController {
       if filter.optionsLoaded {
         row.options = filter.filterOptions
       } else {
-        row.presentationMode = .show(
-          controllerProvider: ControllerProvider.callback {
-            let controller = MultipleSelectorViewController<SelectFilterOption> { controller in
-              
-            }
-            
-            filter.loadOptions().then { (options) -> Void in
-              row.options = options
-              controller.setupForm()
-            }.catch { error in
-                
-            }
-            
-            return controller
-          }, onDismiss: { vc in
-            let _ = vc.navigationController?.popViewController(animated: true)
-          }
-        )
+//        row.presentationMode = .show(
+//          controllerProvider: ControllerProvider.callback {
+//            let controller = MultipleSelectorViewController<SelectFilterOption> { controller in
+//
+//            }
+//
+//            filter.loadOptions().then { (options) -> Void in
+//              row.options = options
+//              controller.setupForm()
+//            }.catch { error in
+//
+//            }
+//
+//            return controller
+//          }, onDismiss: { vc in
+//            let _ = vc.navigationController?.popViewController(animated: true)
+//          }
+//        )
       }
     }.onChange { row in
       if let value = row.value {

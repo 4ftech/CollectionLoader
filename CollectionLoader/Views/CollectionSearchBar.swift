@@ -99,7 +99,7 @@ open class CollectionSearchBar: UIView {
     self.didTapClearButton(self)
   }
   
-  func didTapClearButton(_ sender: AnyObject) {
+  @objc func didTapClearButton(_ sender: AnyObject) {
     delegate?.searchBarDidTapClearButton(self)
     
     if !clearAlwaysVisible {
@@ -112,7 +112,7 @@ open class CollectionSearchBar: UIView {
     }
   }
   
-  func textFieldDidChange(_ sender: AnyObject) {
+  @objc func textFieldDidChange(_ sender: AnyObject) {
     if !clearAlwaysVisible {
       if let text = text , !text.isEmpty {
         clearButton?.isHidden = false

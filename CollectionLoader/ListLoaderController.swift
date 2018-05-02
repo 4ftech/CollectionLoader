@@ -323,7 +323,7 @@ open class ListLoaderController<L: UIScrollView, T, E>: UIViewController, Collec
     NotificationCenter.default.removeObserver(self, name: Notification.Name.UIKeyboardWillHide, object: nil)
   }
 
-  open func searchKeyboardWillShow(_ notification: Notification) {
+  @objc open func searchKeyboardWillShow(_ notification: Notification) {
     if UIApplication.shared.applicationState != .active {
       return
     }
@@ -348,7 +348,7 @@ open class ListLoaderController<L: UIScrollView, T, E>: UIViewController, Collec
     )
   }
   
-  open func searchKeyboardWillHide(_ notification: Notification) {
+  @objc open func searchKeyboardWillHide(_ notification: Notification) {
     if UIApplication.shared.applicationState != .active {
       return
     }
@@ -372,7 +372,7 @@ open class ListLoaderController<L: UIScrollView, T, E>: UIViewController, Collec
     )
   }
   
-  open func didPullToRefresh(refreshControl: UIRefreshControl) {
+  @objc open func didPullToRefresh(refreshControl: UIRefreshControl) {
     loadRows(loadType: .replace)
   }
   
@@ -628,7 +628,7 @@ open class ListLoaderController<L: UIScrollView, T, E>: UIViewController, Collec
     }
   }
   
-  open func updateScrollView(withEdits edits: [Edit<T>], completion: ((Bool) -> Void)? = nil) {
+  open func updateScrollView(withEdits edits: [Changeset<[T]>.Edit], completion: ((Bool) -> Void)? = nil) {
     if let collectionView = scrollView as? UICollectionView {
       collectionView.update(with: edits, completion: completion)
     } else if let tableView = scrollView as? UITableView {

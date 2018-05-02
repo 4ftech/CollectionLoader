@@ -25,16 +25,16 @@ open class ListNibMapperController<L: UIScrollView, V: ViewMappable, E>: ListCel
                initialize: initialize)
   }
   
-  public init(cellMapper: CellMapper<V> = CellMapper<V>(),
-              dataLoaderEngine: E,
-              viewHandler: ListViewHandler<L> = ListViewHandler<L>(),
-              initialize: ((NibCellMapperAdapter<V>) -> Void)? = nil) {
-    
-    super.init(cellAdapter: NibCellMapperAdapter(cellMapper: cellMapper),
-               dataLoader: DataLoader(dataLoaderEngine: dataLoaderEngine),
-               viewHandler: viewHandler,
-               initialize: initialize)
-  }
+  //  public init(cellMapper: CellMapper<V> = CellMapper<V>(),
+  //              dataLoaderEngine: E,
+  //              viewHandler: ListViewHandler<L> = ListViewHandler<L>(),
+  //              initialize: ((NibCellMapperAdapter<V>) -> Void)? = nil) {
+  //    
+  //    super.init(cellAdapter: NibCellMapperAdapter(cellMapper: cellMapper),
+  //               dataLoader: DataLoader(dataLoaderEngine: dataLoaderEngine),
+  //               viewHandler: viewHandler,
+  //               initialize: initialize)
+  //  }
   
   // MARK: UINib
   public init(nib: UINib,
@@ -48,16 +48,16 @@ open class ListNibMapperController<L: UIScrollView, V: ViewMappable, E>: ListCel
                initialize: initialize)
   }
   
-  public init(nib: UINib,
-              dataLoaderEngine: E,
-              viewHandler: ListViewHandler<L> = ListViewHandler<L>(),
-              initialize: ((NibCellMapperAdapter<V>) -> Void)? = nil) {
-    
-    super.init(cellAdapter: NibCellMapperAdapter(nib: nib),
-               dataLoader: DataLoader(dataLoaderEngine: dataLoaderEngine),
-               viewHandler: viewHandler,
-               initialize: initialize)
-  }
+  //  public init(nib: UINib,
+  //              dataLoaderEngine: E,
+  //              viewHandler: ListViewHandler<L> = ListViewHandler<L>(),
+  //              initialize: ((NibCellMapperAdapter<V>) -> Void)? = nil) {
+  //
+  //    super.init(cellAdapter: NibCellMapperAdapter(nib: nib),
+  //               dataLoader: DataLoader(dataLoaderEngine: dataLoaderEngine),
+  //               viewHandler: viewHandler,
+  //               initialize: initialize)
+  //  }
   
   // MARK: nibName
   public init(nibName: String,
@@ -71,16 +71,16 @@ open class ListNibMapperController<L: UIScrollView, V: ViewMappable, E>: ListCel
                initialize: initialize)
   }
   
-  public init(nibName: String,
-              dataLoaderEngine: E,
-              viewHandler: ListViewHandler<L> = ListViewHandler<L>(),
-              initialize: ((NibCellMapperAdapter<V>) -> Void)? = nil) {
-    
-    super.init(cellAdapter: NibCellMapperAdapter(nibName: nibName),
-               dataLoader: DataLoader(dataLoaderEngine: dataLoaderEngine),
-               viewHandler: viewHandler,
-               initialize: initialize)
-  }
+  //  public init(nibName: String,
+  //              dataLoaderEngine: E,
+  //              viewHandler: ListViewHandler<L> = ListViewHandler<L>(),
+  //              initialize: ((NibCellMapperAdapter<V>) -> Void)? = nil) {
+  //
+  //    super.init(cellAdapter: NibCellMapperAdapter(nibName: nibName),
+  //               dataLoader: DataLoader(dataLoaderEngine: dataLoaderEngine),
+  //               viewHandler: viewHandler,
+  //               initialize: initialize)
+  //  }
   
   // MARK: listAdapter
   public override init(listAdapter: ListCellMapperAdapter<NibCellMapperAdapter<V>, E>,

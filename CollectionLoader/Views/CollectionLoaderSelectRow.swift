@@ -12,10 +12,13 @@ import ViewMapper
 import Eureka
 import Parse
 
-public final class CollectionLoaderSelectRow<C: CellMapperAdapter, E>: SelectorRow<PushSelectorCell<C.T.T>, CollectionLoaderSelectController<C, E>>, RowType where E: DataLoaderEngine<C.T.T> {
+public final class CollectionLoaderSelectRow<C: CellMapperAdapter, E>: SelectorRow<PushSelectorCell<C.T.T>>, RowType where E: DataLoaderEngine<C.T.T>, C.T.T: Equatable {
   
   public typealias T = C.T.T
-  public var dataLoader: DataLoader<T, E>!
+  public var listAdapter: ListCellMapperAdapter<C, E>!
+  public var dataLoader: DataLoader<T, E> {
+    return listAdapter.dataLoader
+  }
   
   public required init(tag: String?) {
     super.init(tag: tag)
@@ -27,20 +30,12 @@ public final class CollectionLoaderSelectRow<C: CellMapperAdapter, E>: SelectorR
     
     super.init(tag: tag)
     
-    self.dataLoader = listAdapter.dataLoader
-    
-    presentationMode = .show(
-      controllerProvider: ControllerProvider.callback {
-        return CollectionLoaderSelectController(listAdapter: listAdapter) { _ in
-          
-        }
-      },
-      onDismiss: { vc in
-        _ = vc.navigationController?.popViewController(animated: true)
-      }
-    )
-    
+    self.listAdapter = listAdapter
     self.setup(initializer: initializer)
+  }
+  
+  public override func customDidSelect() {
+    cell.formViewController()?.show(CollectionLoaderSelectController(listAdapter: listAdapter), sender: self)
   }
   
   public func setup(initializer: ((CollectionLoaderSelectRow) -> Void)? = nil) {
@@ -48,12 +43,12 @@ public final class CollectionLoaderSelectRow<C: CellMapperAdapter, E>: SelectorR
       guard let value = $0 else { return "" }
       return  value.objectId
     }
-    
+
     initializer?(self)
   }
 }
 
-public class CollectionLoaderSelectController<C: CellMapperAdapter, E>: ListCellMapperController<UITableView, C, E>, TypedRowControllerType where E: DataLoaderEngine<C.T.T> {
+public class CollectionLoaderSelectController<C: CellMapperAdapter, E>: ListCellMapperController<UITableView, C, E>, TypedRowControllerType where E: DataLoaderEngine<C.T.T>, C.T.T: Equatable {
   
   public typealias T = C.T.T
   public var row: RowOf<T>!
@@ -99,10 +94,13 @@ public class CollectionLoaderSelectController<C: CellMapperAdapter, E>: ListCell
 }
 
 
-public final class CollectionLoaderSelectMultipleRow<C: CellMapperAdapter, E>: SelectorRow<PushSelectorCell<Set<C.T.T>>, CollectionLoaderSelectMultipleController<C, E>>, RowType where E: DataLoaderEngine<C.T.T> {
+public final class CollectionLoaderSelectMultipleRow<C: CellMapperAdapter, E>: SelectorRow<PushSelectorCell<Set<C.T.T>>>, RowType where E: DataLoaderEngine<C.T.T>, C.T.T: Equatable {
   
   public typealias T = C.T.T
-  public var dataLoader: DataLoader<T, E>!
+  public var listAdapter: ListCellMapperAdapter<C, E>!
+  public var dataLoader: DataLoader<T, E> {
+    return listAdapter.dataLoader
+  }
 
   public required init(tag: String?) {
     super.init(tag: tag)
@@ -114,22 +112,15 @@ public final class CollectionLoaderSelectMultipleRow<C: CellMapperAdapter, E>: S
     
     super.init(tag: tag)
     
-    self.dataLoader = listAdapter.dataLoader
-    
-    presentationMode = .show(
-      controllerProvider: ControllerProvider.callback {
-        return CollectionLoaderSelectMultipleController(listAdapter: listAdapter) { _ in
-          
-        }
-      },
-      onDismiss: { vc in
-        _ = vc.navigationController?.popViewController(animated: true)
-      }
-    )
+    self.listAdapter = listAdapter
     
     self.setup(initializer: initializer)
   }
 
+  public override func customDidSelect() {
+    cell.formViewController()?.show(CollectionLoaderSelectMultipleController(listAdapter: listAdapter), sender: self)
+  }
+  
   public func setup(initializer: ((CollectionLoaderSelectMultipleRow) -> Void)? = nil) {
     displayValueFor = {
       guard let object = $0 else { return "" }

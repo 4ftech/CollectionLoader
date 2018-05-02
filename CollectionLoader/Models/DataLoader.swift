@@ -222,7 +222,7 @@ open class DataLoader<T, E>: NSObject where E: DataLoaderEngine<T> {
     // Process the results
     var results = queryResults
 
-    var edits: [Edit<T>] = []
+    var edits: [Changeset<[T]>.Edit] = []
     let originalRows: [T] = rowsToDisplay
 
     if !isEmpty && loadType == .newRows {
@@ -241,7 +241,7 @@ open class DataLoader<T, E>: NSObject where E: DataLoaderEngine<T> {
           if updateTimes[result] != result.updatedAt {
             if let index = rows.index(of: result) {
               updateRowAtIndex(index, withObject: result)
-              edits.append(Edit(.substitution, value: result, destination: index))
+              edits.append(Changeset.Edit(operation: .substitution, value: result, destination: index))
             }
           }
         }
@@ -260,7 +260,7 @@ open class DataLoader<T, E>: NSObject where E: DataLoaderEngine<T> {
             if let existingIndex = rows.index(of: newRow) {
               if existingIndex == i {
                 if updateTimes[newRow] != newRow.updatedAt {
-                  edits.append(Edit(.substitution, value: newRow, destination: i))
+                  edits.append(Changeset.Edit(operation: .substitution, value: newRow, destination: i))
                 }
               }
             }
@@ -284,7 +284,7 @@ open class DataLoader<T, E>: NSObject where E: DataLoaderEngine<T> {
   
   // MARK: - Manipulating data
   func replaceRows(_ rows: [T]) {
-    let edits: [Edit<T>] = Changeset.edits(from: self.rows, to: rows)
+    let edits: [Changeset<[T]>.Edit] = Changeset.edits(from: self.rows, to: rows)
     self.rows = rows
 
     rowsLoaded = true
@@ -341,7 +341,7 @@ open class DataLoader<T, E>: NSObject where E: DataLoaderEngine<T> {
   
   
   // MARK: - Notifications
-  func userInfo(edits: [Edit<T>]? = nil, loadType: DataLoadType) -> [AnyHashable: Any] {
+  func userInfo(edits: [Changeset<[T]>.Edit]? = nil, loadType: DataLoadType) -> [AnyHashable: Any] {
     var userInfo: [AnyHashable: Any] = [
       notificationLoadTypeKey: loadType.rawValue,
     ]
@@ -353,7 +353,7 @@ open class DataLoader<T, E>: NSObject where E: DataLoaderEngine<T> {
     return userInfo
   }
   
-  func postDidFinishLoadingNotification(forEdits edits: [Edit<T>]?, loadType: DataLoadType) {
+  func postDidFinishLoadingNotification(forEdits edits: [Changeset<[T]>.Edit]?, loadType: DataLoadType) {
     NotificationCenter.default.post(
       name: Notification.Name(rawValue: notificationNameForAction(.FinishedLoading)),
       object: self,
@@ -375,8 +375,8 @@ open class DataLoader<T, E>: NSObject where E: DataLoaderEngine<T> {
     }
   }
   
-  public func editsFromNotification(_ notification: Notification) -> [Edit<T>]? {
-    return notification.userInfo?[notificationEditsKey] as? [Edit<T>]
+  public func editsFromNotification(_ notification: Notification) -> [Changeset<[T]>.Edit]? {
+    return notification.userInfo?[notificationEditsKey] as? [Changeset<[T]>.Edit]
   }
   
   public func loadTypeFromNotification(_ notification: Notification) -> DataLoadType {
@@ -385,7 +385,7 @@ open class DataLoader<T, E>: NSObject where E: DataLoaderEngine<T> {
 
   
   // MARK: - UI Stuff
-  open func updateUI(forEdits edits: [Edit<T>]?, loadType: DataLoadType) {
+  open func updateUI(forEdits edits: [Changeset<[T]>.Edit]?, loadType: DataLoadType) {
     postDidFinishLoadingNotification(forEdits: edits, loadType: loadType)
   }
 }

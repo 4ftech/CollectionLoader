@@ -28,7 +28,7 @@ public func <~ <C, E> (left: CollectionLoaderSelectRow<C, E>, right: (PFObject, 
   }
   
   if let id = object[key] as? String {
-    let dataRow = C.T.T()
+    var dataRow = C.T.T()
     dataRow.objectId = id
     
     left.value = dataRow
@@ -52,7 +52,7 @@ public func <~ <C, E> (left: CollectionLoaderSelectMultipleRow<C, E>, right: (PF
   
   if let ids = object[key] as? [String] {
     let dataRows = ids.map { id -> C.T.T in
-      let row = C.T.T()
+      var row = C.T.T()
       row.objectId = id
       
       return row

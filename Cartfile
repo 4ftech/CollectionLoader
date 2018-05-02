@@ -9,7 +9,7 @@ github "pronebird/UIScrollView-InfiniteScroll"
 github "ParsePlatform/Parse-SDK-iOS-OSX"
 
 
-github "xmartlabs/Eureka" "feature/Xcode9-Swift3_2"
+github "xmartlabs/Eureka" ~> 4.1.1
 
 github "osteslag/Changeset"
 

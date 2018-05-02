@@ -65,7 +65,7 @@ open class LoaderView: UIView {
     }
   }
   
-  func executeButtonAction(_ sender: AnyObject) {
+  @objc func executeButtonAction(_ sender: AnyObject) {
     buttonAction?()
   }
   

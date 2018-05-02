@@ -42,19 +42,19 @@ open class ListCellMapperController<L: UIScrollView, C: CellMapperAdapter, E>: L
     self.initialize(cellAdapter: cellAdapter)
   }
   
-  public init(cellAdapter: C,
-              dataLoaderEngine: E,
-              viewHandler: ListViewHandler<L> = ListViewHandler<L>(),
-              initialize: ((C) -> Void)? = nil) {
-    
-    let listAdapter = type(of: self).listAdapter(cellAdapter: cellAdapter,
-                                                 dataLoader: DataLoader(dataLoaderEngine: dataLoaderEngine),
-                                                 initialize: initialize)
-    
-    super.init(listAdapter: listAdapter, viewHandler: viewHandler)
-
-    self.initialize(cellAdapter: cellAdapter)
-  }
+  //  public init(cellAdapter: C,
+  //              dataLoaderEngine: E,
+  //              viewHandler: ListViewHandler<L> = ListViewHandler<L>(),
+  //              initialize: ((C) -> Void)? = nil) {
+  //    
+  //    let listAdapter = type(of: self).listAdapter(cellAdapter: cellAdapter,
+  //                                                 dataLoader: DataLoader(dataLoaderEngine: dataLoaderEngine),
+  //                                                 initialize: initialize)
+  //    
+  //    super.init(listAdapter: listAdapter, viewHandler: viewHandler)
+  //
+  //    self.initialize(cellAdapter: cellAdapter)
+  //  }
   
   public override init(listAdapter: ListCellMapperAdapter<C, E>,
                        viewHandler: ListViewHandler<L> = ListViewHandler<L>()) {
