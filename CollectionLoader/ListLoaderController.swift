@@ -99,7 +99,6 @@ open class ListLoaderController<L: UIScrollView, T, E>: UIViewController, Collec
     var topInset: CGFloat = 0
     
     if let navController = navigationController, !navController.isNavigationBarHidden && ((extendedLayoutIncludesOpaqueBars && edgesForExtendedLayout.contains(.top)) || navController.navigationBar.isTranslucent) {
-      
       topInset = topInset + Const.topBarHeight
     }
     
@@ -180,6 +179,7 @@ open class ListLoaderController<L: UIScrollView, T, E>: UIViewController, Collec
     super.viewDidLoad()
 
     self.automaticallyAdjustsScrollViewInsets = false
+    
     self.viewHandler.viewDidLoad()
 
     // Don't set delegate until view is loaded

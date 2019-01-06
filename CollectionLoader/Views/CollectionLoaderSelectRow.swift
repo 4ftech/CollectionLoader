@@ -13,9 +13,10 @@ import Eureka
 import Parse
 
 public final class CollectionLoaderSelectRow<C: CellMapperAdapter, E>: SelectorRow<PushSelectorCell<C.T.T>>, RowType where E: DataLoaderEngine<C.T.T>, C.T.T: Equatable {
-  
+  public typealias PresentedController = CollectionLoaderSelectController<C, E>
   public typealias T = C.T.T
   public var listAdapter: ListCellMapperAdapter<C, E>!
+  public var controllerCallback: ((UIViewController) -> ())?
   public var dataLoader: DataLoader<T, E> {
     return listAdapter.dataLoader
   }
@@ -35,15 +36,17 @@ public final class CollectionLoaderSelectRow<C: CellMapperAdapter, E>: SelectorR
   }
   
   public override func customDidSelect() {
-    cell.formViewController()?.show(CollectionLoaderSelectController(listAdapter: listAdapter), sender: self)
+    let controller = CollectionLoaderSelectController(listAdapter: listAdapter, callback: controllerCallback)
+    controller.row = self
+    cell.formViewController()?.show(controller, sender: self)
   }
   
-  public func setup(initializer: ((CollectionLoaderSelectRow) -> Void)? = nil) {
+  open func setup(initializer: ((CollectionLoaderSelectRow) -> Void)? = nil) {
     displayValueFor = {
       guard let value = $0 else { return "" }
       return  value.objectId
     }
-
+    
     initializer?(self)
   }
 }
@@ -98,6 +101,7 @@ public final class CollectionLoaderSelectMultipleRow<C: CellMapperAdapter, E>: S
   
   public typealias T = C.T.T
   public var listAdapter: ListCellMapperAdapter<C, E>!
+  public var controllerCallback: ((UIViewController) -> ())?
   public var dataLoader: DataLoader<T, E> {
     return listAdapter.dataLoader
   }
@@ -118,7 +122,9 @@ public final class CollectionLoaderSelectMultipleRow<C: CellMapperAdapter, E>: S
   }
 
   public override func customDidSelect() {
-    cell.formViewController()?.show(CollectionLoaderSelectMultipleController(listAdapter: listAdapter), sender: self)
+    let controller = CollectionLoaderSelectMultipleController(listAdapter: listAdapter, callback: controllerCallback)
+    controller.row = self
+    cell.formViewController()?.show(controller, sender: self)
   }
   
   public func setup(initializer: ((CollectionLoaderSelectMultipleRow) -> Void)? = nil) {

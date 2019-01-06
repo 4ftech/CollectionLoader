@@ -23,7 +23,7 @@ open class ParseTableLoader<V: ViewMappable, E>: ListNibMapperController<UITable
     dataLoaderEngine.queryLimit = 100
     
     super.init(cellMapper: cellMapper,
-               dataLoaderEngine: dataLoaderEngine,
+               dataLoader: DataLoader(dataLoaderEngine: dataLoaderEngine),
                initialize: initialize)
   }
 }
