@@ -2,17 +2,9 @@
 //  ASCollectionViewTests.mm
 //  Texture
 //
-//  Copyright (c) 2014-present, Facebook, Inc.  All rights reserved.
-//  This source code is licensed under the BSD-style license found in the
-//  LICENSE file in the /ASDK-Licenses directory of this source tree. An additional
-//  grant of patent rights can be found in the PATENTS file in the same directory.
-//
-//  Modifications to this file made after 4/13/2017 are: Copyright (c) 2017-present,
-//  Pinterest, Inc.  Licensed under the Apache License, Version 2.0 (the "License");
-//  you may not use this file except in compliance with the License.
-//  You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
+//  Copyright (c) Facebook, Inc. and its affiliates.  All rights reserved.
+//  Changes after 4/13/2017 are: Copyright (c) Pinterest, Inc.  All rights reserved.
+//  Licensed under Apache 2.0: http://www.apache.org/licenses/LICENSE-2.0
 //
 
 #import <XCTest/XCTest.h>
@@ -23,11 +15,13 @@
 #import <vector>
 #import <OCMock/OCMock.h>
 #import <AsyncDisplayKit/ASCollectionView+Undeprecated.h>
+#import <AsyncDisplayKit/ASDisplayNode+FrameworkPrivate.h>
+#import "ASDisplayNodeTestsHelper.h"
 
 @interface ASTextCellNodeWithSetSelectedCounter : ASTextCellNode
 
-@property (nonatomic, assign) NSUInteger setSelectedCounter;
-@property (nonatomic, assign) NSUInteger applyLayoutAttributesCount;
+@property (nonatomic) NSUInteger setSelectedCounter;
+@property (nonatomic) NSUInteger applyLayoutAttributesCount;
 
 @end
 
@@ -48,8 +42,8 @@
 
 @interface ASTestSectionContext : NSObject <ASSectionContext>
 
-@property (nonatomic, assign) NSInteger sectionIndex;
-@property (nonatomic, assign) NSInteger sectionGeneration;
+@property (nonatomic) NSInteger sectionIndex;
+@property (nonatomic) NSInteger sectionGeneration;
 
 @end
 
@@ -61,8 +55,8 @@
 
 @interface ASCollectionViewTestDelegate : NSObject <ASCollectionDataSource, ASCollectionDelegate, UICollectionViewDelegateFlowLayout>
 
-@property (nonatomic, assign) NSInteger sectionGeneration;
-@property (nonatomic, copy) void(^willBeginBatchFetch)(ASBatchContext *);
+@property (nonatomic) NSInteger sectionGeneration;
+@property (nonatomic) void(^willBeginBatchFetch)(ASBatchContext *);
 
 @end
 
@@ -137,9 +131,9 @@
 
 @interface ASCollectionViewTestController: UIViewController
 
-@property (nonatomic, strong) ASCollectionViewTestDelegate *asyncDelegate;
-@property (nonatomic, strong) ASCollectionView *collectionView;
-@property (nonatomic, strong) ASCollectionNode *collectionNode;
+@property (nonatomic) ASCollectionViewTestDelegate *asyncDelegate;
+@property (nonatomic) ASCollectionView *collectionView;
+@property (nonatomic) ASCollectionNode *collectionNode;
 
 @end
 
@@ -169,6 +163,7 @@
 @interface ASCollectionView (InternalTesting)
 
 - (NSArray<NSString *> *)dataController:(ASDataController *)dataController supplementaryNodeKindsInSections:(NSIndexSet *)sections;
+- (BOOL)dataController:(ASDataController *)dataController shouldSynchronouslyProcessChangeSet:(_ASHierarchyChangeSet *)changeSet;
 
 @end
 
@@ -373,6 +368,17 @@
   
   XCTAssertTrue(ASRangeTuningParametersEqualToRangeTuningParameters(renderParams, [collectionView tuningParametersForRangeType:ASLayoutRangeTypeDisplay]));
   XCTAssertTrue(ASRangeTuningParametersEqualToRangeTuningParameters(preloadParams, [collectionView tuningParametersForRangeType:ASLayoutRangeTypePreload]));
+}
+
+// Informations to test: https://github.com/TextureGroup/Texture/issues/1094
+- (void)testThatCollectionNodeCanHandleNilRangeController
+{
+  UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
+  ASCollectionNode *collectionNode = [[ASCollectionNode alloc] initWithCollectionViewLayout:layout];
+  [collectionNode recursivelySetInterfaceState:ASInterfaceStateDisplay];
+  [collectionNode setHierarchyState:ASHierarchyStateRangeManaged];
+  [collectionNode recursivelySetInterfaceState:ASInterfaceStateNone];
+  ASCATransactionQueueWait(nil);
 }
 
 /**
@@ -860,6 +866,7 @@
   [cn waitUntilAllUpdatesAreProcessed];
   [cn.view layoutIfNeeded];
   ASCellNode *node = [cn nodeForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
+  ASCATransactionQueueWait(nil);
   XCTAssertTrue(node.visible);
   testController.asyncDelegate->_itemCounts = {0};
   [cn deleteItemsAtIndexPaths: @[[NSIndexPath indexPathForItem:0 inSection:0]]];
@@ -1040,24 +1047,42 @@
 
 - (void)testInitialRangeBounds
 {
+  [self testInitialRangeBoundsWithCellLayoutMode:ASCellLayoutModeNone];
+}
+
+- (void)testInitialRangeBoundsCellLayoutModeAlwaysAsync
+{
+  [self testInitialRangeBoundsWithCellLayoutMode:ASCellLayoutModeAlwaysAsync];
+}
+
+- (void)testInitialRangeBoundsWithCellLayoutMode:(ASCellLayoutMode)cellLayoutMode
+{
   UIWindow *window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
   ASCollectionViewTestController *testController = [[ASCollectionViewTestController alloc] initWithNibName:nil bundle:nil];
   ASCollectionNode *cn = testController.collectionNode;
+  cn.cellLayoutMode = cellLayoutMode;
   [cn setTuningParameters:{ .leadingBufferScreenfuls = 2, .trailingBufferScreenfuls = 0 } forRangeMode:ASLayoutRangeModeMinimum rangeType:ASLayoutRangeTypePreload];
   window.rootViewController = testController;
 
+  [testController.collectionNode.collectionViewLayout invalidateLayout];
+  [testController.collectionNode.collectionViewLayout prepareLayout];
+
   [window makeKeyAndVisible];
-  // Trigger the initial reload to start
+  // Trigger the initial reload to start 
   [window layoutIfNeeded];
 
-  // Test the APIs that monitor ASCollectionNode update handling
-  XCTAssertTrue(cn.isProcessingUpdates, @"ASCollectionNode should still be processing updates after initial layoutIfNeeded call (reloadData)");
-  [cn onDidFinishProcessingUpdates:^{
-    XCTAssertTrue(!cn.isProcessingUpdates, @"ASCollectionNode should no longer be processing updates inside -onDidFinishProcessingUpdates: block");
-  }];
+  // Test the APIs that monitor ASCollectionNode update handling if collection node should
+  // layout asynchronously
+  if (![cn.view dataController:nil shouldSynchronouslyProcessChangeSet:nil]) {
+    XCTAssertTrue(cn.isProcessingUpdates, @"ASCollectionNode should still be processing updates after initial layoutIfNeeded call (reloadData)");
 
-  // Wait for ASDK reload to finish
-  [cn waitUntilAllUpdatesAreProcessed];
+    [cn onDidFinishProcessingUpdates:^{
+      XCTAssertTrue(!cn.isProcessingUpdates, @"ASCollectionNode should no longer be processing updates inside -onDidFinishProcessingUpdates: block");
+    }];
+
+    // Wait for ASDK reload to finish
+    [cn waitUntilAllUpdatesAreProcessed];
+  }
 
   XCTAssertTrue(!cn.isProcessingUpdates, @"ASCollectionNode should no longer be processing updates after -wait call");
 
@@ -1071,6 +1096,7 @@
       for (NSInteger i = 0; i < c; i++) {
         NSIndexPath *ip = [NSIndexPath indexPathForItem:i inSection:s];
         ASCellNode *node = [cn nodeForItemAtIndexPath:ip];
+        ASCATransactionQueueWait(nil);
         if (node.inPreloadState) {
           CGRect frame = [cn.view layoutAttributesForItemAtIndexPath:ip].frame;
           r = CGRectUnion(r, frame);
@@ -1097,7 +1123,7 @@
   [window layoutIfNeeded];
   
   // The initial reload is async, changing the trait collection here should be "mid-update"
-  ASPrimitiveTraitCollection traitCollection;
+  ASPrimitiveTraitCollection traitCollection = ASPrimitiveTraitCollectionMakeDefault();
   traitCollection.displayScale = cn.primitiveTraitCollection.displayScale + 1; // Just a dummy change
   traitCollection.containerSize = screenBounds.size;
   cn.primitiveTraitCollection = traitCollection;

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0730"
+   LastUpgradeVersion = "0940"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "NO"
@@ -46,6 +46,20 @@
                BuildableName = "FBSDKTVOSKit-Universal"
                BlueprintName = "FBSDKTVOSKit-Universal"
                ReferencedContainer = "container:FBSDKTVOSKit/FBSDKTVOSKit.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "0B9DBF6E207C0B5C00662776"
+               BuildableName = "FBSDKLoginKit_TV-Universal"
+               BlueprintName = "FBSDKLoginKit_TV-Universal"
+               ReferencedContainer = "container:FBSDKLoginKit/FBSDKLoginKit.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry

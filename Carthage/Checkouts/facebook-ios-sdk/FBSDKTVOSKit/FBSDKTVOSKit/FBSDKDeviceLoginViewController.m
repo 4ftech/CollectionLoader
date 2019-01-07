@@ -18,8 +18,9 @@
 
 #import "FBSDKDeviceLoginViewController.h"
 
+#import <FBSDKLoginKit/FBSDKDeviceLoginManager.h>
+
 #import "FBSDKCoreKit+Internal.h"
-#import "FBSDKDeviceLoginManager.h"
 
 @interface FBSDKDeviceLoginViewController() <
   FBSDKDeviceLoginManagerDelegate
@@ -109,8 +110,13 @@
         [self _cancel];
       } else if (token != nil) {
         [self _notifySuccessForDelegate:delegate token:token];
-      } else {
+      } else if ([delegate respondsToSelector:@selector(deviceLoginViewController:didFailWithError:)]) {
+        [delegate deviceLoginViewController:self didFailWithError:error];
+      } else if ([delegate respondsToSelector:@selector(deviceLoginViewControllerDidFail:error:)]) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
         [delegate deviceLoginViewControllerDidFail:self error:error];
+#pragma clang diagnostic pop
       }
     }];
   }
@@ -154,7 +160,7 @@
   [alertController addAction:[UIAlertAction actionWithTitle:cancelTitle
                                                       style:UIAlertActionStyleCancel
                                                     handler:^(UIAlertAction * _Nonnull action) {
-                                                      _isRetry = YES;
+                                                      self->_isRetry = YES;
                                                       FBSDKDeviceDialogView *view = [[FBSDKDeviceDialogView alloc] initWithFrame:self.view.frame];
                                                       view.delegate = self;
                                                       self.view = view;

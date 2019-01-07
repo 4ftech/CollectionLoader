@@ -27,7 +27,7 @@ if [ -z "$FB_SDK_SCRIPT" ]; then
 
   # The directory containing this script
   # We need to go there and use pwd so these are all absolute paths
-  pushd "$(dirname $BASH_SOURCE[0])" >/dev/null
+  pushd "$(dirname ${BASH_SOURCE[0]})" >/dev/null
   FB_SDK_SCRIPT=$(pwd)
   popd >/dev/null
 
@@ -44,6 +44,7 @@ if [ -z "$FB_SDK_SCRIPT" ]; then
   # BUILD TARGET
   PACAKAGE_FACEBOOK="FacebookSDK"
   PACAKAGE_AN="AudienceNetwork"
+  PACKAGE_BIDDING_KIT="AudienceNetworkBiddingKit"
 
   # Extract the SDK version from FacebookSDK.h
   FB_SDK_VERSION_RAW=$(sed -n 's/.*FBSDK_VERSION_STRING @\"\(.*\)\"/\1/p' "${FB_SDK_ROOT}"/FBSDKCoreKit/FBSDKCoreKit/FBSDKCoreKit.h)
@@ -55,13 +56,6 @@ if [ -z "$FB_SDK_SCRIPT" ]; then
   FB_SDK_VERSION_REVISION=${FB_SDK_VERSION_REVISION:-0}
   FB_SDK_VERSION=$FB_SDK_VERSION_MAJOR.$FB_SDK_VERSION_MINOR.$FB_SDK_VERSION_REVISION
   FB_SDK_VERSION_SHORT=$(echo $FB_SDK_VERSION | sed 's/\.0$//')
-
-  MN_SDK_VERSION_RAW=$(sed -n 's/.*FBSDK_MESSENGER_SHARE_KIT_VERSION @\"\(.*\)\"/\1/p' "${FB_SDK_ROOT}"/FBSDKMessengerShareKit/FBSDKMessengerShareKit/FBSDKMessengerShareKit.h)
-  MN_SDK_VERSION_MAJOR=$(echo $MN_SDK_VERSION_RAW | awk -F'.' '{print $1}')
-  MN_SDK_VERSION_MINOR=$(echo $MN_SDK_VERSION_RAW | awk -F'.' '{print $2}')
-  MN_SDK_VERSION_MAJOR=${MN_SDK_VERSION_MAJOR:-0}
-  MN_SDK_VERSION_MINOR=${MN_SDK_VERSION_MINOR:-0}
-  MN_SDK_VERSION_SHORT=$(echo $MN_SDK_VERSION_RAW | sed 's/\.0$//')
 
   # The path to AudienceNetwork directory
   FB_AD_SDK_SCRIPT=$FB_SDK_ROOT/ads/scripts

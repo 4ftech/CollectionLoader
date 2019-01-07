@@ -219,8 +219,10 @@
                              advertisingIDEnabled:NO
                            implicitLoggingEnabled:NO
                    implicitPurchaseLoggingEnabled:NO
+                            codelessEventsEnabled:NO
                       systemAuthenticationEnabled:serverSupports
                             nativeAuthFlowEnabled:serverSupports
+                         uninstallTrackingEnabled:NO
                              dialogConfigurations:nil
                                       dialogFlows:nil
                                         timestamp:[NSDate date]
@@ -231,7 +233,11 @@
                                 smartLoginOptions:0
                         smartLoginBookmarkIconURL:nil
                             smartLoginMenuIconURL:nil
+                                    updateMessage:nil
+                                    eventBindings:nil
+                             codelessSetupEnabled:NO
    ];
+
   id serverConfigurationManager = [OCMockObject mockForClass:[FBSDKServerConfigurationManager class]];
   [[[serverConfigurationManager stub] andReturn:serverConfiguration] cachedServerConfiguration];
   [[[serverConfigurationManager stub] andDo:^(NSInvocation *invocation) {

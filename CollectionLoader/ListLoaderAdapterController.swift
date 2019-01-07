@@ -78,7 +78,7 @@ open class ListLoaderAdapterController<L: UIScrollView, T, E, A>: ListLoaderCont
     return listAdapter.tableView(tableView, canEditRowAt: indexPath)
   }
   
-  open override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+  open override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
     super.tableView(tableView, commit: editingStyle, forRowAt: indexPath)
     
     listAdapter.tableView(tableView, commit: editingStyle, forRowAt: indexPath)

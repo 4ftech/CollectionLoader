@@ -34,7 +34,7 @@ static NSTimeInterval const scanLength = 0.5;
 @property (nonatomic, strong) NSTimer *updateTimeoutTimer;
 @property (nonatomic, strong) NSMutableArray<FBSDKBluetoothBeacon *> *discoveredBeacons;
 @property (atomic, strong) NSMutableArray<BluetoothBeaconScanCompletion> *scanCompletionBlocks;
-@property (nonatomic) BOOL didPerformScan;
+@property (nonatomic, assign) BOOL didPerformScan;
 
 @property (nonatomic, copy, readonly) NSArray<CBUUID *> *bluetoothServices;
 @property (nonatomic, strong, readonly) CBUUID *eddystoneBeaconUUID;
@@ -75,12 +75,16 @@ static NSTimeInterval const scanLength = 0.5;
 
 - (void)_startScan
 {
-  if (self.manager.isScanning) {
-    return;
+#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_9_0
+  if (@available(iOS 9.0, *)) {
+    if (self.manager.isScanning) {
+      return;
+    }
   }
-  
+#endif
+
   [self.discoveredBeacons removeAllObjects];
-  
+
   [self.manager scanForPeripheralsWithServices:self.bluetoothServices options:@{ CBCentralManagerScanOptionAllowDuplicatesKey : @YES }];
   self.updateTimeoutTimer = [NSTimer scheduledTimerWithTimeInterval:scanLength target:self selector:@selector(_finalizeBluetoothScan) userInfo:nil repeats:NO];
   self.didPerformScan = YES;
@@ -162,7 +166,7 @@ static NSTimeInterval const scanLength = 0.5;
 - (NSString *)_hexStringForData:(NSData *)data
 {
   NSMutableString *hexString = [NSMutableString stringWithCapacity:data.length * 2];
-  const unsigned char *rawBytes = [data bytes];
+  const unsigned char *rawBytes = data.bytes;
   for (NSInteger i = 0; i < data.length; i++) {
     [hexString appendFormat:@"%02x", rawBytes[i]];
   }

@@ -63,12 +63,15 @@
     NSDate *date = [NSDate date];
     NSData *data = [@"foo" dataUsingEncoding:NSUTF8StringEncoding];
     NSNull *null = [NSNull null];
+    NSArray *testPoints = @[@[@0,@0],@[@0,@1],@[@1,@1],@[@1,@0]];
+    PFPolygon *polygon = [PFPolygon polygonWithCoordinates:testPoints];
     NSDictionary *validDictionary = @{ @"string" : string,
                                        @"number" : number,
                                        @"date" : date,
                                        @"data" : data,
                                        @"null" : null,
-                                       @"object" : object };
+                                       @"object" : object,
+                                       @"polygon" : polygon };
     PFObject *object2 = [PFObject objectWithClassName:@"Test" dictionary:validDictionary];
     XCTAssertNotNil(object2);
     XCTAssertEqualObjects(string, object2[@"string"]);
@@ -77,6 +80,7 @@
     XCTAssertEqualObjects(object, object2[@"object"]);
     XCTAssertEqualObjects(null, object2[@"null"]);
     XCTAssertEqualObjects(data, object2[@"data"]);
+    XCTAssertEqualObjects(polygon, object2[@"polygon"]);
 
     validDictionary = @{ @"array" : @[ object, object2 ],
                          @"dictionary" : @{@"bar" : date, @"score" : number} };
@@ -327,5 +331,34 @@
     XCTAssertEqualObjects(error.localizedDescription, @"Found a circular dependency when saving.");
 }
 
+-(void)testRESTEncoding {
+    PFObject *objectA = [PFObject objectWithClassName:@"A"];
+    PFObject *objectB = [PFObject objectWithClassName:@"B"];
+    objectA[@"B"] = objectB;
+    
+    PFEncoder *encoder = [PFPointerObjectEncoder objectEncoder];
+    NSError *error = nil;
+    NSArray *operationSetUUIDs = nil;
+    XCTAssertNil([objectA RESTDictionaryWithObjectEncoder:encoder
+                                        operationSetUUIDs:&operationSetUUIDs
+                                                    error:&error]);
+    XCTAssertNotNil(error);
+    XCTAssertEqualObjects(error.domain, PFParseErrorDomain);
+    XCTAssertEqualObjects(error.localizedDescription, @"Tried to save an object with a new, unsaved child.");
+}
+
+-(void)testLocalRESTEncoding {
+    PFObject *objectA = [PFObject objectWithClassName:@"A"];
+    PFObject *objectB = [PFObject objectWithClassName:@"B"];
+    objectA[@"B"] = objectB;
+    
+    PFEncoder *encoder = [PFPointerOrLocalIdObjectEncoder objectEncoder];
+    NSError *error = nil;
+    NSArray *operationSetUUIDs = nil;
+    XCTAssertNotNil([objectA RESTDictionaryWithObjectEncoder:encoder
+                                           operationSetUUIDs:&operationSetUUIDs
+                                                       error:&error]);
+    XCTAssertNil(error);
+}
 
 @end

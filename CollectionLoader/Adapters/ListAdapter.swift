@@ -76,7 +76,7 @@ open class ListAdapter<T, E>: NSObject, UIScrollViewDelegate, UITableViewDataSou
     return false
   }
   
-  open func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+  open func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
 
   }
   
@@ -85,7 +85,7 @@ open class ListAdapter<T, E>: NSObject, UIScrollViewDelegate, UITableViewDataSou
   }
   
   open func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-    return UITableViewAutomaticDimension
+    return UITableView.automaticDimension
   }
   
   open func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {

@@ -1,25 +1,25 @@
 {
-  "commitish" : "1.17.1",
+  "commitish" : "1.17.2",
   "iOS" : [
     {
       "name" : "ParseFacebookUtilsV4",
-      "hash" : "dfa179b57992aa3dc8370aa2cf5817b4104e92fc5131c0ecf626d49793371ad3"
+      "hash" : "007323c96799f41c08b435cf7c83bb93a1c6bdd8db6854f90610c3f0944469cb"
     },
     {
       "name" : "ParseTwitterUtils",
-      "hash" : "6637f54483ef225dd841596951322fb22c26a6933868f7de5120b53423261115"
+      "hash" : "879c511d21628c9989d2319c14f6e42ecdc1396b0c1d296256b813b271e24122"
     },
     {
       "name" : "ParseUI",
-      "hash" : "28dbd3156e70015e1c80bb7964fa902c6ea97a16a23e119afe47d1e017f39383"
+      "hash" : "ec890add0a22f10a8ff6b6cc8705c342fb2fcb2bba4b4dfe00372a15d5e8c887"
     },
     {
       "name" : "Parse",
-      "hash" : "666134a980a7dc493f419534f01da364c3c74b1bd1229f7bf08bb7496a8014f6"
+      "hash" : "80cfde7161c4e30799c0f04756f363ccf44c598ee1d08f857738f60abb8d421a"
     },
     {
       "name" : "Parse",
-      "hash" : "666134a980a7dc493f419534f01da364c3c74b1bd1229f7bf08bb7496a8014f6"
+      "hash" : "80cfde7161c4e30799c0f04756f363ccf44c598ee1d08f857738f60abb8d421a"
     }
   ]
 }

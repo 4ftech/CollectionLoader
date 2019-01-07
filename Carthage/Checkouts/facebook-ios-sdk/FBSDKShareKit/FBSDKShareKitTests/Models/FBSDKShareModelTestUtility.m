@@ -40,7 +40,7 @@ NSString *kFBSDKShareModelTestUtilityOpenGraphStringKey = @"TEST:OPEN_GRAPH_STRI
 
 + (NSArray *)allOpenGraphObjectKeys
 {
-  return [[self _openGraphProperties:YES] allKeys];
+  return [self _openGraphProperties:YES].allKeys;
 }
 
 + (NSURL *)contentURL
@@ -55,7 +55,7 @@ NSString *kFBSDKShareModelTestUtilityOpenGraphStringKey = @"TEST:OPEN_GRAPH_STRI
 
 + (NSURL *)fileURL
 {
-  return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
+  return [[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask].lastObject;
 }
 
 + (FBSDKShareLinkContent *)linkContent
@@ -337,7 +337,10 @@ NSString *kFBSDKShareModelTestUtilityOpenGraphStringKey = @"TEST:OPEN_GRAPH_STRI
   content.hashtag = [self hashtag];
   content.peopleIDs = [self peopleIDs];
   content.placeID = [self placeID];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
   content.previewPhoto = [self photoWithImage];
+#pragma clang diagnostic pop
   content.ref = [self ref];
   content.video = [self video];
   return content;

@@ -127,6 +127,7 @@ typedef void (^FBSDKLocationRequestCompletion)(CLLocation *_Nullable location, N
     locationError = error;
     dispatch_group_leave(locationAndBeaconsGroup);
   }];
+
   [self.locationManager requestLocation];
 
   dispatch_group_enter(locationAndBeaconsGroup);
@@ -307,7 +308,7 @@ typedef void (^FBSDKLocationRequestCompletion)(CLLocation *_Nullable location, N
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray<CLLocation *> *)locations
 {
-  CLLocation *mostRecentLocation = [locations lastObject];
+  CLLocation *mostRecentLocation = locations.lastObject;
   [self _callCompletionBlocksWithLocation:mostRecentLocation error:nil];
 }
 

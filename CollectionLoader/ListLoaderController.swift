@@ -246,7 +246,7 @@ open class ListLoaderController<L: UIScrollView, T, E>: UIViewController, Collec
     
     // Make sure Search Bar is on top
     if let searchBar = searchBar {
-      view.bringSubview(toFront: searchBar)
+      view.bringSubviewToFront(searchBar)
     }
     
     // OK GO
@@ -314,13 +314,13 @@ open class ListLoaderController<L: UIScrollView, T, E>: UIViewController, Collec
   }
   
   open func registerForSearchKeyboardNotifications() {
-    NotificationCenter.default.addObserver(self, selector: #selector(searchKeyboardWillShow(_:)), name: Notification.Name.UIKeyboardWillShow, object: nil)
-    NotificationCenter.default.addObserver(self, selector: #selector(searchKeyboardWillHide(_:)), name: Notification.Name.UIKeyboardWillHide, object: nil)
+    NotificationCenter.default.addObserver(self, selector: #selector(searchKeyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
+    NotificationCenter.default.addObserver(self, selector: #selector(searchKeyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
   }
 
   open func deregisterForSearchKeyboardNotifications() {
-    NotificationCenter.default.removeObserver(self, name: Notification.Name.UIKeyboardWillShow, object: nil)
-    NotificationCenter.default.removeObserver(self, name: Notification.Name.UIKeyboardWillHide, object: nil)
+    NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
+    NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
   }
 
   @objc open func searchKeyboardWillShow(_ notification: Notification) {
@@ -329,8 +329,8 @@ open class ListLoaderController<L: UIScrollView, T, E>: UIViewController, Collec
     }
     
     if let userInfo = notification.userInfo {
-      let animationDuration: TimeInterval = (userInfo[UIKeyboardAnimationDurationUserInfoKey] as! NSNumber).doubleValue
-      if let keyboardSize = (userInfo[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
+      let animationDuration: TimeInterval = (userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as! NSNumber).doubleValue
+      if let keyboardSize = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
         self.searchKeyboardWillShow(height: keyboardSize.height, animationDuration: animationDuration)
       }
     }
@@ -354,7 +354,7 @@ open class ListLoaderController<L: UIScrollView, T, E>: UIViewController, Collec
     }
 
     if let userInfo = notification.userInfo {
-      let animationDuration: TimeInterval = (userInfo[UIKeyboardAnimationDurationUserInfoKey] as! NSNumber).doubleValue
+      let animationDuration: TimeInterval = (userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as! NSNumber).doubleValue
       self.searchKeyboardWillHide(animationDuration: animationDuration)
     }
   }
@@ -427,7 +427,7 @@ open class ListLoaderController<L: UIScrollView, T, E>: UIViewController, Collec
         
         if let indicatorView = self.scrollView.infiniteScrollIndicatorView {
           // So that the new rows will fade in front of the indicator
-          self.scrollView.sendSubview(toBack: indicatorView)
+          self.scrollView.sendSubviewToBack(indicatorView)
         }
       } else {
         self.refreshControl?.endRefreshing()
@@ -705,7 +705,7 @@ open class ListLoaderController<L: UIScrollView, T, E>: UIViewController, Collec
     return false
   }
   
-  open func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+  open func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
     if editingStyle == .delete {
       let row = dataLoader.rowsToDisplay[indexPath.row]
       if row.isNew {
@@ -727,7 +727,7 @@ open class ListLoaderController<L: UIScrollView, T, E>: UIViewController, Collec
   }
   
   open func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-    return UITableViewAutomaticDimension
+    return UITableView.automaticDimension
   }
   
   open func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {

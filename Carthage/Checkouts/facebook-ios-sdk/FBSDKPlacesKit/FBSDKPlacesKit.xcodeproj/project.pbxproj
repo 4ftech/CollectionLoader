@@ -35,7 +35,6 @@
 		419E00281E4A1EF500EBE9C5 /* FBSDKPlacesManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 419E00161E4A1EF500EBE9C5 /* FBSDKPlacesManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		419E00291E4A1EF500EBE9C5 /* FBSDKPlacesManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 419E00171E4A1EF500EBE9C5 /* FBSDKPlacesManager.m */; };
 		419E002A1E4A1EF500EBE9C5 /* FBSDKPlacesKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 419E00181E4A1EF500EBE9C5 /* FBSDKPlacesKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		419E00331E4A1F3000EBE9C5 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 419E00321E4A1F3000EBE9C5 /* Info.plist */; };
 		419E37AC1E5CA9F200F9C7C5 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 419E37AB1E5CA9F200F9C7C5 /* SystemConfiguration.framework */; };
 		41E9AA5E1E81B7340043BD96 /* FBSDKPlacesKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 419E00181E4A1EF500EBE9C5 /* FBSDKPlacesKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		41E9AA5F1E81B73D0043BD96 /* FBSDKPlacesManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 419E00161E4A1EF500EBE9C5 /* FBSDKPlacesManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -491,7 +490,7 @@
 		9D9DB8D01A114E500086167B /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0820;
+				LastUpgradeCheck = 0940;
 				ORGANIZATIONNAME = Facebook;
 				TargetAttributes = {
 					9D9DB8D81A114E500086167B = {
@@ -581,7 +580,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				419E00331E4A1F3000EBE9C5 /* Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -689,7 +687,15 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 812E0CFE1D23840500291B71 /* Debug.xcconfig */;
 			buildSettings = {
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 			};
 			name = Debug;
@@ -698,7 +704,15 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 812E0CFF1D23840500291B71 /* Release.xcconfig */;
 			buildSettings = {
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 			};
 			name = Release;

@@ -64,7 +64,7 @@ open class ListCellMapperAdapter<C: CellMapperAdapter, E>: ListAdapter<C.T.T, E>
       }
 
       collectionView.register(UICollectionReusableView.self,
-                              forSupplementaryViewOfKind: UICollectionElementKindSectionHeader,
+                              forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
                               withReuseIdentifier: String(describing: UICollectionReusableView.self))
     }
   }
@@ -202,7 +202,7 @@ open class ListCellMapperAdapter<C: CellMapperAdapter, E>: ListAdapter<C.T.T, E>
                                     viewForSupplementaryElementOfKind kind: String,
                                     at indexPath: IndexPath) -> UICollectionReusableView {
     
-    let header: UICollectionReusableView = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionHeader, withReuseIdentifier: String(describing: UICollectionReusableView.self), for: indexPath)
+    let header: UICollectionReusableView = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: String(describing: UICollectionReusableView.self), for: indexPath)
     
     if let view = cellAdapter.sectionHeader?(indexPath.section) {
       header.fill(withView: view)

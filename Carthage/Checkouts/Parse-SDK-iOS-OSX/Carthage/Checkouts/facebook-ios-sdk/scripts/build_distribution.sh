@@ -202,7 +202,7 @@ else
 		\cp -R "$FB_SDK_BUILD"/FBSDKShareKit.framework "$FB_SDK_BUILD_PACKAGE" \
 		  || die "Could not copy FBSDKShareKit.framework"
 		\cp -R "$FB_SDK_BUILD"/FBSDKPlacesKit.framework "$FB_SDK_BUILD_PACKAGE" \
-		|| die "Could not copy FBSDKPlacesKit.framework"
+			|| die "Could not copy FBSDKPlacesKit.framework"
 		\cp -R "$FB_SDK_BUILD"/Bolts.framework "$FB_SDK_BUILD_PACKAGE" \
 		  || die "Could not copy Bolts.framework"
 		\cp -R $"$FB_SDK_ROOT"/FacebookSDKStrings.bundle "$FB_SDK_BUILD_PACKAGE" \
@@ -248,6 +248,13 @@ else
 		fi
 		\cp -R "$FB_SDK_BUILD"/FBSDKMessengerShareKit.framework "$FB_SDK_BUILD_PACKAGE" \
 		  || die "Could not copy FBSDKMessengerShareKit.framework"
+
+		# Build Marketing Kit
+		if [ -z $SKIPBUILD ]; then
+			(xcodebuild -project "${FB_SDK_ROOT}"/FBSDKMarketingKit/FBSDKMarketingKit.xcodeproj -scheme "FBSDKMarketingKit-universal" -configuration Release clean build) || die "Failed to build marketing kit"
+		fi
+		\cp -R "$FB_SDK_BUILD"/FBSDKMarketingKit.framework "$FB_SDK_BUILD_PACKAGE" \
+			|| die "Could not copy FBSDKMarketingKit.framework"
 
 		# Build docs
 		if [ -z $SKIPBUILD ]; then

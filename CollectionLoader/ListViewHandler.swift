@@ -18,7 +18,7 @@ open class ListViewHandler<L>: NSObject where L:UIScrollView {
       tableView.dataSource = delegate
       tableView.delegate = delegate
       
-      self.scrollView = tableView as! L
+      self.scrollView = (tableView as! L)
     } else if L.self == UICollectionView.self {
       let flowLayout = UICollectionViewFlowLayout()
       flowLayout.itemSize = CGSize(width: UIScreen.main.bounds.width, height: flowLayout.itemSize.height)
@@ -30,14 +30,14 @@ open class ListViewHandler<L>: NSObject where L:UIScrollView {
       collectionView.delegate = delegate
       collectionView.backgroundColor = UIColor.white
       
-      self.scrollView = collectionView as! L
+      self.scrollView = (collectionView as! L)
     } else {
-      self.scrollView = UIScrollView() as! L
+      self.scrollView = (UIScrollView() as! L)
     }
     
     // Common behavior
     if #available(iOS 11.0, *) {
-      self.scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentBehavior.never
+      self.scrollView.contentInsetAdjustmentBehavior = UIScrollView.ContentInsetAdjustmentBehavior.never
     }
     
     // ScrollView

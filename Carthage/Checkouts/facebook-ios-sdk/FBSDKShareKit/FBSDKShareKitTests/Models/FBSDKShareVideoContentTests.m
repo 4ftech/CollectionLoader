@@ -38,7 +38,10 @@
   XCTAssertEqualObjects(content.contentURL, [FBSDKShareModelTestUtility contentURL]);
   XCTAssertEqualObjects(content.peopleIDs, [FBSDKShareModelTestUtility peopleIDs]);
   XCTAssertEqualObjects(content.placeID, [FBSDKShareModelTestUtility placeID]);
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
   XCTAssertEqualObjects(content.previewPhoto, [FBSDKShareModelTestUtility photoWithImage]);
+#pragma clang diagnostic pop
   XCTAssertEqualObjects(content.ref, [FBSDKShareModelTestUtility ref]);
   XCTAssertEqualObjects(content.video, [FBSDKShareModelTestUtility video]);
 }
@@ -66,13 +69,16 @@
   content.contentURL = [FBSDKShareModelTestUtility contentURL];
   content.peopleIDs = [FBSDKShareModelTestUtility peopleIDs];
   content.placeID = [FBSDKShareModelTestUtility placeID];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
   content.previewPhoto = [FBSDKShareModelTestUtility photoWithImage];
+#pragma clang diagnostic pop
   content.ref = [FBSDKShareModelTestUtility ref];
   content.video = [FBSDKShareModelTestUtility video];
   NSError *error;
   XCTAssertNotNil(content);
   XCTAssertNil(error);
-  XCTAssertTrue([FBSDKShareUtility validateShareContent:content error:&error]);
+  XCTAssertTrue([FBSDKShareUtility validateShareContent:content bridgeOptions:FBSDKShareBridgeOptionsDefault error:&error]);
   XCTAssertNil(error);
 }
 
@@ -81,9 +87,9 @@
   FBSDKShareVideoContent *content = [[FBSDKShareVideoContent alloc] init];
   XCTAssertNotNil(content);
   NSError *error;
-  XCTAssertFalse([FBSDKShareUtility validateShareContent:content error:&error]);
+  XCTAssertFalse([FBSDKShareUtility validateShareContent:content bridgeOptions:FBSDKShareBridgeOptionsDefault error:&error]);
   XCTAssertNotNil(error);
-  XCTAssertEqual(error.code, FBSDKInvalidArgumentErrorCode);
+  XCTAssertEqual(error.code, FBSDKErrorInvalidArgument);
   XCTAssertEqualObjects(error.userInfo[FBSDKErrorArgumentNameKey], @"video");
 }
 
@@ -93,9 +99,9 @@
   content.video = [[FBSDKShareVideo alloc] init];
   XCTAssertNotNil(content);
   NSError *error;
-  XCTAssertFalse([FBSDKShareUtility validateShareContent:content error:&error]);
+  XCTAssertFalse([FBSDKShareUtility validateShareContent:content bridgeOptions:FBSDKShareBridgeOptionsDefault error:&error]);
   XCTAssertNotNil(error);
-  XCTAssertEqual(error.code, FBSDKInvalidArgumentErrorCode);
+  XCTAssertEqual(error.code, FBSDKErrorInvalidArgument);
   XCTAssertEqualObjects(error.userInfo[FBSDKErrorArgumentNameKey], @"videoURL");
 }
 
@@ -107,20 +113,20 @@
   content.video = video;
   XCTAssertNotNil(content);
   NSError *error;
-  XCTAssertTrue([FBSDKShareUtility validateShareContent:content error:&error]);
+  XCTAssertTrue([FBSDKShareUtility validateShareContent:content bridgeOptions:FBSDKShareBridgeOptionsDefault error:&error]);
   XCTAssertNil(error);
 }
 
 - (void)testValidationWithValidFileVideoURL
 {
-  NSURL *videoURL = [[[NSBundle mainBundle] resourceURL] URLByAppendingPathComponent:@"video.mp4"];
+  NSURL *videoURL = [[NSBundle mainBundle].resourceURL URLByAppendingPathComponent:@"video.mp4"];
   FBSDKShareVideo *video = [FBSDKShareVideo videoWithVideoURL:videoURL];
   XCTAssertNotNil(video);
   FBSDKShareVideoContent *content = [[FBSDKShareVideoContent alloc] init];
   content.video = video;
   XCTAssertNotNil(content);
   NSError *error;
-  XCTAssertTrue([FBSDKShareUtility validateShareContent:content error:&error]);
+  XCTAssertTrue([FBSDKShareUtility validateShareContent:content bridgeOptions:FBSDKShareBridgeOptionsDefault error:&error]);
   XCTAssertNil(error);
 }
 

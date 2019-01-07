@@ -2,7 +2,7 @@
   "Mac" : [
     {
       "name" : "PINCache",
-      "hash" : "64d6ae38a74fc7678988d9b0564a991bdab2ce83728cb11755b807ac6841dbf4"
+      "hash" : "824bfc70d3a8c95759ca1716923aea36c86bc66ce64f0c4d4cd03ef172cd8848"
     }
   ],
   "watchOS" : [
@@ -11,14 +11,14 @@
   "tvOS" : [
     {
       "name" : "PINCache",
-      "hash" : "fb0cbb930ef7ae8d35186a911a08c6250e925e66d96228d87c4c1ae304f74aee"
+      "hash" : "ad79c4a6dc94bea056f5836db5c91b23ed4079f19b87e46603b11d4aa60a3b8e"
     }
   ],
-  "commitish" : "2.3",
+  "commitish" : "3.0.1-beta.6",
   "iOS" : [
     {
       "name" : "PINCache",
-      "hash" : "210f5ed26dedcb4e6bd7666bbf720846645ddf2c39e90844a5fb54ff9b828ccd"
+      "hash" : "b5f238562544d06aa15caddcec4cf48f8875de3486edbe55aa9de667f99e7629"
     }
   ]
 }

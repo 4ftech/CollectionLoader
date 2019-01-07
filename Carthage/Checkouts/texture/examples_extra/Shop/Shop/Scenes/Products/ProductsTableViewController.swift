@@ -1,9 +1,9 @@
 //
 //  ProductsTableViewController.swift
-//  Shop
+//  Texture
 //
-//  Created by Dimitri on 15/11/2016.
-//  Copyright © 2016 Dimitri. All rights reserved.
+//  Copyright (c) Pinterest, Inc.  All rights reserved.
+//  Licensed under Apache 2.0: http://www.apache.org/licenses/LICENSE-2.0
 //
 
 import UIKit
@@ -42,7 +42,7 @@ class ProductsTableViewController: ASViewController<ASTableNode> {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        if let indexPath = self.tableNode.view.indexPathForSelectedRow {
+        if let indexPath = self.tableNode.indexPathForSelectedRow {
             self.tableNode.view.deselectRow(at: indexPath, animated: true)
         }
     }

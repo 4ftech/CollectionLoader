@@ -21,7 +21,7 @@ open class ListCellMapperController<L: UIScrollView, C: CellMapperAdapter, E>: L
     super.init(coder: aDecoder)
   }
   
-  open static func listAdapter(cellAdapter: C,
+  public static func listAdapter(cellAdapter: C,
                                dataLoader: DataLoader<T, E>,
                                initialize: ((C) -> Void)? = nil) -> ListCellMapperAdapter<C, E> {
     

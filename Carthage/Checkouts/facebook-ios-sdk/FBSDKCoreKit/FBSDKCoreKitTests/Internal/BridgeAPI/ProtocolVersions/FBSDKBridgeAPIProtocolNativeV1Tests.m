@@ -42,10 +42,10 @@
 {
   [super setUp];
 
-  self.actionID = [[NSUUID UUID] UUIDString];
-  self.scheme = [[NSUUID UUID] UUIDString];
-  self.methodName = [[NSUUID UUID] UUIDString];
-  self.methodVersion = [[NSUUID UUID] UUIDString];
+  self.actionID = [NSUUID UUID].UUIDString;
+  self.scheme = [NSUUID UUID].UUIDString;
+  self.methodName = [NSUUID UUID].UUIDString;
+  self.methodVersion = [NSUUID UUID].UUIDString;
   self.protocol = [[FBSDKBridgeAPIProtocolNativeV1 alloc] initWithAppScheme:self.scheme];
 }
 
@@ -155,7 +155,7 @@
                                        };
   NSDictionary *queryParameters = @{
                                     @"bridge_args": @{
-                                        @"action_id": [[NSUUID UUID] UUIDString],
+                                        @"action_id": [NSUUID UUID].UUIDString,
                                         },
                                     @"method_results": responseParameters,
                                     };
@@ -188,7 +188,7 @@
                                                       error:&error]);
   XCTAssertFalse(cancelled);
   XCTAssertNotNil(error);
-  XCTAssertEqual(error.code, FBSDKInvalidArgumentErrorCode);
+  XCTAssertEqual(error.code, FBSDKErrorInvalidArgument);
   XCTAssertEqual(error.domain, FBSDKErrorDomain);
   XCTAssertEqualObjects(error.userInfo[FBSDKErrorArgumentNameKey], @"bridge_args");
   XCTAssertEqualObjects(error.userInfo[FBSDKErrorArgumentValueKey], bridgeArgs);
@@ -215,7 +215,7 @@
                                                       error:&error]);
   XCTAssertFalse(cancelled);
   XCTAssertNotNil(error);
-  XCTAssertEqual(error.code, FBSDKInvalidArgumentErrorCode);
+  XCTAssertEqual(error.code, FBSDKErrorInvalidArgument);
   XCTAssertEqual(error.domain, FBSDKErrorDomain);
   XCTAssertEqualObjects(error.userInfo[FBSDKErrorArgumentNameKey], @"method_results");
   XCTAssertEqualObjects(error.userInfo[FBSDKErrorArgumentValueKey], methodResults);
@@ -351,7 +351,7 @@
 - (void)testRequestParametersWithDataPasteboard
 {
   id pasteboard = [OCMockObject mockForClass:[UIPasteboard class]];
-  NSString *pasteboardName = [[NSUUID UUID] UUIDString];
+  NSString *pasteboardName = [NSUUID UUID].UUIDString;
   NSData *data = [self _testData];
   [[[pasteboard stub] andReturn:pasteboardName] name];
   [[pasteboard expect] setData:data forPasteboardType:@"com.facebook.Facebook.FBAppBridgeType"];
@@ -388,7 +388,7 @@
 - (void)testRequestParametersWithImagePasteboard
 {
   id pasteboard = [OCMockObject mockForClass:[UIPasteboard class]];
-  NSString *pasteboardName = [[NSUUID UUID] UUIDString];
+  NSString *pasteboardName = [NSUUID UUID].UUIDString;
   UIImage *image = [self _testImage];
   NSData *data = [self _testDataWithImage:image];
   [[[pasteboard stub] andReturn:pasteboardName] name];

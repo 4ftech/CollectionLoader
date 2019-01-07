@@ -49,7 +49,7 @@ public class LoaderGradientLayer: CAGradientLayer {
     ]
     
     gradientAnimation.repeatCount = Float.infinity
-    gradientAnimation.fillMode = kCAFillModeForwards
+    gradientAnimation.fillMode = CAMediaTimingFillMode.forwards
     gradientAnimation.isRemovedOnCompletion = false
     gradientAnimation.duration = 2
     

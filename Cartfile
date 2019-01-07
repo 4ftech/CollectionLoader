@@ -13,4 +13,4 @@ github "xmartlabs/Eureka" ~> 4.1.1
 
 github "osteslag/Changeset"
 
-github "texturegroup/texture"
+github "texturegroup/texture" "master"

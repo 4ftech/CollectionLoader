@@ -75,6 +75,7 @@
 {
   NSError *error;
   XCTAssertTrue([FBSDKShareUtility validateShareContent:[FBSDKShareModelTestUtility linkContent]
+                                          bridgeOptions:FBSDKShareBridgeOptionsDefault
                                                   error:&error]);
   XCTAssertNil(error);
 }
@@ -82,9 +83,9 @@
 - (void)testValidationWithNilContent
 {
   NSError *error;
-  XCTAssertFalse([FBSDKShareUtility validateShareContent:nil error:&error]);
+  XCTAssertFalse([FBSDKShareUtility validateShareContent:nil bridgeOptions:FBSDKShareBridgeOptionsDefault error:&error]);
   XCTAssertNotNil(error);
-  XCTAssertEqual(error.code, FBSDKInvalidArgumentErrorCode);
+  XCTAssertEqual(error.code, FBSDKErrorInvalidArgument);
   XCTAssertEqualObjects(error.userInfo[FBSDKErrorArgumentNameKey], @"shareContent");
   XCTAssertNil(error.userInfo[FBSDKErrorArgumentValueKey]);
 }

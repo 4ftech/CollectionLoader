@@ -41,7 +41,7 @@ public final class CollectionLoaderSelectRow<C: CellMapperAdapter, E>: SelectorR
     cell.formViewController()?.show(controller, sender: self)
   }
   
-  open func setup(initializer: ((CollectionLoaderSelectRow) -> Void)? = nil) {
+  public func setup(initializer: ((CollectionLoaderSelectRow) -> Void)? = nil) {
     displayValueFor = {
       guard let value = $0 else { return "" }
       return  value.objectId
