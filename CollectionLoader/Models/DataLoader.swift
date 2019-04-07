@@ -167,7 +167,7 @@ open class DataLoader<T, E>: NSObject where E: DataLoaderEngine<T> {
     cancellationToken = thisCancellationToken
         
     NSLog("Will execute: \(loadType); queryString: \(String(describing: searchQueryString))")
-    return dataLoaderEngine.promise(forLoadType: loadType, queryString: searchQueryString, filters: filters).always {
+    return dataLoaderEngine.promise(forLoadType: loadType, queryString: searchQueryString, filters: filters).ensure {
       if !thisCancellationToken.isCancelled {
         NSLog("Got results for \(loadType); queryString: \(String(describing: self.searchQueryString))")
 
@@ -178,9 +178,9 @@ open class DataLoader<T, E>: NSObject where E: DataLoaderEngine<T> {
           object: self,
           userInfo: self.userInfo(loadType: loadType))
       }
-    }.then { results in
+    }.then { (results: [T]) -> Promise<[T]> in
       if thisCancellationToken.isCancelled {
-        return Promise(error: NSError.cancelledError())
+        return Promise(error: PMKError.cancelled)
       }
 
       var results = results
@@ -195,7 +195,7 @@ open class DataLoader<T, E>: NSObject where E: DataLoaderEngine<T> {
         self.mightHaveMore = false
       }
       
-      return Promise<[T]>() { (fulfill, reject) in
+      return Promise<[T]>() { seal in
         // Sort/filter as necessary but do it in the background
         DispatchQueue.global(qos: .background).async {
           if let fn = self.dataLoaderEngine.filterFunction {
@@ -206,15 +206,18 @@ open class DataLoader<T, E>: NSObject where E: DataLoaderEngine<T> {
             results = results.sorted(by: fn)
           }
           
-          fulfill(results)
+          seal.fulfill(results)
         }
       }.then { (results: [T]) -> Promise<[T]> in
         self.handleResults(results, loadType: loadType, updateTimes: updateTimes)
-        return Promise(value: results)
+        return Promise.value(results)
       }
-    }.catch { error in
-      self.delegate?.dataLoader(self, didCatchLoadingError: error)
-      NSLog("error: \(error)")
+    }.tap { result in
+      switch result {
+      case .rejected(let error):
+        self.delegate?.dataLoader(self, didCatchLoadingError: error)
+      default: break
+      }
     }
   }
 

@@ -58,7 +58,7 @@ open class CollectionSearchBar: UIView {
               self?.delegate?.searchBarTextDidChangeAfterThrottle(self!)
             }
           })
-          .addDisposableTo(disposeBag)
+          .disposed(by: disposeBag)
       }
     }
   }

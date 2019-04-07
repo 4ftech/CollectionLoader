@@ -1,9 +1,9 @@
 {
-  "commitish" : "22acb985cbac06bd20402151437cff265c361237",
+  "commitish" : "b9c8b3233b07ba32702e01667f9c424bae6ccc6d",
   "iOS" : [
     {
       "name" : "AsyncDisplayKit",
-      "hash" : "d1c8e5070a7a1ccc8908f26a60bceb81b4dfd80715f5543b95a912eab4f8b273"
+      "hash" : "1914afabcf83a46db0bf8b603c608f8dde057384cb3a7508beb6fc2d264b37a4"
     }
   ]
 }

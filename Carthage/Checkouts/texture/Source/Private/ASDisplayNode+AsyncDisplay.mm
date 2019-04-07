@@ -18,6 +18,7 @@
 #import <AsyncDisplayKit/ASSignpost.h>
 #import <AsyncDisplayKit/ASDisplayNodeExtras.h>
 
+using AS::MutexLocker;
 
 @interface ASDisplayNode () <_ASDisplayLayerDelegate>
 @end
@@ -234,7 +235,12 @@
 
       CGContextRef currentContext = UIGraphicsGetCurrentContext();
       UIImage *image = nil;
-      
+
+      if (shouldCreateGraphicsContext && !currentContext) {
+        ASDisplayNodeAssert(NO, @"Failed to create a CGContext (size: %@)", NSStringFromCGSize(bounds.size));
+        return nil;
+      }
+
       // For -display methods, we don't have a context, and thus will not call the _willDisplayNodeContentWithRenderingContext or
       // _didDisplayNodeContentWithRenderingContext blocks. It's up to the implementation of -display... to do what it needs.
       [self __willDisplayNodeContentWithRenderingContext:currentContext drawParameters:drawParameters];
@@ -281,13 +287,15 @@
       ASCornerRoundingType cornerRoundingType = _cornerRoundingType;
       CGFloat cornerRadius = _cornerRadius;
       ASDisplayNodeContextModifier willDisplayNodeContentWithRenderingContext = _willDisplayNodeContentWithRenderingContext;
+      CACornerMask maskedCorners = _maskedCorners;
     __instanceLock__.unlock();
 
     if (cornerRoundingType == ASCornerRoundingTypePrecomposited && cornerRadius > 0.0) {
       ASDisplayNodeAssert(context == UIGraphicsGetCurrentContext(), @"context is expected to be pushed on UIGraphics stack %@", self);
       // TODO: This clip path should be removed if we are rasterizing.
       CGRect boundingBox = CGContextGetClipBoundingBox(context);
-      [[UIBezierPath bezierPathWithRoundedRect:boundingBox cornerRadius:cornerRadius] addClip];
+      CGSize radii = CGSizeMake(cornerRadius, cornerRadius);
+      [[UIBezierPath bezierPathWithRoundedRect:boundingBox byRoundingCorners:maskedCorners cornerRadii:radii] addClip];
     }
     
     if (willDisplayNodeContentWithRenderingContext) {
@@ -307,6 +315,7 @@
     CGFloat cornerRadius = _cornerRadius;
     CGFloat contentsScale = _contentsScaleForDisplay;
     ASDisplayNodeContextModifier didDisplayNodeContentWithRenderingContext = _didDisplayNodeContentWithRenderingContext;
+    CACornerMask maskedCorners = _maskedCorners;
   __instanceLock__.unlock();
   
   if (context != NULL) {
@@ -332,7 +341,10 @@
     ASDisplayNodeAssert(UIGraphicsGetCurrentContext(), @"context is expected to be pushed on UIGraphics stack %@", self);
     
     UIBezierPath *roundedHole = [UIBezierPath bezierPathWithRect:bounds];
-    [roundedHole appendPath:[UIBezierPath bezierPathWithRoundedRect:bounds cornerRadius:cornerRadius * contentsScale]];
+    CGSize radii = CGSizeMake(cornerRadius * contentsScale, cornerRadius * contentsScale);
+    [roundedHole appendPath:[UIBezierPath bezierPathWithRoundedRect:bounds
+                                                  byRoundingCorners:maskedCorners
+                                                        cornerRadii:radii]];
     roundedHole.usesEvenOddFillRule = YES;
     
     UIBezierPath *roundedPath = nil;
@@ -462,25 +474,25 @@
 
 - (ASDisplayNodeContextModifier)willDisplayNodeContentWithRenderingContext
 {
-  ASDN::MutexLocker l(__instanceLock__);
+  MutexLocker l(__instanceLock__);
   return _willDisplayNodeContentWithRenderingContext;
 }
 
 - (ASDisplayNodeContextModifier)didDisplayNodeContentWithRenderingContext
 {
-  ASDN::MutexLocker l(__instanceLock__);
+  MutexLocker l(__instanceLock__);
   return _didDisplayNodeContentWithRenderingContext;
 }
 
 - (void)setWillDisplayNodeContentWithRenderingContext:(ASDisplayNodeContextModifier)contextModifier
 {
-  ASDN::MutexLocker l(__instanceLock__);
+  MutexLocker l(__instanceLock__);
   _willDisplayNodeContentWithRenderingContext = contextModifier;
 }
 
 - (void)setDidDisplayNodeContentWithRenderingContext:(ASDisplayNodeContextModifier)contextModifier;
 {
-  ASDN::MutexLocker l(__instanceLock__);
+  MutexLocker l(__instanceLock__);
   _didDisplayNodeContentWithRenderingContext = contextModifier;
 }
 

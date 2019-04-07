@@ -8,14 +8,14 @@
   "tvOS" : [
     {
       "name" : "PINRemoteImage",
-      "hash" : "8c40fa076758d0d46fe71218f0f9f9785a22c08ae90bf41a6e6a915a2f95876d"
+      "hash" : "46a9b980938d5554fd60bb7b635c155bffc7e4dc7451356b44d1a88c803e4ce5"
     }
   ],
-  "commitish" : "3.0.0-beta.13",
+  "commitish" : "3.0.0-beta.14",
   "iOS" : [
     {
       "name" : "PINRemoteImage",
-      "hash" : "f0b6bdef6d417492f53ade71ec7195acd6acf9fa53165061b4128d91ac14da0d"
+      "hash" : "9aff571d5db6695b0128b68be74637db1a14d1a651bc6bdf8ef33bbd485bfbff"
     }
   ]
 }

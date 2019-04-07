@@ -113,11 +113,11 @@ open class DataLoaderEngine<T: BaseDataModel>: NSObject {
   
   open func promise(forLoadType loadType: DataLoadType = .initial, queryString: String? = nil, filters: [Filter]?  = nil) -> Promise<[T]> {
     if loadType == .newRows && orderByKey != nil && orderByLastValue == nil {
-      return Promise(value: [])
+      return Promise.value([])
     }
     
-    return Promise<[T]> { fulfill, reject in
-      self.promiseForFetch(forLoadType: loadType, queryString: queryString, filters: filters).then { (results: [T]) -> Void in
+    return Promise<[T]> { seal in
+      self.promiseForFetch(forLoadType: loadType, queryString: queryString, filters: filters).done { (results: [T]) in
         if loadType != .more {
           self.firstRow = results.first
         }
@@ -130,9 +130,9 @@ open class DataLoaderEngine<T: BaseDataModel>: NSObject {
           }
         }
         
-        fulfill(results)
+        seal.fulfill(results)
       }.catch { error in
-        reject(error)
+        seal.reject(error)
       }
     }
   }

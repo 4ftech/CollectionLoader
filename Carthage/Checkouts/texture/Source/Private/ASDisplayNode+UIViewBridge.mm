@@ -34,8 +34,8 @@
 #define DISPLAYNODE_USE_LOCKS 1
 
 #if DISPLAYNODE_USE_LOCKS
-#define _bridge_prologue_read ASDN::MutexLocker l(__instanceLock__); ASDisplayNodeAssertThreadAffinity(self)
-#define _bridge_prologue_write ASDN::MutexLocker l(__instanceLock__)
+#define _bridge_prologue_read AS::MutexLocker l(__instanceLock__); ASDisplayNodeAssertThreadAffinity(self)
+#define _bridge_prologue_write AS::MutexLocker l(__instanceLock__)
 #else
 #define _bridge_prologue_read ASDisplayNodeAssertThreadAffinity(self)
 #define _bridge_prologue_write
@@ -175,24 +175,39 @@ if (shouldApply) { _layer.layerProperty = (layerValueExpr); } else { ASDisplayNo
 
 - (CGFloat)cornerRadius
 {
-  ASDN::MutexLocker l(__instanceLock__);
+  AS::MutexLocker l(__instanceLock__);
   return _cornerRadius;
 }
 
 - (void)setCornerRadius:(CGFloat)newCornerRadius
 {
-  [self updateCornerRoundingWithType:self.cornerRoundingType cornerRadius:newCornerRadius];
+  [self updateCornerRoundingWithType:self.cornerRoundingType
+                        cornerRadius:newCornerRadius
+                       maskedCorners:self.maskedCorners];
 }
 
 - (ASCornerRoundingType)cornerRoundingType
 {
-  ASDN::MutexLocker l(__instanceLock__);
+  AS::MutexLocker l(__instanceLock__);
   return _cornerRoundingType;
 }
 
 - (void)setCornerRoundingType:(ASCornerRoundingType)newRoundingType
 {
-  [self updateCornerRoundingWithType:newRoundingType cornerRadius:self.cornerRadius];
+  [self updateCornerRoundingWithType:newRoundingType cornerRadius:self.cornerRadius maskedCorners:self.maskedCorners];
+}
+
+- (CACornerMask)maskedCorners
+{
+  AS::MutexLocker l(__instanceLock__);
+  return _maskedCorners;
+}
+
+- (void)setMaskedCorners:(CACornerMask)newMaskedCorners
+{
+  [self updateCornerRoundingWithType:self.cornerRoundingType
+                        cornerRadius:self.cornerRadius
+                       maskedCorners:newMaskedCorners];
 }
 
 - (NSString *)contentsGravity
@@ -944,6 +959,18 @@ if (shouldApply) { _layer.layerProperty = (layerValueExpr); } else { ASDisplayNo
   }
 }
 
+- (NSDictionary<NSString *,id<CAAction>> *)actions
+{
+  _bridge_prologue_read;
+  return _getFromLayer(actions);
+}
+
+- (void)setActions:(NSDictionary<NSString *,id<CAAction>> *)actions
+{
+  _bridge_prologue_write;
+  _setToLayer(actions, actions);
+}
+
 - (void)safeAreaInsetsDidChange
 {
   ASDisplayNodeAssertMainThread();
@@ -969,6 +996,27 @@ if (shouldApply) { _layer.layerProperty = (layerValueExpr); } else { ASDisplayNo
 {
   _bridge_prologue_write;
   _setToLayer(cornerRadius, newLayerCornerRadius);
+}
+
+- (CACornerMask)layerMaskedCorners
+{
+  _bridge_prologue_read;
+  if (AS_AVAILABLE_IOS_TVOS(11, 11)) {
+    return _getFromLayer(maskedCorners);
+  } else {
+    return kASCACornerAllCorners;
+  }
+}
+
+- (void)setLayerMaskedCorners:(CACornerMask)newLayerMaskedCorners
+{
+  _bridge_prologue_write;
+  if (AS_AVAILABLE_IOS_TVOS(11, 11)) {
+    _setToLayer(maskedCorners, newLayerMaskedCorners);
+  } else {
+    ASDisplayNodeAssert(newLayerMaskedCorners == kASCACornerAllCorners,
+                        @"Cannot change maskedCorners property in iOS < 11 while using DefaultSlowCALayer rounding.");
+  }
 }
 
 - (BOOL)_locked_insetsLayoutMarginsFromSafeArea

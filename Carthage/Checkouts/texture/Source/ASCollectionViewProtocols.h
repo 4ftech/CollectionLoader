@@ -45,7 +45,7 @@ typedef NS_OPTIONS(NSUInteger, ASCellLayoutMode) {
    * Reload operations. This is useful only when ASCellLayoutModeAlwaysReloadData is enabled and
    * cell height animations are desired.
    */
-  ASCellLayoutModeAlwaysBatchUpdateSectionReload = 1 << 9 // Default OFF
+  ASCellLayoutModeAlwaysBatchUpdateSectionReload = 1 << 9, // Default OFF
 };
 
 NS_ASSUME_NONNULL_BEGIN

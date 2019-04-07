@@ -1,10 +1,6 @@
-framework module PINRemoteImage {    
-    umbrella header "PINRemoteImage.h"
+framework module PINRemoteImage {
+  umbrella header "PINRemoteImage-umbrella.h"
 
-    textual header "PINRemoteImageMacros.h"
-    header "FLAnimatedImageView+PINRemoteImage.h"
-    header "PINButton+PINRemoteImage.h"
-    header "PINImageView+PINRemoteImage.h"
-
-    export *
+  export *
+  module * { export * }
 }

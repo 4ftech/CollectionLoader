@@ -3,7 +3,8 @@
   "iOS" : [
     {
       "name" : "Changeset",
-      "hash" : "2c2ad737cb8bdc17b1c3fd0577ba3147896119a7626b17bb2e4dfbeba227f66f"
+      "hash" : "a8979616fe3ddc4af1f251bf96ba2fca0e94787fa49ee4ab1738798c2df56bb5",
+      "swiftToolchainVersion" : "5.0 (swiftlang-1001.0.69.5 clang-1001.0.46.3)"
     }
   ]
 }

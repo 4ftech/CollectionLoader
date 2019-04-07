@@ -38,12 +38,12 @@ extension AnomaliesTest {
                         return share(Observable<Int>.interval(period, scheduler: scheduler))
                     }
 
-                    let _ = makeSequence(label: "main", period: 0.1)
+                    _ = makeSequence(label: "main", period: 0.1)
                         .flatMapLatest { (index: Int) -> Observable<(Int, Int)> in
                             return makeSequence(label: "nested", period: 0.02).map { (index, $0) }
                         }
                         .take(10)
-                        .mapWithIndex { ($1, $0.0, $0.1) }
+                        .enumerated().map { ($0, $1.0, $1.1) }
                         .subscribe(
                             onNext: { _ in },
                             onCompleted: {
@@ -53,16 +53,15 @@ extension AnomaliesTest {
                 }
             }
 
-            waitForExpectations(timeout: 10.0) { (e) in
+            waitForExpectations(timeout: 10.0) { e in
                 XCTAssertNil(e)
             }
         }
 
         for op in [
-                { $0.shareReplay(1) },
+                { $0.share(replay: 1) },
                 { $0.replay(1).refCount() },
-                { $0.publish().refCount() },
-                { $0.shareReplayLatestWhileConnected() }
+                { $0.publish().refCount() }
             ] as [(Observable<Int>) -> Observable<Int>] {
             performSharingOperatorsTest(share: op)
         }
@@ -76,8 +75,8 @@ extension AnomaliesTest {
                     observer.on(.completed)
                     return Disposables.create()
                 })
-                .flatMap { (int) -> Observable<Int> in
-                    return Observable.create { (observer) -> Disposable in
+                .flatMap { int -> Observable<Int> in
+                    return Observable.create { observer -> Disposable in
                         DispatchQueue.global().async {
                             observer.onNext(int)
                             observer.onCompleted()
@@ -85,8 +84,7 @@ extension AnomaliesTest {
                         return Disposables.create()
                     }
                 })
-                .subscribe { (e) in
-                }
+                .subscribe()
         }
 
         for op in [
@@ -109,8 +107,8 @@ extension AnomaliesTest {
                 observer.on(.completed)
                 return Disposables.create()
             })
-            .flatMap { (int) -> Observable<[Int]> in
-                return Observable.create { (observer) -> Disposable in
+            .flatMap { int -> Observable<[Int]> in
+                return Observable.create { observer -> Disposable in
                     DispatchQueue.global().async {
                         observer.onNext([int])
                     }
@@ -120,8 +118,7 @@ extension AnomaliesTest {
             }
 
         Observable.merge(foo, .just([42]))
-            .subscribe { (e) in
-            }
+            .subscribe()
             .disposed(by: disposeBag)
     }
 
@@ -147,7 +144,7 @@ extension AnomaliesTest {
                         return share(Observable<Int>.interval(period, scheduler: scheduler))
                     }
 
-                    let _ = Observable.of(
+                    _ = Observable.of(
                             makeSequence(label: "main", period: 0.2),
                             makeSequence(label: "nested", period: 0.3)
                         ).merge()
@@ -163,7 +160,7 @@ extension AnomaliesTest {
                 }
             }
 
-            waitForExpectations(timeout: 2.0) { (e) in
+            waitForExpectations(timeout: 2.0) { e in
                 XCTAssertNil(e)
             }
         }

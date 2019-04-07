@@ -6,7 +6,7 @@
 //  Copyright © 2015 Krunoslav Zaher. All rights reserved.
 //
 
-extension Observable {
+extension ObservableType {
     /**
      Returns an empty observable sequence, using the specified scheduler to send out the single `Completed` message.
 
@@ -19,8 +19,8 @@ extension Observable {
     }
 }
 
-final fileprivate class EmptyProducer<Element> : Producer<Element> {
-    override func subscribe<O : ObserverType>(_ observer: O) -> Disposable where O.E == Element {
+final private class EmptyProducer<Element>: Producer<Element> {
+    override func subscribe<O: ObserverType>(_ observer: O) -> Disposable where O.E == Element {
         observer.on(.completed)
         return Disposables.create()
     }

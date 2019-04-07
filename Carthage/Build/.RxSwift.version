@@ -1,21 +1,102 @@
 {
-  "commitish" : "3.6.1",
-  "iOS" : [
+  "Mac" : [
+    {
+      "name" : "RxAtomic",
+      "hash" : "7a5d6cb7c050d5692df59cdb299c6706d0d116ba06b356b6c7e991ee02825151"
+    },
     {
       "name" : "RxTest",
-      "hash" : "d28a5b40a9eeb0bd0c0ca1bf59e151f5138d1177ffe857eafb661272b8ccbe5c"
+      "hash" : "b5db35947546309483c47a5c32011ff1c10936fed3b9dbe8cb9c3c72b2ba715e",
+      "swiftToolchainVersion" : "5.0 (swiftlang-1001.0.69.5 clang-1001.0.46.3)"
     },
     {
       "name" : "RxBlocking",
-      "hash" : "fdcf152288c7ee74431bb3256d0116443ae1bfbc44aa4aaffd3431e1acc689bd"
+      "hash" : "e7927edc012cccfb683c6bb08a8f4d1577b3b608e9845d081bbb229d448bf1ab",
+      "swiftToolchainVersion" : "5.0 (swiftlang-1001.0.69.5 clang-1001.0.46.3)"
     },
     {
       "name" : "RxCocoa",
-      "hash" : "60855e7d6d27f7cbd527870a77b7eea9fb510299034cfccd8c0947445bbb9d1b"
+      "hash" : "49c4a7e25d2b43a15a702c862b7af1bb213ca8095076fc0b32e99fca9e5439c5",
+      "swiftToolchainVersion" : "5.0 (swiftlang-1001.0.69.5 clang-1001.0.46.3)"
     },
     {
       "name" : "RxSwift",
-      "hash" : "080f7e1527294587354dba047e7eab77011150fb9952d9cbb19ddb1e3588c141"
+      "hash" : "b34420e9baf7e37731452e8bdc2e96134eea725026574b1b7f7a938bbcd56cd1",
+      "swiftToolchainVersion" : "5.0 (swiftlang-1001.0.69.5 clang-1001.0.46.3)"
+    }
+  ],
+  "watchOS" : [
+    {
+      "name" : "RxAtomic",
+      "hash" : "254b8caf07dca08206d79351b798d80580f9fe7c594425148a9c430dfcc3a6ef"
+    },
+    {
+      "name" : "RxBlocking",
+      "hash" : "46d1b95c311a9ba090f120dbe759a17698d749abd53625ed9aa6e9267a82702e",
+      "swiftToolchainVersion" : "5.0 (swiftlang-1001.0.69.5 clang-1001.0.46.3)"
+    },
+    {
+      "name" : "RxCocoa",
+      "hash" : "ba530f767cdc99533326b8a923faa1800435e3024437473af1e7e9d7a5fd5959",
+      "swiftToolchainVersion" : "5.0 (swiftlang-1001.0.69.5 clang-1001.0.46.3)"
+    },
+    {
+      "name" : "RxSwift",
+      "hash" : "314ec343bad80f9c16ab4d969babcb1e2b48a0722d92ba4c76b5e29c12484909",
+      "swiftToolchainVersion" : "5.0 (swiftlang-1001.0.69.5 clang-1001.0.46.3)"
+    }
+  ],
+  "tvOS" : [
+    {
+      "name" : "RxTest",
+      "hash" : "8ce1484ef1c6f2c6d0c343be2b52308675d257c3a6703a5cbcd6cc0b6002bd73",
+      "swiftToolchainVersion" : "5.0 (swiftlang-1001.0.69.5 clang-1001.0.46.3)"
+    },
+    {
+      "name" : "RxAtomic",
+      "hash" : "3d204e7b18f1d22355806c3703eb1efb052b8162f502fd9f2f89bf12325f2e56"
+    },
+    {
+      "name" : "RxBlocking",
+      "hash" : "5f761257156e3fc990064e979e6dd8a4db3090f6629fbcdcf7411206acdc4aaa",
+      "swiftToolchainVersion" : "5.0 (swiftlang-1001.0.69.5 clang-1001.0.46.3)"
+    },
+    {
+      "name" : "RxCocoa",
+      "hash" : "44191be93c79beb7ea0c7ecd6e92c654e2b0b623b6a86c2351fc610dd541c20e",
+      "swiftToolchainVersion" : "5.0 (swiftlang-1001.0.69.5 clang-1001.0.46.3)"
+    },
+    {
+      "name" : "RxSwift",
+      "hash" : "45f4dba26fc6699333c7b75d1656ac48693b13ba026c0f34c1425ae57c0f2992",
+      "swiftToolchainVersion" : "5.0 (swiftlang-1001.0.69.5 clang-1001.0.46.3)"
+    }
+  ],
+  "commitish" : "4.5.0",
+  "iOS" : [
+    {
+      "name" : "RxAtomic",
+      "hash" : "5058b1fc0ab721a9d1d139ee106a9969a28b1a355c509eb17d26bc6b19e04529"
+    },
+    {
+      "name" : "RxBlocking",
+      "hash" : "5cfc4edac27b7618999801bcbed527654baf54db7ab8b98e29e68965c2af9f8e",
+      "swiftToolchainVersion" : "5.0 (swiftlang-1001.0.69.5 clang-1001.0.46.3)"
+    },
+    {
+      "name" : "RxTest",
+      "hash" : "46f43c538b9db1a53f6efd52baaa8153a3fdbd081c4be916078730807947d14c",
+      "swiftToolchainVersion" : "5.0 (swiftlang-1001.0.69.5 clang-1001.0.46.3)"
+    },
+    {
+      "name" : "RxCocoa",
+      "hash" : "83d2b829400acb6e48efc81e2218f01f0bf21f7116e1b2595d4b61aa045d62eb",
+      "swiftToolchainVersion" : "5.0 (swiftlang-1001.0.69.5 clang-1001.0.46.3)"
+    },
+    {
+      "name" : "RxSwift",
+      "hash" : "085b4ee5e3be6f7da0b95d036f8cdc449e466851c50f3808629c9853c4dcf050",
+      "swiftToolchainVersion" : "5.0 (swiftlang-1001.0.69.5 clang-1001.0.46.3)"
     }
   ]
 }

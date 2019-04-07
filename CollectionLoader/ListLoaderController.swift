@@ -399,7 +399,7 @@ open class ListLoaderController<L: UIScrollView, T, E>: UIViewController, Collec
         Utils.performOnMainThread() {
           self?.handleResultsReceivedNotification(notification)
         }
-      }).addDisposableTo(disposeBag)
+      }).disposed(by: disposeBag)
     
     dataLoader.observerForAction(.FinishedLoading)
       .takeUntil(self.rx.deallocated)
@@ -407,7 +407,7 @@ open class ListLoaderController<L: UIScrollView, T, E>: UIViewController, Collec
         Utils.performOnMainThread() {
           self?.handleDidFinishLoadingRowsNotification(notification)
         }
-      }).addDisposableTo(disposeBag)
+      }).disposed(by: disposeBag)
   }
   
   open func handleResultsReceivedNotification(_ notification: Notification) {
@@ -712,11 +712,9 @@ open class ListLoaderController<L: UIScrollView, T, E>: UIViewController, Collec
         self.dataLoader.removeRowForObject(row)
         NotificationCenter.default.postCRUDNotification(.delete, crudObject: row)
       } else {
-        row.delete().then { () -> Void in
+        _ = row.delete().done { () in
           self.dataLoader.removeRowForObject(row)
           NotificationCenter.default.postCRUDNotification(.delete, crudObject: row)
-        }.catch { error in
-            
         }
       }
     }

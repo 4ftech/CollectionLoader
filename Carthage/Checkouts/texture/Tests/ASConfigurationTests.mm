@@ -23,12 +23,17 @@ static ASExperimentalFeatures features[] = {
   ASExperimentalInterfaceStateCoalescing,
   ASExperimentalUnfairLock,
   ASExperimentalLayerDefaults,
-  ASExperimentalNetworkImageQueue,
   ASExperimentalCollectionTeardown,
   ASExperimentalFramesetterCache,
   ASExperimentalSkipClearData,
   ASExperimentalDidEnterPreloadSkipASMLayout,
-  ASExperimentalDisableAccessibilityCache
+  ASExperimentalDisableAccessibilityCache,
+  ASExperimentalDispatchApply,
+  ASExperimentalImageDownloaderPriority,
+  ASExperimentalTextDrawing,
+  ASExperimentalFixRangeController,
+  ASExperimentalOOMBackgroundDeallocDisable,
+  ASExperimentalTransactionOperationRetainCycle,
 };
 
 @interface ASConfigurationTests : ASTestCase <ASConfigurationDelegate>
@@ -46,12 +51,17 @@ static ASExperimentalFeatures features[] = {
     @"exp_interface_state_coalesce",
     @"exp_unfair_lock",
     @"exp_infer_layer_defaults",
-    @"exp_network_image_queue",
     @"exp_collection_teardown",
     @"exp_framesetter_cache",
     @"exp_skip_clear_data",
     @"exp_did_enter_preload_skip_asm_layout",
-    @"exp_disable_a11y_cache"
+    @"exp_disable_a11y_cache",
+    @"exp_dispatch_apply",
+    @"exp_image_downloader_priority",
+    @"exp_text_drawing",
+    @"exp_fix_range_controller",
+    @"exp_oom_bg_dealloc_disable",
+    @"exp_transaction_operation_retain_cycle"
   ];
 }
 
