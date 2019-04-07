@@ -242,7 +242,7 @@ open class DataLoader<T, E>: NSObject where E: DataLoaderEngine<T> {
           }
         } else {
           if updateTimes[result] != result.updatedAt {
-            if let index = rows.index(of: result) {
+            if let index = rows.firstIndex(of: result) {
               updateRowAtIndex(index, withObject: result)
               edits.append(Changeset.Edit(operation: .substitution, value: result, destination: index))
             }
@@ -260,7 +260,7 @@ open class DataLoader<T, E>: NSObject where E: DataLoaderEngine<T> {
         if !isEmpty && loadType == .replace {
           for i in 0..<results.count {
             let newRow = results[i]
-            if let existingIndex = rows.index(of: newRow) {
+            if let existingIndex = rows.firstIndex(of: newRow) {
               if existingIndex == i {
                 if updateTimes[newRow] != newRow.updatedAt {
                   edits.append(Changeset.Edit(operation: .substitution, value: newRow, destination: i))
@@ -317,7 +317,7 @@ open class DataLoader<T, E>: NSObject where E: DataLoaderEngine<T> {
   }
   
   public func removeRowForObject(_ object: T) {
-    if let index = rows.index(of: object) {
+    if let index = rows.firstIndex(of: object) {
       removeRowAtIndex(index)
     }
   }
@@ -331,7 +331,7 @@ open class DataLoader<T, E>: NSObject where E: DataLoaderEngine<T> {
   }
   
   public func updateRowForObject(_ object: T) {
-    if let index = rows.index(of: object) {
+    if let index = rows.firstIndex(of: object) {
       updateRowAtIndex(index, withObject: object)
     }
   }

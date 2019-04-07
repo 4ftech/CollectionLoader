@@ -70,7 +70,7 @@ public class CollectionLoaderSelectController<C: CellMapperAdapter, E>: ListCell
       if self?.row.value == value {
         self?.row.value = nil
         
-        if let index = self?.dataLoader.rowsToDisplay.index(of: value) {
+        if let index = self?.dataLoader.rowsToDisplay.firstIndex(of: value) {
           self?.tableView.deselectRow(at: IndexPath(row: index, section: 0), animated: true)
         }
       } else {
@@ -90,7 +90,7 @@ public class CollectionLoaderSelectController<C: CellMapperAdapter, E>: ListCell
   override open func refreshScrollView() {
     super.refreshScrollView()
 
-    if let selectedObject = row.value, let index = dataLoader.rowsToDisplay.index(of: selectedObject) {
+    if let selectedObject = row.value, let index = dataLoader.rowsToDisplay.firstIndex(of: selectedObject) {
       self.tableView.selectRow(at: IndexPath(row: index, section: 0), animated: true, scrollPosition: .none)
     }
   }
@@ -187,7 +187,7 @@ public class CollectionLoaderSelectMultipleController<C: CellMapperAdapter, E>: 
 
     if let rows = row.value, rows.count > 0 {
       for row in rows {
-        if let index = dataLoader.rowsToDisplay.index(of: row) {
+        if let index = dataLoader.rowsToDisplay.firstIndex(of: row) {
           self.tableView.selectRow(at: IndexPath(row: index, section: 0), animated: true, scrollPosition: .none)
         }
       }
