@@ -1,21 +1,9 @@
 {
-  "Mac" : [
-
-  ],
-  "watchOS" : [
-
-  ],
-  "tvOS" : [
-    {
-      "name" : "PINRemoteImage",
-      "hash" : "46a9b980938d5554fd60bb7b635c155bffc7e4dc7451356b44d1a88c803e4ce5"
-    }
-  ],
   "commitish" : "3.0.0-beta.14",
   "iOS" : [
     {
       "name" : "PINRemoteImage",
-      "hash" : "9aff571d5db6695b0128b68be74637db1a14d1a651bc6bdf8ef33bbd485bfbff"
+      "hash" : "edb101abbb776bb9b640f7310ce45c4f58730fdee0b2537ca2247bb7b13da973"
     }
   ]
 }

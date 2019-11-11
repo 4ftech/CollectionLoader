@@ -223,7 +223,7 @@ open class DataLoader<T, E>: NSObject where E: DataLoaderEngine<T> {
 
   fileprivate func handleResults(_ queryResults: [T], loadType: DataLoadType, updateTimes: [T:Date]) {
     // Process the results
-    var results = queryResults
+    let results = queryResults
 
     var edits: [Changeset<[T]>.Edit] = []
     let originalRows: [T] = rowsToDisplay

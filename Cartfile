@@ -1,16 +1,7 @@
 github "mxcl/PromiseKit" ~> 6.8.4
 github "ReactiveX/RxSwift" ~> 4.5.0
-
-
-github "pronebird/UIScrollView-InfiniteScroll"
-
-
-
-github "ParsePlatform/Parse-SDK-iOS-OSX"
-
-
+github "pronebird/UIScrollView-InfiniteScroll" ~> 1.1.0
+github "ParsePlatform/Parse-SDK-iOS-OSX" ~> 1.17.2
 github "xmartlabs/Eureka" ~> 5.0.0
-
-github "osteslag/Changeset"
-
+github "osteslag/Changeset" "v3.1.1"
 github "texturegroup/texture" "master"
