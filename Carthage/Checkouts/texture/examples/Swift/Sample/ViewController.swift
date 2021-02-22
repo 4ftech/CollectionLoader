@@ -10,7 +10,7 @@
 import UIKit
 import AsyncDisplayKit
 
-final class ViewController: ASViewController<ASDisplayNode>, ASTableDataSource, ASTableDelegate {
+final class ViewController: ASDKViewController<ASDisplayNode>, ASTableDataSource, ASTableDelegate {
 
   struct State {
     var itemCount: Int
@@ -29,7 +29,7 @@ final class ViewController: ASViewController<ASDisplayNode>, ASTableDataSource, 
 
   fileprivate(set) var state: State = .empty
 
-  init() {
+  override init() {
     super.init(node: ASTableNode())
     tableNode.delegate = self
     tableNode.dataSource = self

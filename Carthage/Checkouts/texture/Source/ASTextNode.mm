@@ -141,6 +141,8 @@ static ASTextKitRenderer *rendererForAttributes(ASTextKitAttributes attributes, 
   BOOL _opaque;
   CGRect _bounds;
   ASPrimitiveTraitCollection _traitCollection;
+  ASDisplayNodeContextModifier _willDisplayNodeContentWithRenderingContext;
+  ASDisplayNodeContextModifier _didDisplayNodeContentWithRenderingContext;
 }
 @end
 
@@ -152,7 +154,9 @@ static ASTextKitRenderer *rendererForAttributes(ASTextKitAttributes attributes, 
                               contentScale:(CGFloat)contentScale
                                     opaque:(BOOL)opaque
                                     bounds:(CGRect)bounds
-                           traitCollection: (ASPrimitiveTraitCollection)traitCollection
+                           traitCollection:(ASPrimitiveTraitCollection)traitCollection
+willDisplayNodeContentWithRenderingContext:(ASDisplayNodeContextModifier)willDisplayNodeContentWithRenderingContext
+ didDisplayNodeContentWithRenderingContext:(ASDisplayNodeContextModifier)didDisplayNodeContentWithRenderingContext
 {
   self = [super init];
   if (self != nil) {
@@ -163,6 +167,8 @@ static ASTextKitRenderer *rendererForAttributes(ASTextKitAttributes attributes, 
     _opaque = opaque;
     _bounds = bounds;
     _traitCollection = traitCollection;
+    _willDisplayNodeContentWithRenderingContext = willDisplayNodeContentWithRenderingContext;
+    _didDisplayNodeContentWithRenderingContext = didDisplayNodeContentWithRenderingContext;
   }
   return self;
 }
@@ -546,9 +552,11 @@ static NSArray *DefaultLinkAttributeNames() {
 
 - (NSObject *)drawParametersForAsyncLayer:(_ASDisplayLayer *)layer
 {
+  /// have to access tintColor outside of the lock to prevent dead lock when accessing up the view hierarchy
+  UIColor *tintColor = self.tintColor;
   ASLockScopeSelf();
   if (_textColorFollowsTintColor) {
-    _cachedTintColor = self.tintColor;
+    _cachedTintColor = tintColor;
   } else {
     _cachedTintColor = nil;
   }
@@ -558,7 +566,9 @@ static NSArray *DefaultLinkAttributeNames() {
                                                         contentScale:_contentsScaleForDisplay
                                                               opaque:self.isOpaque
                                                               bounds:[self threadSafeBounds]
-                                                     traitCollection:self.primitiveTraitCollection];
+                                                     traitCollection:self.primitiveTraitCollection
+                          willDisplayNodeContentWithRenderingContext:self.willDisplayNodeContentWithRenderingContext
+                           didDisplayNodeContentWithRenderingContext:self.didDisplayNodeContentWithRenderingContext];
 }
 
 + (UIImage *)displayWithParameters:(id<NSObject>)parameters isCancelled:(NS_NOESCAPE asdisplaynode_iscancelled_block_t)isCancelled
@@ -572,12 +582,19 @@ static NSArray *DefaultLinkAttributeNames() {
   UIColor *backgroundColor = drawParameter->_backgroundColor;
   UIEdgeInsets textContainerInsets = drawParameter ? drawParameter->_textContainerInsets : UIEdgeInsetsZero;
   ASTextKitRenderer *renderer = [drawParameter rendererForBounds:drawParameter->_bounds];
+  ASDisplayNodeContextModifier willDisplayNodeContentWithRenderingContext = drawParameter->_willDisplayNodeContentWithRenderingContext;
+  ASDisplayNodeContextModifier didDisplayNodeContentWithRenderingContext  = drawParameter->_didDisplayNodeContentWithRenderingContext;
 
-  UIImage *result = ASGraphicsCreateImageWithTraitCollectionAndOptions(drawParameter->_traitCollection, CGSizeMake(drawParameter->_bounds.size.width, drawParameter->_bounds.size.height), drawParameter->_opaque, drawParameter->_contentScale, nil, ^{
+  UIImage *result = ASGraphicsCreateImage(drawParameter->_traitCollection, CGSizeMake(drawParameter->_bounds.size.width, drawParameter->_bounds.size.height), drawParameter->_opaque, drawParameter->_contentScale, nil, nil, ^{
     CGContextRef context = UIGraphicsGetCurrentContext();
     ASDisplayNodeAssert(context, @"This is no good without a context.");
     
     CGContextSaveGState(context);
+    
+    if (context && willDisplayNodeContentWithRenderingContext) {
+      willDisplayNodeContentWithRenderingContext(context, drawParameter);
+    }
+      
     CGContextTranslateCTM(context, textContainerInsets.left, textContainerInsets.top);
     
     // Fill background
@@ -589,6 +606,11 @@ static NSArray *DefaultLinkAttributeNames() {
 
     // Draw text
     [renderer drawInContext:context bounds:drawParameter->_bounds];
+    
+    if (context && didDisplayNodeContentWithRenderingContext) {
+      didDisplayNodeContentWithRenderingContext(context, drawParameter);
+    }
+    
     CGContextRestoreGState(context);
   });
 

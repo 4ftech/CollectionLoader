@@ -10,14 +10,14 @@
 import UIKit
 import AsyncDisplayKit
 
-class ViewController: ASViewController<ASCollectionNode>, MosaicCollectionViewLayoutDelegate, ASCollectionDataSource, ASCollectionDelegate {
+class ViewController: ASDKViewController<ASCollectionNode>, MosaicCollectionViewLayoutDelegate, ASCollectionDataSource, ASCollectionDelegate {
   
   var _sections = [[UIImage]]()
   let _collectionNode: ASCollectionNode
   let _layoutInspector = MosaicCollectionViewLayoutInspector()
   let kNumberOfImages: UInt = 14
 
-  init() {
+  override init() {
     let layout = MosaicCollectionViewLayout()
     layout.numberOfColumns = 3;
     layout.headerHeight = 44;

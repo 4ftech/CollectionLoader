@@ -2,48 +2,72 @@
   "commitish" : "4.5.0",
   "iOS" : [
     {
+      "hash" : "8db64257965c3d8995aabaaec8f952b88399a524f414c99f53fef948183aee34",
       "name" : "RxAtomic",
-      "hash" : "35c589e5b29f7558c279aa64e58fafab33d0a8152067c3b572fe4f200686df48"
+      "container" : "RxAtomic.xcframework",
+      "identifier" : "ios-arm64_i386_x86_64-simulator"
     },
     {
-      "name" : "RxTest",
-      "hash" : "f3ea83b41b431f0219f00d1eb7b21383df9f1f73aa9a4f8d91c29935340ae9ab",
-      "swiftToolchainVersion" : "5.1.2 (swiftlang-1100.0.278 clang-1100.0.33.9)"
+      "hash" : "4539bc202850bbffc223247e000102516e63181b35f54c4ef8bf66e84af229a2",
+      "name" : "RxAtomic",
+      "container" : "RxAtomic.xcframework",
+      "identifier" : "ios-arm64_armv7"
     },
     {
-      "name" : "RxTest",
-      "hash" : "f3ea83b41b431f0219f00d1eb7b21383df9f1f73aa9a4f8d91c29935340ae9ab",
-      "swiftToolchainVersion" : "5.1.2 (swiftlang-1100.0.278 clang-1100.0.33.9)"
-    },
-    {
+      "swiftToolchainVersion" : "5.3.2 (swiftlang-1200.0.45 clang-1200.0.32.28)",
+      "hash" : "4366c4155b3696eaad0402ce0354ef2943213c54c9568246eaf09e25d4785b65",
       "name" : "RxBlocking",
-      "hash" : "abdb580f0759ac7bc65278fc8f2c2eb2a98bdc96f684e0275dda118824c42c53",
-      "swiftToolchainVersion" : "5.1.2 (swiftlang-1100.0.278 clang-1100.0.33.9)"
+      "container" : "RxBlocking.xcframework",
+      "identifier" : "ios-arm64_i386_x86_64-simulator"
     },
     {
+      "swiftToolchainVersion" : "5.3.2 (swiftlang-1200.0.45 clang-1200.0.32.28)",
+      "hash" : "2a0b55e2cf9415ed42c94d5f2e9b656d939a62084831d6e5f24da78f6bd6f690",
       "name" : "RxBlocking",
-      "hash" : "abdb580f0759ac7bc65278fc8f2c2eb2a98bdc96f684e0275dda118824c42c53",
-      "swiftToolchainVersion" : "5.1.2 (swiftlang-1100.0.278 clang-1100.0.33.9)"
+      "container" : "RxBlocking.xcframework",
+      "identifier" : "ios-arm64_armv7"
     },
     {
+      "swiftToolchainVersion" : "5.3.2 (swiftlang-1200.0.45 clang-1200.0.32.28)",
+      "hash" : "244112177a5b4bb4599421feb65a7f00e596e1d4b1a8c7b6d388df31b2373b73",
       "name" : "RxCocoa",
-      "hash" : "ad20a37cd44ec246b84c5d413daec1c1a4e7de6f68345293aca2bc034beb08c7",
-      "swiftToolchainVersion" : "5.1.2 (swiftlang-1100.0.278 clang-1100.0.33.9)"
+      "container" : "RxCocoa.xcframework",
+      "identifier" : "ios-arm64_i386_x86_64-simulator"
     },
     {
+      "swiftToolchainVersion" : "5.3.2 (swiftlang-1200.0.45 clang-1200.0.32.28)",
+      "hash" : "b8dc42f23bd53366e43ec40fca9f1f9a96498288587e6452fe65bb7c0e9c89d1",
       "name" : "RxCocoa",
-      "hash" : "ad20a37cd44ec246b84c5d413daec1c1a4e7de6f68345293aca2bc034beb08c7",
-      "swiftToolchainVersion" : "5.1.2 (swiftlang-1100.0.278 clang-1100.0.33.9)"
+      "container" : "RxCocoa.xcframework",
+      "identifier" : "ios-arm64_armv7"
     },
     {
+      "swiftToolchainVersion" : "5.3.2 (swiftlang-1200.0.45 clang-1200.0.32.28)",
+      "hash" : "e3b0559d84eead030b27f5a6fb6b2c94d37e1bcb64ebc2ae21923b3414ec2074",
       "name" : "RxSwift",
-      "hash" : "a7b225e52751e72fa90d3100d01e073647b30d9d135cf676a316fc778114f5ab",
-      "swiftToolchainVersion" : "5.1.2 (swiftlang-1100.0.278 clang-1100.0.33.9)"
+      "container" : "RxSwift.xcframework",
+      "identifier" : "ios-arm64_i386_x86_64-simulator"
     },
     {
+      "swiftToolchainVersion" : "5.3.2 (swiftlang-1200.0.45 clang-1200.0.32.28)",
+      "hash" : "f9eab6264d47e0c57f701ae570c2c5fc71a147172ed1340deda96a3a9902b827",
       "name" : "RxSwift",
-      "hash" : "a7b225e52751e72fa90d3100d01e073647b30d9d135cf676a316fc778114f5ab",
-      "swiftToolchainVersion" : "5.1.2 (swiftlang-1100.0.278 clang-1100.0.33.9)"
+      "container" : "RxSwift.xcframework",
+      "identifier" : "ios-arm64_armv7"
+    },
+    {
+      "swiftToolchainVersion" : "5.3.2 (swiftlang-1200.0.45 clang-1200.0.32.28)",
+      "hash" : "d8fab1ec31a7e15fc016adb3edbe28c0640d9834e3eb501817553c18c6b1f59d",
+      "name" : "RxTest",
+      "container" : "RxTest.xcframework",
+      "identifier" : "ios-arm64_i386_x86_64-simulator"
+    },
+    {
+      "swiftToolchainVersion" : "5.3.2 (swiftlang-1200.0.45 clang-1200.0.32.28)",
+      "hash" : "a795e8d3639271771fba7b643e9a009f5e114d5e4e287cbcf88ee907073a157e",
+      "name" : "RxTest",
+      "container" : "RxTest.xcframework",
+      "identifier" : "ios-arm64_armv7"
     }
   ]
 }

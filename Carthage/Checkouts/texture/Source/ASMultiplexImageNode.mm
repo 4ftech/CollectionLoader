@@ -39,8 +39,6 @@ NSString *const ASMultiplexImageNodeErrorDomain = @"ASMultiplexImageNodeErrorDom
 static NSString *const kAssetsLibraryURLScheme = @"assets-library";
 #endif
 
-static const CGSize kMinReleaseImageOnBackgroundSize = {20.0, 20.0};
-
 /**
   @abstract Signature for the block to be performed after an image has loaded.
   @param image The image that was loaded, or nil if no image was loaded.
@@ -178,13 +176,14 @@ typedef void(^ASMultiplexImageLoadCompletionBlock)(UIImage *image, id imageIdent
   
   _downloaderFlags.downloaderImplementsSetProgress = [downloader respondsToSelector:@selector(setProgressImageBlock:callbackQueue:withDownloadIdentifier:)];
   _downloaderFlags.downloaderImplementsSetPriority = [downloader respondsToSelector:@selector(setPriority:withDownloadIdentifier:)];
-  _downloaderFlags.downloaderImplementsDownloadWithPriority = [downloader respondsToSelector:@selector(downloadImageWithURL:priority:callbackQueue:downloadProgress:completion:)];
+  _downloaderFlags.downloaderImplementsDownloadWithPriority = [downloader respondsToSelector:@selector(downloadImageWithURL:shouldRetry:priority:callbackQueue:downloadProgress:completion:)];
 
   _cacheSupportsClearing = [cache respondsToSelector:@selector(clearFetchedImageFromCacheWithURL:)];
   
   _shouldRenderProgressImages = YES;
 
   self.shouldBypassEnsureDisplay = YES;
+  self.shouldRetryImageDownload = YES;
 
   return self;
 }
@@ -533,17 +532,7 @@ typedef void(^ASMultiplexImageLoadCompletionBlock)(UIImage *image, id imageIdent
 
 - (void)_clearImage
 {
-  // Destruction of bigger images on the main thread can be expensive
-  // and can take some time, so we dispatch onto a bg queue to
-  // actually dealloc.
-  UIImage *image = self.image;
-  CGSize imageSize = image.size;
-  BOOL shouldReleaseImageOnBackgroundThread = imageSize.width > kMinReleaseImageOnBackgroundSize.width ||
-  imageSize.height > kMinReleaseImageOnBackgroundSize.height;
   [self _setImage:nil];
-  if (shouldReleaseImageOnBackgroundThread && ASActivateExperimentalFeature(ASExperimentalOOMBackgroundDeallocDisable) == NO) {
-    ASPerformBackgroundDeallocation(&image);
-  }
 }
 
 #pragma mark -
@@ -742,7 +731,7 @@ typedef void(^ASMultiplexImageLoadCompletionBlock)(UIImage *image, id imageIdent
     PHAsset *imageAsset = nil;
     
     // Try to get the asset immediately from the data source.
-    if (_dataSourceFlags.asset) {
+    if (strongSelf->_dataSourceFlags.asset) {
       imageAsset = [strongSelf.dataSource multiplexImageNode:strongSelf assetForLocalIdentifier:request.assetIdentifier];
     }
     
@@ -874,6 +863,7 @@ typedef void(^ASMultiplexImageLoadCompletionBlock)(UIImage *image, id imageIdent
        */
       ASImageDownloaderPriority priority = ASImageDownloaderPriorityWithInterfaceState(strongSelf.interfaceState);
       downloadIdentifier = [strongSelf->_downloader downloadImageWithURL:imageURL
+                                                             shouldRetry:[self shouldRetryImageDownload]
                                                                 priority:priority
                                                            callbackQueue:callbackQueue
                                                         downloadProgress:downloadProgressBlock
@@ -889,6 +879,7 @@ typedef void(^ASMultiplexImageLoadCompletionBlock)(UIImage *image, id imageIdent
         and their requests are put into the same pool.
        */
       downloadIdentifier = [strongSelf->_downloader downloadImageWithURL:imageURL
+                                                             shouldRetry:[self shouldRetryImageDownload]
                                                            callbackQueue:callbackQueue
                                                         downloadProgress:downloadProgressBlock
                                                               completion:completion];

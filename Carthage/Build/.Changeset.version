@@ -2,9 +2,18 @@
   "commitish" : "v3.1.1",
   "iOS" : [
     {
+      "swiftToolchainVersion" : "5.3.2 (swiftlang-1200.0.45 clang-1200.0.32.28)",
+      "hash" : "c661787e810ec27d70ff1d9ba160c1eabc31626bef117306b236929b49990b80",
       "name" : "Changeset",
-      "hash" : "a7a4dd545906ec9c67c059c6260fafe1db52390da1a458885390be6d0d307257",
-      "swiftToolchainVersion" : "5.1.2 (swiftlang-1100.0.278 clang-1100.0.33.9)"
+      "container" : "Changeset.xcframework",
+      "identifier" : "ios-i386_x86_64-simulator"
+    },
+    {
+      "swiftToolchainVersion" : "5.3.2 (swiftlang-1200.0.45 clang-1200.0.32.28)",
+      "hash" : "f95b0654c5c9d5b38ae01546b65f2702fd1f1e2eee3277bc49250b43c505cd03",
+      "name" : "Changeset",
+      "container" : "Changeset.xcframework",
+      "identifier" : "ios-arm64_armv7"
     }
   ]
 }

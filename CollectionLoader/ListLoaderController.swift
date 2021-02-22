@@ -178,7 +178,7 @@ open class ListLoaderController<L: UIScrollView, T, E>: UIViewController, Collec
   override open func viewDidLoad() {
     super.viewDidLoad()
 
-    self.automaticallyAdjustsScrollViewInsets = false
+    self.scrollView.contentInsetAdjustmentBehavior = .never
     
     self.viewHandler.viewDidLoad()
 

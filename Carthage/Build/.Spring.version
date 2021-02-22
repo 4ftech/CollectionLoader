@@ -1,9 +1,0 @@
-{
-  "commitish" : "8201b5c93bd7ebdf4cd18160bcde1e6e88c2be64",
-  "iOS" : [
-    {
-      "hash" : "18de0e6814a33673d2e6eff2a13ce968810fd1be8c8a79db6a184585742fe860",
-      "name" : "Spring"
-    }
-  ]
-}

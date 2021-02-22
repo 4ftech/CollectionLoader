@@ -1,9 +1,17 @@
 {
-  "commitish" : "1.1.2",
+  "commitish" : "1.2.1",
   "iOS" : [
     {
+      "hash" : "93c6f38aabe6d5c4b8641444fce5a4eed8bfcbc8792f93d21e56d08596eb6ef8",
       "name" : "PINOperation",
-      "hash" : "6227e62159827607b32423c6ed32db27576182f73d7a4a0e9aadec9be09c4c5a"
+      "container" : "PINOperation.xcframework",
+      "identifier" : "ios-arm64_i386_x86_64-simulator"
+    },
+    {
+      "hash" : "fd09541d4665ff41f1b47a1421a29d855fca2bc0ba88f682f6ce82c675a98588",
+      "name" : "PINOperation",
+      "container" : "PINOperation.xcframework",
+      "identifier" : "ios-arm64_armv7"
     }
   ]
 }

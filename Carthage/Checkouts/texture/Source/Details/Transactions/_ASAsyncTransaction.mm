@@ -19,7 +19,7 @@
   #warning "Texture must be compiled with std=c++11 to prevent layout issues. gnu++ is not supported. This is hopefully temporary."
 #endif
 
-AS_EXTERN NSRunLoopMode const UITrackingRunLoopMode;
+ASDK_EXTERN NSRunLoopMode const UITrackingRunLoopMode;
 
 NSInteger const ASDefaultTransactionPriority = 0;
 
@@ -268,10 +268,7 @@ void ASAsyncTransactionQueue::GroupImpl::notify(dispatch_queue_t queue, dispatch
   if (_pendingOperations == 0) {
     dispatch_async(queue, block);
   } else {
-    GroupNotify notify;
-    notify._block = block;
-    notify._queue = queue;
-    _notifyList.push_back(notify);
+    _notifyList.push_back({block, queue});
   }
 }
 

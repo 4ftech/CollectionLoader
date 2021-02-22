@@ -10,7 +10,6 @@ import Foundation
 import DataSource
 import ViewMapper
 import Eureka
-import Parse
 
 public final class CollectionLoaderSelectRow<C: CellMapperAdapter, E>: SelectorRow<PushSelectorCell<C.T.T>>, RowType where E: DataLoaderEngine<C.T.T>, C.T.T: Equatable {
   public typealias PresentedController = CollectionLoaderSelectController<C, E>

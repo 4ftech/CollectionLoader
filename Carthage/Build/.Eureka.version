@@ -1,10 +1,19 @@
 {
-  "commitish" : "5.1.0",
+  "commitish" : "5.3.2",
   "iOS" : [
     {
+      "swiftToolchainVersion" : "5.3.2 (swiftlang-1200.0.45 clang-1200.0.32.28)",
+      "hash" : "4c054a90d144ecc6b8cf3caea7fe995b452cdad0d5cb5053012f478900200ba0",
       "name" : "Eureka",
-      "hash" : "494dd0f7c31b207eeae3557c0d29508a077cda198991cd0499474e31f14dcc2f",
-      "swiftToolchainVersion" : "5.1.2 (swiftlang-1100.0.278 clang-1100.0.33.9)"
+      "container" : "Eureka.xcframework",
+      "identifier" : "ios-i386_x86_64-simulator"
+    },
+    {
+      "swiftToolchainVersion" : "5.3.2 (swiftlang-1200.0.45 clang-1200.0.32.28)",
+      "hash" : "1d90ffb3ef07fde97d477028c2acc0a5e4554a8b01122ca9f4fbfb6327c795ca",
+      "name" : "Eureka",
+      "container" : "Eureka.xcframework",
+      "identifier" : "ios-arm64_armv7"
     }
   ]
 }

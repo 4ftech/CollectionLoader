@@ -1,0 +1,4 @@
+framework module Changeset {
+  header "Changeset-Swift.h"
+  requires objc
+}

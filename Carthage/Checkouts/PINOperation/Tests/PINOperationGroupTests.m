@@ -6,11 +6,14 @@
 //  Copyright © 2016 Pinterest. All rights reserved.
 //
 
-#import <XCTest/XCTest.h>
-
-#import <pthread.h>
-
+#if SWIFT_PACKAGE
+@import PINOperation;
+#else
 #import <PINOperation/PINOperation.h>
+#endif
+
+#import <XCTest/XCTest.h>
+#import <pthread.h>
 
 static NSTimeInterval PINOperationGroupTestBlockTimeout = 20;
 

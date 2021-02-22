@@ -253,11 +253,13 @@ static const void *ContextKey() {
 #pragma mark ASImageDownloaderProtocol.
 
 - (nullable id)downloadImageWithURL:(NSURL *)URL
+                        shouldRetry:(BOOL)shouldRetry
                       callbackQueue:(dispatch_queue_t)callbackQueue
                    downloadProgress:(nullable ASImageDownloaderProgress)downloadProgress
                          completion:(ASImageDownloaderCompletion)completion
 {
   return [self downloadImageWithURL:URL
+                        shouldRetry:shouldRetry
                            priority:ASImageDownloaderPriorityImminent // maps to default priority
                       callbackQueue:callbackQueue
                    downloadProgress:downloadProgress
@@ -265,6 +267,7 @@ static const void *ContextKey() {
 }
 
 - (nullable id)downloadImageWithURL:(NSURL *)URL
+                        shouldRetry:(BOOL)shouldRetry
                            priority:(ASImageDownloaderPriority)priority
                       callbackQueue:(dispatch_queue_t)callbackQueue
                    downloadProgress:(ASImageDownloaderProgress)downloadProgress
@@ -290,7 +293,7 @@ static const void *ContextKey() {
     [context addCallbackData:[[NSDictionary alloc] initWithDictionary:callbackData]];
 
     // Create new task if necessary
-    NSURLSessionDownloadTask *task = (NSURLSessionDownloadTask *)[context createSessionTaskIfNecessaryWithBlock:^(){return [_session downloadTaskWithURL:URL];}];
+    NSURLSessionDownloadTask *task = (NSURLSessionDownloadTask *)[context createSessionTaskIfNecessaryWithBlock:^(){return [self->_session downloadTaskWithURL:URL];}];
 
     if (task) {
       task.priority = NSURLSessionTaskPriorityWithImageDownloaderPriority(priority);
