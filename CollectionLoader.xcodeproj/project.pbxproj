@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		70069207267CBE8200A1B73A /* Eureka.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 705D30271E67725C005D3A5F /* Eureka.framework */; };
 		7056D067202126EC00E3798A /* ListLoaderAdapterController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7056D066202126EC00E3798A /* ListLoaderAdapterController.swift */; };
 		705AE9C9201F69A000725573 /* ListCellMapperController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705AE9C8201F69A000725573 /* ListCellMapperController.swift */; };
 		705AE9D2201F908900725573 /* ListNibMapperController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705AE9D1201F908900725573 /* ListNibMapperController.swift */; };
@@ -22,14 +23,12 @@
 		705D30201E676FBA005D3A5F /* NotifiableViewMappable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705D301F1E676FBA005D3A5F /* NotifiableViewMappable.swift */; };
 		705D30221E676FEC005D3A5F /* CollectionLoaderSelectRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705D30211E676FEC005D3A5F /* CollectionLoaderSelectRow.swift */; };
 		705D30261E67720F005D3A5F /* DataSourceFormController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705D30251E67720F005D3A5F /* DataSourceFormController.swift */; };
-		705D30281E67725C005D3A5F /* Eureka.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 705D30271E67725C005D3A5F /* Eureka.framework */; };
 		705D30661E6776D5005D3A5F /* ParseTableLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705D30651E6776D5005D3A5F /* ParseTableLoader.swift */; };
 		705D307E1E678144005D3A5F /* DataLoaderEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705D307D1E678144005D3A5F /* DataLoaderEngine.swift */; };
 		706C972A1FACAE5200F73ED9 /* LoaderGradientLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 706C97201FACAE4F00F73ED9 /* LoaderGradientLayer.swift */; };
 		706C972B1FACAE5200F73ED9 /* LoaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 706C97281FACAE5000F73ED9 /* LoaderCell.swift */; };
 		706C972C1FACAE5200F73ED9 /* CutoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 706C97291FACAE5200F73ED9 /* CutoutView.swift */; };
 		707CA2C21F0EEDF60063CF5F /* Changeset.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 707CA2C11F0EEDF20063CF5F /* Changeset.framework */; };
-		70961C0C1EA82468007CD33E /* FilterListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70961C0B1EA82468007CD33E /* FilterListViewController.swift */; };
 		70A884271E5736C400823C0F /* CollectionLoader.h in Headers */ = {isa = PBXBuildFile; fileRef = 70A884191E5736C400823C0F /* CollectionLoader.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		70A884311E57373800823C0F /* ListLoaderController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70A884301E57373800823C0F /* ListLoaderController.swift */; };
 		70A884331E5738CA00823C0F /* Cartfile in Resources */ = {isa = PBXBuildFile; fileRef = 70A884321E5738CA00823C0F /* Cartfile */; };
@@ -176,6 +175,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				70069207267CBE8200A1B73A /* Eureka.framework in Frameworks */,
 				705D2FC51E669763005D3A5F /* DataSource.framework in Frameworks */,
 				70A884DF1E576D6700823C0F /* UIScrollView_InfiniteScroll.framework in Frameworks */,
 				70A884C51E573C6800823C0F /* RxBlocking.framework in Frameworks */,
@@ -183,7 +183,6 @@
 				70A884C71E573C6800823C0F /* RxSwift.framework in Frameworks */,
 				705D2DBC1E5F3B37005D3A5F /* PromiseKit.framework in Frameworks */,
 				705D301C1E676EB1005D3A5F /* ViewMapper.framework in Frameworks */,
-				705D30281E67725C005D3A5F /* Eureka.framework in Frameworks */,
 				707CA2C21F0EEDF60063CF5F /* Changeset.framework in Frameworks */,
 				70F712141FD60D40005D139B /* DataSourceNotificationCenter.framework in Frameworks */,
 			);
@@ -598,7 +597,6 @@
 				70A884CF1E57403A00823C0F /* CollectionSearchBar.swift in Sources */,
 				70C407CC1E69F37800A14EB7 /* DataLoadType.swift in Sources */,
 				70A884DD1E5762F000823C0F /* UITableView.swift in Sources */,
-				70961C0C1EA82468007CD33E /* FilterListViewController.swift in Sources */,
 				70A884CD1E573FF900823C0F /* DataLoader.swift in Sources */,
 				70A884D11E57404B00823C0F /* LoaderView.swift in Sources */,
 				705AE9E1201FC81D00725573 /* ListNibMapperAdapter.swift in Sources */,
@@ -763,7 +761,9 @@
 				PRODUCT_BUNDLE_IDENTIFIER = co.bukapp.CollectionLoader;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -787,6 +787,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = co.bukapp.CollectionLoader;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
