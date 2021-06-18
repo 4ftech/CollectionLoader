@@ -1,21 +1,53 @@
 {
-  "commitish" : "v5.10.0",
-  "iOS" : [
+  "Mac" : [
+
+  ],
+  "watchOS" : [
+
+  ],
+  "tvOS" : [
     {
-      "name" : "FBSDKPlacesKit",
-      "hash" : "67c4085143841b62069a0edabf6a20706ce74795db5d49c67b6f9637f2b0e78e"
+      "name" : "FBSDKCoreKit",
+      "hash" : "3fdde6bfce09e10507784445124dff2ed332da039ba95c3c025cca641bdf19be",
+      "linking" : "dynamic"
     },
     {
       "name" : "FBSDKLoginKit",
-      "hash" : "65656b3215dbf49b96e14ae121462de752974efc37223f070227820caf4da63d"
+      "hash" : "abb98028a22fd86108b68089439aab6a42e60b6a3dc4982a2f484dd60cf81b30",
+      "linking" : "dynamic"
     },
     {
       "name" : "FBSDKShareKit",
-      "hash" : "e06119991887a22e4ff527a2d343e29b26a45a7299768c15dbbccdb1438f8018"
+      "hash" : "79faf9bd906cea0a78285388707fac4406115c8a444dd3949fe4b63183685961",
+      "linking" : "dynamic"
     },
     {
+      "name" : "FBSDKTVOSKit",
+      "hash" : "cc86713e43750fd4950a64ee747627f096308a9cd3391d1226a4d5f98d1ab33f",
+      "linking" : "dynamic"
+    }
+  ],
+  "commitish" : "v5.10.0",
+  "iOS" : [
+    {
       "name" : "FBSDKCoreKit",
-      "hash" : "8f87085e6788a14468e4b467889c156237fa47da8a886ca4be0d013fb1905f3e"
+      "hash" : "d5b3a6206c3d77e7458a97f5f7c776a458f6a20bca9dbcafde42cb1a40cc4b77",
+      "linking" : "dynamic"
+    },
+    {
+      "name" : "FBSDKLoginKit",
+      "hash" : "f7697ec3f83b8b11034329c0c725018b1542aaa6085165b3cec66d80b333910d",
+      "linking" : "dynamic"
+    },
+    {
+      "name" : "FBSDKPlacesKit",
+      "hash" : "c24a008c8ecc60c46dcf3f91f2b1552795d4bf9a06062eba93377cfe000ded2d",
+      "linking" : "dynamic"
+    },
+    {
+      "name" : "FBSDKShareKit",
+      "hash" : "6a4bf21f0d3c5731e2715944b8770b706c034fb635c6fae3f3e31ca7f1a04d6c",
+      "linking" : "dynamic"
     }
   ]
 }

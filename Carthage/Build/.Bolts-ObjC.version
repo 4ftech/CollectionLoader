@@ -3,7 +3,13 @@
   "iOS" : [
     {
       "name" : "Bolts",
-      "hash" : "899c03095bcce40fc7a6feb62de333512550fae1e49de4f0468c1b0cc4a7639d"
+      "hash" : "49b4d37f14f1e43f807d8f55b8129b8d8ce762e8db33b83ad37f769ef1cbf458",
+      "linking" : "dynamic"
+    },
+    {
+      "name" : "Bolts",
+      "hash" : "4d872272e2cb9b62b6b01d0172dcd174360a47ec5a39fd4e53211f48ab6d822b",
+      "linking" : "static"
     }
   ]
 }

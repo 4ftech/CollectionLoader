@@ -38,10 +38,6 @@
  */
 @property (nonatomic, readonly) NSUInteger frameInterval;
 /**
- @abstract Return the size of the underlying animated image.
- */
-@property (nonatomic, readonly) CGSize size;
-/**
  @abstract Return the total number of loops the animated image should play or 0 to loop infinitely.
  */
 @property (nonatomic, readonly) size_t loopCount;
@@ -49,10 +45,6 @@
  @abstract Return the total number of frames in the animated image.
  */
 @property (nonatomic, readonly) size_t frameCount;
-/**
- @abstract Return the underlying data if available;
- */
-@property (nonatomic, readonly) NSData *data;
 /**
  @abstract Return YES when playback is ready to occur.
  */

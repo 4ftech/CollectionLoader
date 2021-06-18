@@ -2,9 +2,10 @@
   "commitish" : "v3.1.1",
   "iOS" : [
     {
+      "hash" : "fe4ffaa042d24ddf5cfb474d3cc6594e8fa1192726c76e9d363dc9ced5010836",
       "name" : "Changeset",
-      "hash" : "a7a4dd545906ec9c67c059c6260fafe1db52390da1a458885390be6d0d307257",
-      "swiftToolchainVersion" : "5.1.2 (swiftlang-1100.0.278 clang-1100.0.33.9)"
+      "linking" : "dynamic",
+      "swiftToolchainVersion" : "5.4 (swiftlang-1205.0.26.9 clang-1205.0.19.55)"
     }
   ]
 }
