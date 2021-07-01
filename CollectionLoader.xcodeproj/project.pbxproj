@@ -15,15 +15,11 @@
 		705AE9DF201FC39B00725573 /* ListCellMapperAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705AE9DE201FC39B00725573 /* ListCellMapperAdapter.swift */; };
 		705AE9E1201FC81D00725573 /* ListNibMapperAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705AE9E0201FC81D00725573 /* ListNibMapperAdapter.swift */; };
 		705D2DBC1E5F3B37005D3A5F /* PromiseKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 705D2DBB1E5F3B37005D3A5F /* PromiseKit.framework */; };
-		705D2E3A1E600613005D3A5F /* DataSource.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 705D2E341E6005E8005D3A5F /* DataSource.framework */; };
-		705D2E3B1E60061B005D3A5F /* ParseDataSource.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 705D2E361E6005E8005D3A5F /* ParseDataSource.framework */; };
 		705D2E611E609591005D3A5F /* CollectionViewType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705D2E601E609591005D3A5F /* CollectionViewType.swift */; };
-		705D2FC51E669763005D3A5F /* DataSource.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 705D2E341E6005E8005D3A5F /* DataSource.framework */; };
 		705D301C1E676EB1005D3A5F /* ViewMapper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 705D30141E676E96005D3A5F /* ViewMapper.framework */; };
 		705D30201E676FBA005D3A5F /* NotifiableViewMappable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705D301F1E676FBA005D3A5F /* NotifiableViewMappable.swift */; };
 		705D30221E676FEC005D3A5F /* CollectionLoaderSelectRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705D30211E676FEC005D3A5F /* CollectionLoaderSelectRow.swift */; };
 		705D30261E67720F005D3A5F /* DataSourceFormController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705D30251E67720F005D3A5F /* DataSourceFormController.swift */; };
-		705D30661E6776D5005D3A5F /* ParseTableLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705D30651E6776D5005D3A5F /* ParseTableLoader.swift */; };
 		705D307E1E678144005D3A5F /* DataLoaderEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705D307D1E678144005D3A5F /* DataLoaderEngine.swift */; };
 		706C972A1FACAE5200F73ED9 /* LoaderGradientLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 706C97201FACAE4F00F73ED9 /* LoaderGradientLayer.swift */; };
 		706C972B1FACAE5200F73ED9 /* LoaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 706C97281FACAE5000F73ED9 /* LoaderCell.swift */; };
@@ -44,34 +40,14 @@
 		70A885681E57870200823C0F /* LoaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 70A885661E57870200823C0F /* LoaderView.xib */; };
 		70A885691E57870200823C0F /* CollectionSearchBar.xib in Resources */ = {isa = PBXBuildFile; fileRef = 70A885671E57870200823C0F /* CollectionSearchBar.xib */; };
 		70A8856B1E57876300823C0F /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 70A8856A1E57876300823C0F /* Images.xcassets */; };
-		70A8860C1E57E92500823C0F /* ParseDataEngine.h in Headers */ = {isa = PBXBuildFile; fileRef = 70A8860A1E57E92500823C0F /* ParseDataEngine.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		70A886111E57E93000823C0F /* ParseDataEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70A886101E57E93000823C0F /* ParseDataEngine.swift */; };
-		70A886231E57EE8D00823C0F /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 70A886221E57EE8D00823C0F /* Parse.framework */; };
 		70A886291E5822B700823C0F /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70A886281E5822B700823C0F /* UIView.swift */; };
-		70A8862C1E58A63300823C0F /* CollectionLoader.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 70A884161E5736C400823C0F /* CollectionLoader.framework */; };
 		70BC7A582021615E0091D4E9 /* ListViewHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70BC7A572021615E0091D4E9 /* ListViewHandler.swift */; };
-		70C407BC1E68DDCD00A14EB7 /* ParseViewMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70C407BB1E68DDCD00A14EB7 /* ParseViewMapper.swift */; };
 		70C407CC1E69F37800A14EB7 /* DataLoadType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70C407CB1E69F37800A14EB7 /* DataLoadType.swift */; };
-		70C408C01E6AFF1F00A14EB7 /* ParseEurekaViewMapper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 705D301A1E676E96005D3A5F /* ParseEurekaViewMapper.framework */; };
 		70F712141FD60D40005D139B /* DataSourceNotificationCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 70F712131FD60D40005D139B /* DataSourceNotificationCenter.framework */; };
 		70FBAA7C1EB9115600ECC20E /* Const.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70FBAA7B1EB9115600ECC20E /* Const.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		705D2E331E6005E8005D3A5F /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 705D2E2D1E6005E8005D3A5F /* DataSource.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 705D2DA31E5E4064005D3A5F;
-			remoteInfo = DataSource;
-		};
-		705D2E351E6005E8005D3A5F /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 705D2E2D1E6005E8005D3A5F /* DataSource.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 705D2DD21E5F6CA6005D3A5F;
-			remoteInfo = ParseDataSource;
-		};
 		705D2E371E6005E8005D3A5F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 705D2E2D1E6005E8005D3A5F /* DataSource.xcodeproj */;
@@ -131,7 +107,6 @@
 		705D30211E676FEC005D3A5F /* CollectionLoaderSelectRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CollectionLoaderSelectRow.swift; path = Views/CollectionLoaderSelectRow.swift; sourceTree = "<group>"; };
 		705D30251E67720F005D3A5F /* DataSourceFormController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataSourceFormController.swift; sourceTree = "<group>"; };
 		705D30271E67725C005D3A5F /* Eureka.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Eureka.framework; path = Carthage/Build/iOS/Eureka.framework; sourceTree = "<group>"; };
-		705D30651E6776D5005D3A5F /* ParseTableLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParseTableLoader.swift; sourceTree = "<group>"; };
 		705D307D1E678144005D3A5F /* DataLoaderEngine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataLoaderEngine.swift; sourceTree = "<group>"; };
 		706C97201FACAE4F00F73ED9 /* LoaderGradientLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoaderGradientLayer.swift; sourceTree = "<group>"; };
 		706C97281FACAE5000F73ED9 /* LoaderCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoaderCell.swift; sourceTree = "<group>"; };
@@ -158,14 +133,9 @@
 		70A885661E57870200823C0F /* LoaderView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LoaderView.xib; sourceTree = "<group>"; };
 		70A885671E57870200823C0F /* CollectionSearchBar.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CollectionSearchBar.xib; sourceTree = "<group>"; };
 		70A8856A1E57876300823C0F /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		70A886081E57E92500823C0F /* ParseDataEngine.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ParseDataEngine.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		70A8860A1E57E92500823C0F /* ParseDataEngine.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ParseDataEngine.h; sourceTree = "<group>"; };
-		70A8860B1E57E92500823C0F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		70A886101E57E93000823C0F /* ParseDataEngine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParseDataEngine.swift; sourceTree = "<group>"; };
 		70A886221E57EE8D00823C0F /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Parse.framework; path = Carthage/Build/iOS/Parse.framework; sourceTree = "<group>"; };
 		70A886281E5822B700823C0F /* UIView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIView.swift; sourceTree = "<group>"; };
 		70BC7A572021615E0091D4E9 /* ListViewHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListViewHandler.swift; sourceTree = "<group>"; };
-		70C407BB1E68DDCD00A14EB7 /* ParseViewMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParseViewMapper.swift; sourceTree = "<group>"; };
 		70C407CB1E69F37800A14EB7 /* DataLoadType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataLoadType.swift; sourceTree = "<group>"; };
 		70FBAA7B1EB9115600ECC20E /* Const.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Const.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -176,7 +146,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				70069207267CBE8200A1B73A /* Eureka.framework in Frameworks */,
-				705D2FC51E669763005D3A5F /* DataSource.framework in Frameworks */,
 				70A884DF1E576D6700823C0F /* UIScrollView_InfiniteScroll.framework in Frameworks */,
 				70A884C51E573C6800823C0F /* RxBlocking.framework in Frameworks */,
 				70A884C61E573C6800823C0F /* RxCocoa.framework in Frameworks */,
@@ -185,18 +154,6 @@
 				705D301C1E676EB1005D3A5F /* ViewMapper.framework in Frameworks */,
 				707CA2C21F0EEDF60063CF5F /* Changeset.framework in Frameworks */,
 				70F712141FD60D40005D139B /* DataSourceNotificationCenter.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		70A886041E57E92500823C0F /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				70A8862C1E58A63300823C0F /* CollectionLoader.framework in Frameworks */,
-				70A886231E57EE8D00823C0F /* Parse.framework in Frameworks */,
-				705D2E3A1E600613005D3A5F /* DataSource.framework in Frameworks */,
-				705D2E3B1E60061B005D3A5F /* ParseDataSource.framework in Frameworks */,
-				70C408C01E6AFF1F00A14EB7 /* ParseEurekaViewMapper.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -238,8 +195,6 @@
 		705D2E2E1E6005E8005D3A5F /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				705D2E341E6005E8005D3A5F /* DataSource.framework */,
-				705D2E361E6005E8005D3A5F /* ParseDataSource.framework */,
 				705D2E381E6005E8005D3A5F /* ObjectMapperDataSource.framework */,
 				70F712131FD60D40005D139B /* DataSourceNotificationCenter.framework */,
 			);
@@ -264,7 +219,6 @@
 				705D2E2D1E6005E8005D3A5F /* DataSource.xcodeproj */,
 				70A884231E5736C400823C0F /* CollectionLoaderTests */,
 				70A884181E5736C400823C0F /* CollectionLoader */,
-				70A886091E57E92500823C0F /* ParseDataEngine */,
 				70A884171E5736C400823C0F /* Products */,
 				70A884BF1E573AC300823C0F /* Frameworks */,
 				70A884321E5738CA00823C0F /* Cartfile */,
@@ -275,7 +229,6 @@
 			isa = PBXGroup;
 			children = (
 				70A884161E5736C400823C0F /* CollectionLoader.framework */,
-				70A886081E57E92500823C0F /* ParseDataEngine.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -374,18 +327,6 @@
 			path = Nibs;
 			sourceTree = "<group>";
 		};
-		70A886091E57E92500823C0F /* ParseDataEngine */ = {
-			isa = PBXGroup;
-			children = (
-				70A8860A1E57E92500823C0F /* ParseDataEngine.h */,
-				70A8860B1E57E92500823C0F /* Info.plist */,
-				70A886101E57E93000823C0F /* ParseDataEngine.swift */,
-				705D30651E6776D5005D3A5F /* ParseTableLoader.swift */,
-				70C407BB1E68DDCD00A14EB7 /* ParseViewMapper.swift */,
-			);
-			path = ParseDataEngine;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -394,14 +335,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				70A884271E5736C400823C0F /* CollectionLoader.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		70A886051E57E92500823C0F /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				70A8860C1E57E92500823C0F /* ParseDataEngine.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -426,24 +359,6 @@
 			productReference = 70A884161E5736C400823C0F /* CollectionLoader.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		70A886071E57E92500823C0F /* ParseDataEngine */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 70A8860F1E57E92500823C0F /* Build configuration list for PBXNativeTarget "ParseDataEngine" */;
-			buildPhases = (
-				70A886031E57E92500823C0F /* Sources */,
-				70A886041E57E92500823C0F /* Frameworks */,
-				70A886051E57E92500823C0F /* Headers */,
-				70A886061E57E92500823C0F /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = ParseDataEngine;
-			productName = ParseDataEngine;
-			productReference = 70A886081E57E92500823C0F /* ParseDataEngine.framework */;
-			productType = "com.apple.product-type.framework";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -458,12 +373,6 @@
 						CreatedOnToolsVersion = 8.2.1;
 						DevelopmentTeam = M68244X38L;
 						LastSwiftMigration = 1020;
-						ProvisioningStyle = Automatic;
-					};
-					70A886071E57E92500823C0F = {
-						CreatedOnToolsVersion = 8.2.1;
-						DevelopmentTeam = M68244X38L;
-						LastSwiftMigration = 0820;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -492,26 +401,11 @@
 			projectRoot = "";
 			targets = (
 				70A884151E5736C400823C0F /* CollectionLoader */,
-				70A886071E57E92500823C0F /* ParseDataEngine */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		705D2E341E6005E8005D3A5F /* DataSource.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = DataSource.framework;
-			remoteRef = 705D2E331E6005E8005D3A5F /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		705D2E361E6005E8005D3A5F /* ParseDataSource.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = ParseDataSource.framework;
-			remoteRef = 705D2E351E6005E8005D3A5F /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		705D2E381E6005E8005D3A5F /* ObjectMapperDataSource.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
@@ -568,13 +462,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		70A886061E57E92500823C0F /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -606,16 +493,6 @@
 				70FBAA7C1EB9115600ECC20E /* Const.swift in Sources */,
 				705AE9D2201F908900725573 /* ListNibMapperController.swift in Sources */,
 				705AE9C9201F69A000725573 /* ListCellMapperController.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		70A886031E57E92500823C0F /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				70C407BC1E68DDCD00A14EB7 /* ParseViewMapper.swift in Sources */,
-				705D30661E6776D5005D3A5F /* ParseTableLoader.swift in Sources */,
-				70A886111E57E93000823C0F /* ParseDataEngine.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -792,53 +669,6 @@
 			};
 			name = Release;
 		};
-		70A8860D1E57E92500823C0F /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "";
-				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = M68244X38L;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-				);
-				INFOPLIST_FILE = ParseDataEngine/Info.plist;
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = co.bukapp.CollectionLoader.ParseDataEngine;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-			};
-			name = Debug;
-		};
-		70A8860E1E57E92500823C0F /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "";
-				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = M68244X38L;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-				);
-				INFOPLIST_FILE = ParseDataEngine/Info.plist;
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = co.bukapp.CollectionLoader.ParseDataEngine;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -856,15 +686,6 @@
 			buildConfigurations = (
 				70A8842B1E5736C400823C0F /* Debug */,
 				70A8842C1E5736C400823C0F /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		70A8860F1E57E92500823C0F /* Build configuration list for PBXNativeTarget "ParseDataEngine" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				70A8860D1E57E92500823C0F /* Debug */,
-				70A8860E1E57E92500823C0F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

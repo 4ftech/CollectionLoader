@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 import ViewMapper
-import DataSource
+import ObjectMapperDataSource
 
 open class ListCellMapperAdapter<C: CellMapperAdapter, E>: ListAdapter<C.T.T, E> where E: DataLoaderEngine<C.T.T> {
   public typealias T = C.T.T

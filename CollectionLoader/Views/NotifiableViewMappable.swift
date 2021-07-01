@@ -9,9 +9,9 @@
 import Foundation
 import ViewMapper
 import RxSwift
-import DataSource
+import ObjectMapperDataSource
 
-open class NotifiableViewMappable<ModelType: BaseDataModel>: UIView, ViewMappable {
+open class NotifiableViewMappable<ModelType: ObjectMapperDataModel>: UIView, ViewMappable {
   var disposable: Disposable?
   
   public func map(object: ModelType) {

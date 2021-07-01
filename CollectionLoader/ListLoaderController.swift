@@ -13,7 +13,7 @@ import RxSwift
 import UIScrollView_InfiniteScroll
 import Changeset
 
-import DataSource
+import ObjectMapperDataSource
 
 public protocol ListLoaderDelegate: UITableViewDataSource, UITableViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
   

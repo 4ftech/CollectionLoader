@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-import DataSource
+import ObjectMapperDataSource
 
 open class ListAdapter<T, E>: NSObject, UIScrollViewDelegate, UITableViewDataSource, UITableViewDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout where E:DataLoaderEngine<T> {
   

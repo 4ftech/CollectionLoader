@@ -8,7 +8,7 @@
 
 import Foundation
 import PromiseKit
-import DataSource
+import ObjectMapperDataSource
 
 public enum QueryOrder {
   case ascending, descending
@@ -37,7 +37,7 @@ public enum QueryOrder {
 //}
 
 
-open class DataLoaderEngine<T: BaseDataModel>: NSObject {
+open class DataLoaderEngine<T: ObjectMapperDataModel>: NSObject {
   open var paginate: Bool = false
   open var queryLimit: Int? = nil
   open var skip: Int = 0
@@ -138,11 +138,11 @@ open class DataLoaderEngine<T: BaseDataModel>: NSObject {
   }
 }
 
-open class BaseDataLoaderEngine<T: BaseDataModel>: DataLoaderEngine<T> {
+open class BaseDataLoaderEngine<T: ObjectMapperDataModel>: DataLoaderEngine<T> {
   
 }
 
-open class NestedDataLoaderEngine<T: BaseDataModel, U: BaseDataModel>: BaseDataLoaderEngine<T> {
+open class NestedDataLoaderEngine<T: ObjectMapperDataModel, U: ObjectMapperDataModel>: BaseDataLoaderEngine<T> {
   public var parentObject: U!
   
   public init(parentObject: U) {

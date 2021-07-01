@@ -14,7 +14,7 @@ import RxSwift
 import UIScrollView_InfiniteScroll
 import PromiseKit
 
-import DataSource
+import ObjectMapperDataSource
 
 enum DataLoaderAction: String {
   case ResultsReceived = "ResultsReceived", FinishedLoading = "FinishedLoading", CRUD = "CRUD"

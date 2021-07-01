@@ -8,14 +8,14 @@
 
 import Foundation
 
-import DataSource
+import ObjectMapperDataSource
 import DataSourceNotificationCenter
 import PromiseKit
 
 import ViewMapper
 import Eureka
 
-open class DataSourceFormController<T: BaseDataModel>: FormViewController, ViewMappable {
+open class DataSourceFormController<T: ObjectMapperDataModel>: FormViewController, ViewMappable {
   open var object: T!
   
   required public init?(coder aDecoder: NSCoder) {

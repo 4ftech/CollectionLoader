@@ -9,7 +9,7 @@
 import Foundation
 
 import ViewMapper
-import DataSource
+import ObjectMapperDataSource
 
 open class ListCellMapperController<L: UIScrollView, C: CellMapperAdapter, E>: ListLoaderAdapterController<L, C.T.T, E, ListCellMapperAdapter<C, E>> where E:DataLoaderEngine<C.T.T> {
   public typealias T = C.T.T

@@ -9,7 +9,7 @@
 import Foundation
 
 import ViewMapper
-import DataSource
+import ObjectMapperDataSource
 
 open class ListNibMapperAdapter<V: ViewMappable, E>: ListCellMapperAdapter<NibCellMapperAdapter<V>, E> where E: DataLoaderEngine<V.T> {
   

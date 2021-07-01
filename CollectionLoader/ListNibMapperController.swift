@@ -9,7 +9,7 @@
 import Foundation
 
 import ViewMapper
-import DataSource
+import ObjectMapperDataSource
 
 open class ListNibMapperController<L: UIScrollView, V: ViewMappable, E>: ListCellMapperController<L, NibCellMapperAdapter<V>, E> where E: DataLoaderEngine<V.T> {
   
